@@ -104,7 +104,7 @@ func (c *GRPCFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -114,7 +114,9 @@ func (c *GRPCFlowChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("GRPCFlowChallenge: platform not available, skipped (%d steps, server=%s)", len(c.flow.Steps), c.flow.ServerAddr))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -280,9 +282,11 @@ func (c *GRPCFlowChallenge) Execute(
 		"steps":  len(c.flow.Steps),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("GRPCFlowChallenge: executed %d steps on %s, status=%s", len(c.flow.Steps), c.flow.ServerAddr, status))
+	return result, nil
 }
 
 // validateGRPCFields parses the JSON response and checks

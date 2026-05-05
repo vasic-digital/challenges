@@ -92,7 +92,7 @@ func (c *WebSocketFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -102,7 +102,9 @@ func (c *WebSocketFlowChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("WebSocketFlowChallenge: platform not available, skipped (%d steps, url=%s)", len(c.flow.Steps), c.flow.URL))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -133,11 +135,13 @@ func (c *WebSocketFlowChallenge) Execute(
 		},
 	)
 	if connErr != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			connErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("WebSocketFlowChallenge: connection to %s failed", c.flow.URL))
+		return result, nil
 	}
 
 	// Ensure connection is closed when done.
@@ -302,9 +306,11 @@ func (c *WebSocketFlowChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("WebSocketFlowChallenge: executed %d steps on %s, status=%s", len(c.flow.Steps), c.flow.URL, status))
+	return result, nil
 }
 
 // extractWSVariables parses the response as JSON and extracts

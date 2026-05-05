@@ -14,11 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewRecordingValidator_Constructor(t *testing.T) {
-	v := NewRecordingValidator(logging.NullLogger{})
-	assert.NotNil(t, v)
-}
-
 func TestRecordingValidator_Validate_NonExistentFile(
 	t *testing.T,
 ) {

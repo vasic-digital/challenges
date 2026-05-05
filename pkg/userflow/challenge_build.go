@@ -46,7 +46,7 @@ func (c *BuildChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -55,7 +55,9 @@ func (c *BuildChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("BuildChallenge: platform not available, skipped (%d targets)", len(c.targets)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -110,9 +112,11 @@ func (c *BuildChallenge) Execute(
 		"targets": len(c.targets),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("BuildChallenge: built %d targets, status=%s", len(c.targets), status))
+	return result, nil
 }
 
 // buildAssertionMessage returns a human-readable message for a
@@ -174,7 +178,7 @@ func (c *UnitTestChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -183,7 +187,9 @@ func (c *UnitTestChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("UnitTestChallenge: platform not available, skipped (%d suites)", len(c.targets)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -253,9 +259,11 @@ func (c *UnitTestChallenge) Execute(
 		"failures": totalFailures,
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("UnitTestChallenge: ran %d tests across %d suites, failures=%d, status=%s", totalTests, len(c.targets), totalFailures, status))
+	return result, nil
 }
 
 // testAssertionMessage returns a human-readable message for a
@@ -334,7 +342,7 @@ func (c *LintChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -343,7 +351,9 @@ func (c *LintChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("LintChallenge: platform not available, skipped (%d linters)", len(c.targets)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -411,9 +421,11 @@ func (c *LintChallenge) Execute(
 		"linters": len(c.targets),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("LintChallenge: ran %d linters, status=%s", len(c.targets), status))
+	return result, nil
 }
 
 // lintAssertionMessage returns a human-readable message for a

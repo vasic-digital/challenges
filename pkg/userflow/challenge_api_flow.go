@@ -53,7 +53,7 @@ func (c *APIHealthChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -62,7 +62,9 @@ func (c *APIHealthChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("APIHealthChallenge: platform not available, skipped (path=%s)", c.healthPath))
+		return result, nil
 	}
 
 	c.ReportProgress("checking API health", map[string]any{
@@ -107,9 +109,11 @@ func (c *APIHealthChallenge) Execute(
 		}
 	}
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("APIHealthChallenge: health check %s returned HTTP %d (expected %d), status=%s", c.healthPath, code, c.expectedCode, status))
+	return result, nil
 }
 
 // healthAssertionMessage returns a human-readable message for
@@ -174,7 +178,7 @@ func (c *APIFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -183,7 +187,9 @@ func (c *APIFlowChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("APIFlowChallenge: platform not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -377,9 +383,11 @@ func (c *APIFlowChallenge) Execute(
 		"steps":  len(c.flow.Steps),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("APIFlowChallenge: executed %d steps, status=%s", len(c.flow.Steps), status))
+	return result, nil
 }
 
 // executeStep dispatches the HTTP method and returns the

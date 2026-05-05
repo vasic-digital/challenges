@@ -502,6 +502,7 @@ func (r *DefaultRunner) executeChallenge(
 	// Merge execution result.
 	if execResult != nil {
 		result.Assertions = execResult.Assertions
+		result.RecordedActions = execResult.RecordedActions
 		result.Metrics = execResult.Metrics
 		result.Outputs = execResult.Outputs
 		// Preserve execution status if it indicates failure
@@ -531,21 +532,13 @@ func (r *DefaultRunner) executeChallenge(
 		}
 	}
 
-	// Phase 22.7 — anti-bluff validator runtime gate (Constitution §11.4).
-	// Mirrors lib/anti_bluff.sh ab_summary's no-action / no-positive-
-	// evidence guard. Gated by env var CHALLENGE_ANTIBLUFF_STRICT to
-	// preserve backward compatibility with existing test fixtures
-	// (many synthetic-always-PASS unit tests don't record actions —
-	// they're test-of-the-runner, not test-of-a-real-feature). Once
-	// the existing fixtures are updated to use RecordAction (planned
-	// follow-up cycle, equivalent to the Bash side's Phase 22.0-22.3
-	// bulk conversion), the default flips to ON.
-	//
-	// To enable: set CHALLENGE_ANTIBLUFF_STRICT=1 in the environment
-	// where production runs happen (HelixQA CI, the orchestrator,
-	// post-flash test harness). The fixture-updating ratchet drives
-	// the default-flip date.
-	if os.Getenv("CHALLENGE_ANTIBLUFF_STRICT") == "1" && result.Status == challenge.StatusPassed {
+		// Anti-bluff validation is mandatory per Constitution §1, §6.3,
+		// §11.5.7. A Challenge result claiming Status=Passed MUST carry
+		// positive evidence (RecordedActions non-empty + at least one
+		// passing assertion). This gate is never disabled; the env-var
+		// CHALLENGE_ANTIBLUFF_STRICT has been removed as part of the
+		// v2.0.0 constitutional amendment (2026-05-01).
+	if result.Status == challenge.StatusPassed {
 		if abErr := challenge.ValidateAntiBluff(result); abErr != nil {
 			result.Status = challenge.StatusFailed
 			if result.Error == "" {

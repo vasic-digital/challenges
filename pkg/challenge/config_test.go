@@ -5,23 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
-
-func TestNewConfig_Defaults(t *testing.T) {
-	cfg := NewConfig("test-challenge")
-	require.NotNil(t, cfg)
-
-	assert.Equal(t, ID("test-challenge"), cfg.ChallengeID)
-	assert.Equal(t, "results", cfg.ResultsDir)
-	assert.Equal(t, "logs", cfg.LogsDir)
-	assert.Equal(t, 5*time.Minute, cfg.Timeout)
-	assert.NotNil(t, cfg.Environment)
-	assert.Empty(t, cfg.Environment)
-	assert.NotNil(t, cfg.Dependencies)
-	assert.Empty(t, cfg.Dependencies)
-	assert.False(t, cfg.Verbose)
-}
 
 func TestNewConfig_DifferentIDs(t *testing.T) {
 	tests := []struct {

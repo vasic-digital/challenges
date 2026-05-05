@@ -58,7 +58,7 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 
 	// Check adapter availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -69,12 +69,14 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 			}},
 			nil, nil,
 			"mobile adapter not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: mobile adapter not available, skipped (app=%s)", c.appPath))
+		return result, nil
 	}
 
 	// Check recorder availability.
 	if !c.recorder.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -85,7 +87,9 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 			}},
 			nil, nil,
 			"recorder not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: recorder not available, skipped (app=%s)", c.appPath))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -115,11 +119,13 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: recording start failed (app=%s)", c.appPath))
+		return result, nil
 	}
 
 	assertions = append(
@@ -150,11 +156,13 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 	)
 	if installErr != nil {
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			installErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: install failed for %s", c.appPath))
+		return result, nil
 	}
 
 	// Launch app.
@@ -174,11 +182,13 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 	)
 	if launchErr != nil {
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			launchErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: launch failed for %s", c.appPath))
+		return result, nil
 	}
 
 	// Wait for stability.
@@ -190,11 +200,13 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 	select {
 	case <-ctx.Done():
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			ctx.Err().Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: context cancelled during stability wait for %s", c.appPath))
+		return result, nil
 	case <-time.After(c.stabilityWait):
 	}
 
@@ -321,10 +333,12 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 		errMsg = recErr.Error()
 	}
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs,
 		errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("RecordedMobileLaunchChallenge: launched %s, stable=%t, status=%s, recorded=%t", c.appPath, stablePassed, status, recResult != nil))
+	return result, nil
 }
 
 // RecordedMobileFlowChallenge executes a MobileFlow by
@@ -368,7 +382,7 @@ func (c *RecordedMobileFlowChallenge) Execute(
 
 	// Check adapter availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -379,12 +393,14 @@ func (c *RecordedMobileFlowChallenge) Execute(
 			}},
 			nil, nil,
 			"mobile adapter not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileFlowChallenge: mobile adapter not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	// Check recorder availability.
 	if !c.recorder.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -395,7 +411,9 @@ func (c *RecordedMobileFlowChallenge) Execute(
 			}},
 			nil, nil,
 			"recorder not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileFlowChallenge: recorder not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -426,11 +444,13 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedMobileFlowChallenge: recording start failed (flow=%s)", c.flow.Name))
+		return result, nil
 	}
 
 	assertions = append(
@@ -594,10 +614,12 @@ func (c *RecordedMobileFlowChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs,
 		errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("RecordedMobileFlowChallenge: executed %d steps, status=%s, recorded=%t", len(c.flow.Steps), status, recResult != nil))
+	return result, nil
 }
 
 // executeStep dispatches the mobile action for a single step.

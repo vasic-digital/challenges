@@ -157,6 +157,7 @@ func (s *ShellChallenge) Execute(
 	result := s.CreateResult(
 		status, start, nil, nil, outputs, errMsg,
 	)
+	result.RecordAction(fmt.Sprintf("ShellChallenge: executed %s, exit_code=%s, status=%s", s.ScriptPath, outputs["exit_code"], status))
 
 	// Write output log.
 	s.writeOutputLog(stdout.Bytes(), stderr.Bytes())

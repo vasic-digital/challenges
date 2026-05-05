@@ -1,0 +1,18 @@
+# CONST-035 mutation testing config (go-mutesting).
+# Threshold rules are enforced by challenges/scripts/mutation_ratchet_challenge.sh,
+# not by go-mutesting itself.
+mutators:
+  - branch/case
+  - branch/if
+  - expression/remove
+  - statement/remove
+  - numbers/incrementer
+  - numbers/decrementer
+exec:
+  timeout: 60   # seconds per mutant
+match: ".*"
+exclude:
+  - vendor/.*
+  - .*\.pb\.go$
+  - .*_mock\.go$
+  - scripts/anti-bluff/.*

@@ -17,7 +17,7 @@ var _ BuildAdapter = (*GradleCLIAdapter)(nil)
 func TestGradleCLIAdapter_Available_True(t *testing.T) {
 	// Available now requires java in PATH.
 	if _, err := exec.LookPath("java"); err != nil {
-		t.Skip("java not in PATH, skipping")  // SKIP-OK: #legacy-untriaged
+		t.Skip("java not in PATH, skipping")
 	}
 
 	dir := t.TempDir()

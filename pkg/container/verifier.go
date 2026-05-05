@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -158,15 +159,13 @@ func (v *Verifier) checkHTTP(ctx context.Context, url string, timeout time.Durat
 	return nil
 }
 
-// execCommand executes a shell command.
+// execCommand executes a shell command using the OS exec package.
 func execCommand(ctx context.Context, cmd string) error {
-	// Use bash to execute the command
-	command := fmt.Sprintf("bash -c '%s'", strings.ReplaceAll(cmd, "'", "'\"'\"'"))
-
-	// In real implementation, use exec.CommandContext
-	// For now, return nil to allow compilation
-	_ = command
-	return nil
+	args := []string{"-c", cmd}
+	execCmd := exec.CommandContext(ctx, "bash", args...)
+	execCmd.Stdout = nil
+	execCmd.Stderr = nil
+	return execCmd.Run()
 }
 
 // PreConditionCheck performs the full pre-condition verification.

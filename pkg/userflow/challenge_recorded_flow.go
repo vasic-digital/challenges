@@ -50,7 +50,7 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 
 	// Check browser adapter availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -59,12 +59,14 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 				Message: "Browser not available - skipped",
 			}},
 			nil, nil, "browser not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: browser not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	// Check recorder adapter availability.
 	if !c.recorder.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -73,7 +75,9 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 				Message: "Recorder not available - skipped",
 			}},
 			nil, nil, "recorder not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: recorder not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -104,11 +108,13 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: browser initialization failed (%s)", c.flow.Config.BrowserType))
+		return result, nil
 	}
 
 	// Ensure browser is closed when done.
@@ -141,11 +147,13 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: recording start failed (url=%s)", c.flow.StartURL))
+		return result, nil
 	}
 
 	assertions = append(
@@ -177,11 +185,13 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 		)
 		// Stop recording before returning on failure.
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: navigate to %s failed", c.flow.StartURL))
+		return result, nil
 	}
 
 	// Execute each step.
@@ -374,10 +384,12 @@ func (c *RecordedBrowserFlowChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs,
 		errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("RecordedBrowserFlowChallenge: executed %d steps, status=%s, recorded=%t", len(c.flow.Steps), status, recResult != nil))
+	return result, nil
 }
 
 // executeStep dispatches the browser action for a single step.

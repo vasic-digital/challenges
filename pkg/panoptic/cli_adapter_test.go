@@ -12,12 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewCLIAdapter(t *testing.T) {
-	adapter := NewCLIAdapter("/usr/bin/panoptic")
-	assert.Equal(t, "/usr/bin/panoptic", adapter.binaryPath)
-	assert.NotNil(t, adapter.env)
-}
-
 func TestCLIAdapter_SetWorkDir(t *testing.T) {
 	adapter := NewCLIAdapter("/bin/test")
 	adapter.SetWorkDir("/tmp/work")

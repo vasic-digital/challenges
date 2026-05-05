@@ -51,7 +51,7 @@ func (c *VisionFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.browser.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -61,10 +61,12 @@ func (c *VisionFlowChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("VisionFlowChallenge: browser not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 	if !c.vision.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -74,7 +76,9 @@ func (c *VisionFlowChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("VisionFlowChallenge: vision not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -101,11 +105,13 @@ func (c *VisionFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("VisionFlowChallenge: browser initialization failed (%s)", c.flow.Config.BrowserType))
+		return result, nil
 	}
 
 	// Ensure browser is closed when done.
@@ -133,11 +139,13 @@ func (c *VisionFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("VisionFlowChallenge: navigate to %s failed", c.flow.StartURL))
+		return result, nil
 	}
 
 	// Execute each step.
@@ -262,9 +270,11 @@ func (c *VisionFlowChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("VisionFlowChallenge: executed %d steps, status=%s, vision_detections=%d", len(c.flow.Steps), status, visionDetections))
+	return result, nil
 }
 
 // executeStep dispatches a standard browser action using a

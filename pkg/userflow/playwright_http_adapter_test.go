@@ -468,7 +468,8 @@ func TestPlaywrightHTTPServerAdapter_NetworkIntercept_NoOp(
 		"**/api/**",
 		func(_ *InterceptedRequest) {},
 	)
-	assert.NoError(t, err)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "NetworkIntercept not supported by HTTP adapter")
 }
 
 func TestPlaywrightHTTPServerAdapter_NetworkIntercept_NilHandler(
@@ -482,7 +483,8 @@ func TestPlaywrightHTTPServerAdapter_NetworkIntercept_NilHandler(
 		"",
 		nil,
 	)
-	assert.NoError(t, err)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "NetworkIntercept not supported by HTTP adapter")
 }
 
 func TestPlaywrightHTTPServerAdapter_IsVisible_True(

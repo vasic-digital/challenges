@@ -52,7 +52,7 @@ func (c *MobileLaunchChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -61,7 +61,9 @@ func (c *MobileLaunchChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("MobileLaunchChallenge: platform not available, skipped (app=%s)", c.appPath))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -86,11 +88,13 @@ func (c *MobileLaunchChallenge) Execute(
 		},
 	)
 	if installErr != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			installErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("MobileLaunchChallenge: install failed for %s", c.appPath))
+		return result, nil
 	}
 
 	// Launch app.
@@ -109,11 +113,13 @@ func (c *MobileLaunchChallenge) Execute(
 		},
 	)
 	if launchErr != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			launchErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("MobileLaunchChallenge: launch failed for %s", c.appPath))
+		return result, nil
 	}
 
 	// Wait for stability.
@@ -122,11 +128,13 @@ func (c *MobileLaunchChallenge) Execute(
 	})
 	select {
 	case <-ctx.Done():
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			ctx.Err().Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("MobileLaunchChallenge: context cancelled during stability wait for %s", c.appPath))
+		return result, nil
 	case <-time.After(c.stabilityWait):
 	}
 
@@ -179,9 +187,11 @@ func (c *MobileLaunchChallenge) Execute(
 		status = challenge.StatusFailed
 	}
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("MobileLaunchChallenge: launched %s, stable=%t, status=%s", c.appPath, stablePassed, status))
+	return result, nil
 }
 
 // installMessage returns a message for the install assertion.
@@ -255,7 +265,7 @@ func (c *MobileFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -264,7 +274,9 @@ func (c *MobileFlowChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("MobileFlowChallenge: platform not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -346,9 +358,11 @@ func (c *MobileFlowChallenge) Execute(
 		"steps":  len(c.flow.Steps),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("MobileFlowChallenge: executed %d steps, status=%s", len(c.flow.Steps), status))
+	return result, nil
 }
 
 // executeStep dispatches the mobile action for a single step.
@@ -451,7 +465,7 @@ func (c *InstrumentedTestChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -460,7 +474,9 @@ func (c *InstrumentedTestChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("InstrumentedTestChallenge: platform not available, skipped (%d classes)", len(c.testClasses)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -536,9 +552,11 @@ func (c *InstrumentedTestChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("InstrumentedTestChallenge: ran %d tests across %d classes, failures=%d, status=%s", totalTests, len(c.testClasses), totalFailures, status))
+	return result, nil
 }
 
 // instrumentedActual returns the actual value string for an

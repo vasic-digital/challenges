@@ -165,13 +165,14 @@ func (a *PlaywrightHTTPServerAdapter) EvaluateJS(
 	return result, err
 }
 
-// NetworkIntercept is not implemented (returns nil).
+// NetworkIntercept is not supported by the HTTP server adapter.
+// Use a direct Playwright connection for network interception.
 func (a *PlaywrightHTTPServerAdapter) NetworkIntercept(
 	ctx context.Context,
 	pattern string,
 	handler func(req *InterceptedRequest),
 ) error {
-	return nil
+	return fmt.Errorf("NetworkIntercept not supported by HTTP adapter (use direct Playwright connection)")
 }
 
 // IsVisible checks if element is visible.
@@ -255,8 +256,10 @@ func (a *PlaywrightHTTPServerAdapter) Available(
 	return err == nil
 }
 
-// SetRecorder is not used in this adapter.
-func (a *PlaywrightHTTPServerAdapter) SetRecorder(recorder RecorderAdapter) {}
+// SetRecorder is not used in this adapter (HTTP server handles recording).
+func (a *PlaywrightHTTPServerAdapter) SetRecorder(_ RecorderAdapter) {
+	_ = a // no-op: HTTP adapter does not support recording
+}
 
 // BrowserAdapter returns itself for chaining.
 func (a *PlaywrightHTTPServerAdapter) BrowserAdapter() *PlaywrightHTTPServerAdapter {

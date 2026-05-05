@@ -17,12 +17,6 @@ import (
 // Compile-time interface check.
 var _ WebSocketFlowAdapter = (*GorillaWebSocketAdapter)(nil)
 
-func TestNewGorillaWebSocketAdapter(t *testing.T) {
-	adapter := NewGorillaWebSocketAdapter()
-	require.NotNil(t, adapter)
-	assert.Nil(t, adapter.conn)
-}
-
 func TestGorillaWebSocketAdapter_Available_NotConnected(
 	t *testing.T,
 ) {

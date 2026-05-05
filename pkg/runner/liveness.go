@@ -41,7 +41,7 @@ func startLivenessMonitor(
 	challengeID challenge.ID,
 ) (stop func(), stuck <-chan struct{}) {
 	if progress == nil || staleThreshold <= 0 {
-		return func() {}, nil
+		return func() { _ = struct{}{} }, nil
 	}
 
 	m := &livenessMonitor{

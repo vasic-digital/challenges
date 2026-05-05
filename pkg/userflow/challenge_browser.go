@@ -48,7 +48,7 @@ func (c *BrowserFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -57,7 +57,9 @@ func (c *BrowserFlowChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("BrowserFlowChallenge: platform not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -84,11 +86,13 @@ func (c *BrowserFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("BrowserFlowChallenge: browser initialization failed (%s)", c.flow.Config.BrowserType))
+		return result, nil
 	}
 
 	// Ensure browser is closed when done.
@@ -114,11 +118,13 @@ func (c *BrowserFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("BrowserFlowChallenge: navigate to %s failed", c.flow.StartURL))
+		return result, nil
 	}
 
 	// Execute each step.
@@ -235,9 +241,11 @@ func (c *BrowserFlowChallenge) Execute(
 		"screenshots": screenshotCount,
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("BrowserFlowChallenge: executed %d steps, status=%s, screenshots=%d", len(c.flow.Steps), status, screenshotCount))
+	return result, nil
 }
 
 // executeStep dispatches the browser action for a single step.

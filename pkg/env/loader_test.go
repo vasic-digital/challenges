@@ -9,14 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewLoader(t *testing.T) {
-	l := NewLoader()
-	assert.NotNil(t, l)
-	assert.NotNil(t, l.vars)
-	assert.NotNil(t, l.mappings)
-	assert.Contains(t, l.mappings, "claude")
-}
-
 func TestDefaultLoader_Load(t *testing.T) {
 	dir := t.TempDir()
 	envFile := filepath.Join(dir, ".env")

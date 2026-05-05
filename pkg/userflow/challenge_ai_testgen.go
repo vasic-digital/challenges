@@ -57,7 +57,7 @@ func (c *AITestGenerationChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.browser.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -67,10 +67,12 @@ func (c *AITestGenerationChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: browser not available, skipped (url=%s)", c.targetURL))
+		return result, nil
 	}
 	if !c.testgen.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -80,7 +82,9 @@ func (c *AITestGenerationChallenge) Execute(
 					" - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: testgen not available, skipped (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -105,11 +109,13 @@ func (c *AITestGenerationChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: browser initialization failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 	defer func() {
 		_ = c.browser.Close(ctx)
@@ -133,11 +139,13 @@ func (c *AITestGenerationChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: navigate to %s failed", c.targetURL))
+		return result, nil
 	}
 
 	// Take screenshot.
@@ -159,11 +167,13 @@ func (c *AITestGenerationChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: screenshot failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Generate tests via AI.
@@ -187,11 +197,13 @@ func (c *AITestGenerationChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: test generation failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Cap to maxTests if needed.
@@ -258,11 +270,13 @@ func (c *AITestGenerationChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				mkErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: create output dir failed (%s)", c.outputDir))
+			return result, nil
 		}
 
 		data, mErr := json.MarshalIndent(
@@ -281,11 +295,13 @@ func (c *AITestGenerationChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				mErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: JSON marshal failed (%s)", c.outputDir))
+			return result, nil
 		}
 
 		outPath := filepath.Join(
@@ -306,11 +322,13 @@ func (c *AITestGenerationChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				wErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: write file failed (%s)", outPath))
+			return result, nil
 		}
 
 		outputs["output_file"] = outPath
@@ -363,7 +381,9 @@ func (c *AITestGenerationChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("AITestGenerationChallenge: generated %d tests, categories=%d, status=%s", len(tests), len(categories), status))
+	return result, nil
 }

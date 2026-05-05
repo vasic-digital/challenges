@@ -15,7 +15,7 @@ var _ ProcessAdapter = (*ProcessCLIAdapter)(nil)
 
 func TestProcessCLIAdapter_LaunchAndStop(t *testing.T) {
 	if _, err := exec.LookPath("sleep"); err != nil {
-		t.Skip("sleep not available")  // SKIP-OK: #legacy-untriaged
+		t.Skip("sleep not available")
 	}
 
 	adapter := NewProcessCLIAdapter()
@@ -44,7 +44,7 @@ func TestProcessCLIAdapter_LaunchAndStop(t *testing.T) {
 
 func TestProcessCLIAdapter_LaunchDuplicate(t *testing.T) {
 	if _, err := exec.LookPath("sleep"); err != nil {
-		t.Skip("sleep not available")  // SKIP-OK: #legacy-untriaged
+		t.Skip("sleep not available")
 	}
 
 	adapter := NewProcessCLIAdapter()
@@ -113,7 +113,7 @@ func TestProcessCLIAdapter_WaitForReady_ContextCancel(
 
 func TestProcessCLIAdapter_LaunchWithEnv(t *testing.T) {
 	if _, err := exec.LookPath("sleep"); err != nil {
-		t.Skip("sleep not available")  // SKIP-OK: #legacy-untriaged
+		t.Skip("sleep not available")
 	}
 
 	adapter := NewProcessCLIAdapter()

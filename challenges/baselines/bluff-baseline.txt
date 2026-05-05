@@ -1,0 +1,13 @@
+# CONST-035 baseline file.
+# Captured: 2026-05-01 (sub-project 1 Phase 1, Challenges submodule).
+# Reducing this file is the work of campaign sub-projects 4-5.
+# Section 1: static scanner hits, format <path>:<BLUFF-ID>.
+# Section 2: per-file mutation kill rates, format <path>:<rate>:<mutants>.
+# Section 3: anchor-manifest gaps, format <capability-id>:MISSING_ANCHOR.
+# === SECTION 1: STATIC SCANNER HITS ===
+# (empty — single pre-existing BLUFF-G-003 hit recognized as exempt
+#  via the existing `// bluff-scan: no-assert-ok` markers in
+#  pkg/container/verifier_test.go after the scanner expanded its
+#  accepted exempt-marker conventions in sub-project 4 iter 8)
+# === SECTION 2: PER-FILE MUTATION KILL RATES ===
+# === SECTION 3: ANCHOR-MANIFEST GAPS ===

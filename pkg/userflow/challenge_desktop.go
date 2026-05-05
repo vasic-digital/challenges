@@ -52,7 +52,7 @@ func (c *DesktopLaunchChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -61,7 +61,9 @@ func (c *DesktopLaunchChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopLaunchChallenge: platform not available, skipped (binary=%s)", c.appConfig.BinaryPath))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -86,11 +88,13 @@ func (c *DesktopLaunchChallenge) Execute(
 		},
 	)
 	if launchErr != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			launchErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopLaunchChallenge: launch failed for %s", c.appConfig.BinaryPath))
+		return result, nil
 	}
 
 	// Ensure app is closed when done.
@@ -116,11 +120,13 @@ func (c *DesktopLaunchChallenge) Execute(
 		},
 	)
 	if windowErr != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			windowErr.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopLaunchChallenge: window did not appear for %s", c.appConfig.BinaryPath))
+		return result, nil
 	}
 
 	// Stability wait.
@@ -129,11 +135,13 @@ func (c *DesktopLaunchChallenge) Execute(
 	})
 	select {
 	case <-ctx.Done():
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			ctx.Err().Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopLaunchChallenge: context cancelled during stability wait for %s", c.appConfig.BinaryPath))
+		return result, nil
 	case <-time.After(c.stabilityWait):
 	}
 
@@ -184,9 +192,11 @@ func (c *DesktopLaunchChallenge) Execute(
 		status = challenge.StatusFailed
 	}
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("DesktopLaunchChallenge: launched %s, stable=%t, status=%s", c.appConfig.BinaryPath, stablePassed, status))
+	return result, nil
 }
 
 // desktopLaunchMessage returns a message for the launch
@@ -265,7 +275,7 @@ func (c *DesktopFlowChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -274,7 +284,9 @@ func (c *DesktopFlowChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopFlowChallenge: platform not available, skipped (%d steps)", len(c.flow.Steps)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -301,11 +313,13 @@ func (c *DesktopFlowChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopFlowChallenge: navigate to %s failed", c.flow.StartURL))
+		return result, nil
 	}
 
 	// Execute each step.
@@ -423,9 +437,11 @@ func (c *DesktopFlowChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("DesktopFlowChallenge: executed %d steps, status=%s", len(c.flow.Steps), status))
+	return result, nil
 }
 
 // executeStep dispatches a browser flow step to the desktop
@@ -520,7 +536,7 @@ func (c *DesktopIPCChallenge) Execute(
 
 	// Check infrastructure availability.
 	if !c.adapter.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusPassed, start,
 			[]challenge.AssertionResult{{
 				Type:    "infrastructure",
@@ -529,7 +545,9 @@ func (c *DesktopIPCChallenge) Execute(
 				Message: "Platform not available - skipped (requires infrastructure)",
 			}},
 			nil, nil, "",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("DesktopIPCChallenge: platform not available, skipped (%d commands)", len(c.commands)))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -639,9 +657,11 @@ func (c *DesktopIPCChallenge) Execute(
 		"commands": len(c.commands),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("DesktopIPCChallenge: executed %d commands, status=%s", len(c.commands), status))
+	return result, nil
 }
 
 // evaluateIPCAssertion evaluates a step assertion against

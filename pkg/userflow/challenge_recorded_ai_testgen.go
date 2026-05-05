@@ -64,7 +64,7 @@ func (c *RecordedAITestGenChallenge) Execute(
 
 	// Check browser adapter availability.
 	if !c.browser.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -74,12 +74,14 @@ func (c *RecordedAITestGenChallenge) Execute(
 					" - skipped",
 			}},
 			nil, nil, "browser not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: browser not available, skipped (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Check recorder adapter availability.
 	if !c.recorder.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -89,12 +91,14 @@ func (c *RecordedAITestGenChallenge) Execute(
 					" - skipped",
 			}},
 			nil, nil, "recorder not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: recorder not available, skipped (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Check testgen adapter availability.
 	if !c.testgen.Available(ctx) {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusSkipped, start,
 			[]challenge.AssertionResult{{
 				Type:   "infrastructure",
@@ -104,7 +108,9 @@ func (c *RecordedAITestGenChallenge) Execute(
 					" - skipped",
 			}},
 			nil, nil, "testgen not available",
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: testgen not available, skipped (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	var assertions []challenge.AssertionResult
@@ -131,11 +137,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: browser initialization failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 	defer func() {
 		_ = c.browser.Close(ctx)
@@ -166,11 +174,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				),
 			},
 		)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: recording start failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	assertions = append(
@@ -203,11 +213,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 			},
 		)
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: navigate to %s failed", c.targetURL))
+		return result, nil
 	}
 
 	// Take screenshot.
@@ -230,11 +242,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 			},
 		)
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: screenshot failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Generate tests via AI.
@@ -259,11 +273,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 			},
 		)
 		_, _ = c.recorder.StopRecording(ctx)
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusFailed, start,
 			assertions, metrics, outputs,
 			err.Error(),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: test generation failed (url=%s)", c.targetURL))
+		return result, nil
 	}
 
 	// Cap to maxTests if needed.
@@ -400,11 +416,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				mkErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: create output dir failed (%s)", c.outputDir))
+			return result, nil
 		}
 
 		data, mErr := json.MarshalIndent(
@@ -423,11 +441,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				mErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: JSON marshal failed (%s)", c.outputDir))
+			return result, nil
 		}
 
 		outPath := filepath.Join(
@@ -448,11 +468,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 					),
 				},
 			)
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusFailed, start,
 				assertions, metrics, outputs,
 				wErr.Error(),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: write file failed (%s)", outPath))
+			return result, nil
 		}
 
 		outputs["output_file"] = outPath
@@ -516,8 +538,10 @@ func (c *RecordedAITestGenChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, outputs,
 		errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("RecordedAITestGenChallenge: generated %d tests, categories=%d, status=%s", len(tests), len(categories), status))
+	return result, nil
 }

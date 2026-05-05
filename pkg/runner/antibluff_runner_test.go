@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
 // SPDX-License-Identifier: Apache-2.0
 
-// Anti-bluff runner-integration tests — verify that
-// CHALLENGE_ANTIBLUFF_STRICT=1 actually downgrades a bluff
-// Status=Passed result to StatusFailed at runner integration time.
-// Constitution §11.4 — User mandate 2026-04-28.
+// Anti-bluff runner-integration tests — verify that the runner
+// unconditionally downgrades a bluff Status=Passed result to
+// StatusFailed. Constitution §1, §6.3, §11.5.7 — v2.0.0 amendment
+// (2026-05-01): the CHALLENGE_ANTIBLUFF_STRICT env gate has been
+// removed; anti-bluff validation is always active.
 
 package runner
 
@@ -18,16 +19,22 @@ import (
 	"digital.vasic.challenges/pkg/challenge"
 )
 
-// TestStrictMode_BluffPassDowngraded confirms that with strict mode
-// enabled, a bluff result (Status=Passed but no RecordedActions, no
-// passing assertions) is downgraded to StatusFailed and the Error
-// field surfaces ErrBluffPass.
-func TestStrictMode_BluffPassDowngraded(t *testing.T) {
-	t.Setenv("CHALLENGE_ANTIBLUFF_STRICT", "1")
-
-	// newStub returns a passing-Status stub WITHOUT RecordedActions
-	// and WITHOUT Assertions — the canonical bluff pattern.
-	s := newStub("bluff-1")
+// TestAntiBluff_BluffPassDowngraded confirms that a bluff result
+// (Status=Passed but no RecordedActions, no passing assertions) is
+// downgraded to StatusFailed and the Error field surfaces ErrBluffPass.
+// No env-var gating is required; this is unconditional behaviour.
+func TestAntiBluff_BluffPassDowngraded(t *testing.T) {
+	// Construct a stub WITHOUT RecordedActions — the canonical bluff pattern.
+	s := &stubChallenge{
+		id:   challenge.ID("bluff-1"),
+		name: "bluff-1",
+		execResult: &challenge.Result{
+			Status: challenge.StatusPassed,
+			Assertions: []challenge.AssertionResult{
+				{Passed: true, Message: "ok"},
+			},
+		},
+	}
 	reg := setupRegistry(t, s)
 
 	r := NewRunner(
@@ -50,17 +57,20 @@ func TestStrictMode_BluffPassDowngraded(t *testing.T) {
 	}
 }
 
-// TestStrictMode_OffPreservesLegacyBehavior — the gate is OPT-IN.
-// When the env var is unset, a bluff result still propagates as
-// StatusPassed. This is the backward-compat lane that lets existing
-// fixtures keep passing while the per-test ratchet adds RecordAction
-// calls (parallel to the Bash side's Phase 22.0–22.3 conversion).
-func TestStrictMode_OffPreservesLegacyBehavior(t *testing.T) {
-	// Explicitly clear (Setenv with "" doesn't unset; the test
-	// runner's t.Setenv guarantees restoration after the test).
-	t.Setenv("CHALLENGE_ANTIBLUFF_STRICT", "")
-
-	s := newStub("bluff-2")
+// TestAntiBluff_ValidPassPreserved confirms that a result with
+// RecordedActions and passing assertions is NOT downgraded.
+func TestAntiBluff_ValidPassPreserved(t *testing.T) {
+	s := &stubChallenge{
+		id:   challenge.ID("valid-1"),
+		name: "valid-1",
+		execResult: &challenge.Result{
+			Status: challenge.StatusPassed,
+			RecordedActions: []string{"action-1"},
+			Assertions: []challenge.AssertionResult{
+				{Passed: true, Message: "ok"},
+			},
+		},
+	}
 	reg := setupRegistry(t, s)
 
 	r := NewRunner(
@@ -68,12 +78,12 @@ func TestStrictMode_OffPreservesLegacyBehavior(t *testing.T) {
 		WithResultsDir(t.TempDir()),
 	)
 
-	result, err := r.Run(context.Background(), "bluff-2", challenge.NewConfig("bluff-2"))
+	result, err := r.Run(context.Background(), "valid-1", challenge.NewConfig("valid-1"))
 	require.NoError(t, err)
 	require.NotNil(t, result)
 
 	if result.Status != challenge.StatusPassed {
-		t.Fatalf("expected StatusPassed in legacy (env-unset) mode; got %q (Error: %q)",
+		t.Fatalf("expected StatusPassed for valid result; got %q (Error: %q)",
 			result.Status, result.Error)
 	}
 }

@@ -89,9 +89,11 @@ func (c *EnvironmentSetupChallenge) Execute(
 		"duration": duration.String(),
 	})
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("EnvironmentSetupChallenge: setup completed, status=%s, duration=%s", status, duration.String()))
+	return result, nil
 }
 
 // envSetupMessage returns a human-readable message for the
@@ -181,9 +183,11 @@ func (c *EnvironmentTeardownChallenge) Execute(
 		},
 	)
 
-	return c.CreateResult(
+	result := c.CreateResult(
 		status, start, assertions, metrics, nil, errMsg,
-	), nil
+	)
+	result.RecordAction(fmt.Sprintf("EnvironmentTeardownChallenge: teardown completed, status=%s, duration=%s", status, duration.String()))
+	return result, nil
 }
 
 // envTeardownMessage returns a human-readable message for

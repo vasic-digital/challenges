@@ -167,13 +167,15 @@ func (c *PanopticChallenge) Execute(
 			c.ResultsDir(), "panoptic_config.yaml",
 		)
 		if err := c.configBuilder.WriteYAML(genPath); err != nil {
-			return c.CreateResult(
+			result := c.CreateResult(
 				challenge.StatusError, start, nil, nil, nil,
 				fmt.Sprintf(
 					"failed to write generated config: %v",
 					err,
 				),
-			), nil
+			)
+			result.RecordAction(fmt.Sprintf("PanopticChallenge: failed to write generated config to %s", genPath))
+			return result, nil
 		}
 		configPath = genPath
 	}
@@ -181,10 +183,12 @@ func (c *PanopticChallenge) Execute(
 	// Run Panoptic.
 	result, err := c.adapter.Run(ctx, configPath, c.runOpts...)
 	if err != nil {
-		return c.CreateResult(
+		result := c.CreateResult(
 			challenge.StatusError, start, nil, nil, nil,
 			fmt.Sprintf("panoptic execution error: %v", err),
-		), nil
+		)
+		result.RecordAction(fmt.Sprintf("PanopticChallenge: panoptic execution error (config=%s)", configPath))
+		return result, nil
 	}
 
 	// Parse results into assertion values and metrics.
@@ -232,7 +236,9 @@ func (c *PanopticChallenge) Execute(
 		status = challenge.StatusFailed
 	}
 
-	return c.CreateResult(
+	challengeResult := c.CreateResult(
 		status, start, assertions, metrics, outputs, "",
-	), nil
+	)
+	challengeResult.RecordAction(fmt.Sprintf("PanopticChallenge: executed with config=%s, exit_code=%d, status=%s", configPath, result.ExitCode, status))
+	return challengeResult, nil
 }
