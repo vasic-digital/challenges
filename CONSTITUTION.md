@@ -166,7 +166,7 @@ first**. Do not stack new work on a host already in distress.
 §12 (full forensic, library API, operator directives) +
 parent `scripts/lib/host_session_safety.sh`.
 
-## MANDATORY ANTI-BLUFF COVENANT — END-USER QUALITY GUARANTEE (User mandate, 2026-04-28)
+## MANDATORY ANTI-BLUFF COVENANT — END-USER QUALITY GUARANTEE (User mandate, 2026-04-28) (CONST-035)
 
 **Forensic anchor — direct user mandate (verbatim):**
 
@@ -196,7 +196,7 @@ defect as a unit test that does. Both must produce positive end-
 user evidence; both are subject to the anti-bluff constraint rules
 and captured-evidence requirement.
 
-## MANDATORY ANTI-BLUFF VALIDATION (Constitution §8.1 + §11)
+## MANDATORY ANTI-BLUFF VALIDATION (Constitution §8.1 + §11) (CONST-035)
 
 **This submodule inherits the parent ATMOSphere project's anti-bluff covenant.
 A test that PASSes while the feature it claims to validate is unusable to an

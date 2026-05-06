@@ -70,7 +70,7 @@ first**. Do not stack new work on a host already in distress.
 §12 (full forensic, library API, operator directives) +
 parent `scripts/lib/host_session_safety.sh`.
 
-## MANDATORY ANTI-BLUFF VALIDATION (Constitution §8.1 + §11)
+## MANDATORY ANTI-BLUFF VALIDATION (Constitution §8.1 + §11) (CONST-035)
 
 **This submodule inherits the parent ATMOSphere project's anti-bluff covenant.
 A test that PASSes while the feature it claims to validate is unusable to an
@@ -548,7 +548,7 @@ Both MUST be wired into the project's CI / `run_all_challenges.sh`.
 <!-- END host-power-management addendum (CONST-033) -->
 
 
-## MANDATORY ANTI-BLUFF COVENANT — END-USER QUALITY GUARANTEE (User mandate, 2026-04-28)
+## MANDATORY ANTI-BLUFF COVENANT — END-USER QUALITY GUARANTEE (User mandate, 2026-04-28) (CONST-035)
 
 **Forensic anchor — direct user mandate (verbatim):**
 
