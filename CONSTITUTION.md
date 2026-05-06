@@ -166,6 +166,36 @@ first**. Do not stack new work on a host already in distress.
 §12 (full forensic, library API, operator directives) +
 parent `scripts/lib/host_session_safety.sh`.
 
+## MANDATORY ANTI-BLUFF COVENANT — END-USER QUALITY GUARANTEE (User mandate, 2026-04-28)
+
+**Forensic anchor — direct user mandate (verbatim):**
+
+> "We had been in position that all tests do execute with success
+> and all Challenges as well, but in reality the most of the
+> features does not work and can't be used! This MUST NOT be the
+> case and execution of tests and Challenges MUST guarantee the
+> quality, the completion and full usability by end users of the
+> product!"
+
+This is the historical origin of the project's anti-bluff covenant.
+Every test, every Challenge, every gate, every mutation pair exists
+to make the failure mode (PASS on broken-for-end-user feature)
+mechanically impossible.
+
+**Operative rule:** the bar for shipping is **not** "tests pass"
+but **"users can use the feature."** Every PASS in this codebase
+MUST carry positive evidence captured during execution that the
+feature works for the end user. Metadata-only PASS, configuration-
+only PASS, "absence-of-error" PASS, and grep-based PASS without
+runtime evidence are all critical defects regardless of how green
+the summary line looks.
+
+**Tests AND Challenges (HelixQA) are bound equally** — a Challenge
+that scores PASS on a non-functional feature is the same class of
+defect as a unit test that does. Both must produce positive end-
+user evidence; both are subject to the anti-bluff constraint rules
+and captured-evidence requirement.
+
 ## MANDATORY ANTI-BLUFF VALIDATION (Constitution §8.1 + §11)
 
 **This submodule inherits the parent ATMOSphere project's anti-bluff covenant.
