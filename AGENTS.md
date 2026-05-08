@@ -636,3 +636,18 @@ Inheritance is recursive: this clause applies to every dependency, every test, e
 ## Clause 6.Q (added 2026-05-05, inherited per 6.F)
 
 - **Clause 6.Q — Compose Layout Antipattern Guard** — see root `/CLAUDE.md` §6.Q. Forbids nesting vertically-scrolling lazy layouts (LazyColumn, LazyVerticalGrid, LazyVerticalStaggeredGrid) inside parents giving unbounded vertical space (verticalScroll, unbounded wrapContentHeight, LinearLayout-with-weight wrapper). Equivalent rule horizontally for LazyRow / LazyHorizontalGrid / LazyHorizontalStaggeredGrid. Per-feature structural tests + Compose UI Challenge Tests on the §6.I matrix are the load-bearing acceptance gates. Forensic anchor: 2026-05-05 23:51 operator-reported "Opening Trackers from Settings crashes the app" — TrackerSelectorList used LazyColumn nested in TrackerSettingsScreen's Column(verticalScroll). Closure log: `.lava-ci-evidence/crashlytics-resolved/2026-05-05-tracker-settings-nested-scroll.md`. Pattern guard: `feature/tracker_settings/src/test/.../TrackerSelectorListLazyColumnRegressionTest.kt`. The operator THIRTEENTH §6.L invocation triggered this clause.
+
+## Anti-Bluff and Quality Mandate
+
+### Article XI §11.9 — Anti-Bluff Forensic Anchor
+
+> Verbatim user mandate: "We had been in position that all tests do execute
+> with success and all Challenges as well, but in reality the most of the
+> features does not work and can't be used! This MUST NOT be the case and
+> execution of tests and Challenges MUST guarantee the quality, the
+> completion and full usability by end users of the product!"
+
+**Operative rule:** Every PASS MUST carry positive runtime evidence.
+No false-success results are tolerable.
+
+**Bluff Taxonomy:** wrapper, contract, structural, comment, skip.

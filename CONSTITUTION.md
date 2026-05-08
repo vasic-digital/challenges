@@ -283,3 +283,23 @@ artifact, discovers/resolves a known issue, or implements a directive MUST
 update `docs/CONTINUATION.md` in the SAME COMMIT. The "Last updated" line
 MUST track HEAD. Submodule MAY add stricter rules but MUST NOT relax this
 clause. See root `CLAUDE.md` §6.S for the inherited clause text.
+
+## Article XI §11.9 — Anti-Bluff Forensic Anchor (Cascaded)
+
+> Verbatim user mandate: "We had been in position that all tests do execute
+> with success and all Challenges as well, but in reality the most of the
+> features does not work and can't be used! This MUST NOT be the case and
+> execution of tests and Challenges MUST guarantee the quality, the
+> completion and full usability by end users of the product!"
+>
+> Operative rule: The bar for shipping is not "tests pass" but "users can
+> use the feature." Every PASS in this codebase MUST carry positive runtime
+> evidence captured during execution. No false-success results are tolerable.
+
+### Bluff Taxonomy (cascaded from root CONSTITUTION.md)
+
+- Wrapper bluff — assertions PASS but exit-code logic is buggy
+- Contract bluff — advertises capability but rejects in dispatch
+- Structural bluff — file exists but doesn't contain working code
+- Comment bluff — comment promises behavior code doesn't have
+- Skip bluff — t.Skip() without SKIP-OK: #<ticket> marker
