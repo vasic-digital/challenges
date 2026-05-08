@@ -651,3 +651,6 @@ Inheritance is recursive: this clause applies to every dependency, every test, e
 No false-success results are tolerable.
 
 **Bluff Taxonomy:** wrapper, contract, structural, comment, skip.
+## §6.T — Universal Quality Constraints (inherited 2026-05-06, per §6.F)
+
+See root `/CLAUDE.md` §6.T. All four sub-points (Reproduction-Before-Fix, Resource Limits for Tests & Challenges, No-Force-Push, Bugfix Documentation) apply verbatim. This submodule MAY add stricter rules but MUST NOT relax any of §6.T.1–§6.T.4.
