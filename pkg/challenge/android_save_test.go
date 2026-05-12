@@ -33,6 +33,26 @@ func TestAndroidSave_AllApiLevels(t *testing.T) {
 		t.Skip("SKIP-OK: #android-save-challenge-emulator - script not found") // SKIP-OK: #android-save-challenge-emulator
 	}
 
+	// The save-challenge script defaults to a project-specific APK path
+	// (consumer Yole project). When this submodule is exercised in
+	// isolation — i.e. by the Challenges submodule's own `make test-short`
+	// rather than as part of the consumer's build — the APK does not
+	// exist and `adb install` fails before any save evidence can be
+	// produced. Gate on opt-in env var per the CLAUDE.md
+	// "100% Decoupled" mandate: the test only runs when the consumer
+	// has built its APK and explicitly opted in via APK_PATH (or
+	// YOLE_ANDROID_APK_PATH for backward compatibility).
+	apkPath := os.Getenv("APK_PATH")
+	if apkPath == "" {
+		apkPath = os.Getenv("YOLE_ANDROID_APK_PATH")
+	}
+	if apkPath == "" {
+		t.Skip("SKIP-OK: #android-save-challenge-emulator - no APK_PATH env var set (consumer must opt in)") // SKIP-OK: #android-save-challenge-emulator
+	}
+	if _, err := os.Stat(apkPath); os.IsNotExist(err) {
+		t.Skipf("SKIP-OK: #android-save-challenge-emulator - APK not found at %s (consumer build required)", apkPath) // SKIP-OK: #android-save-challenge-emulator
+	}
+
 	apiLevels := []string{"28", "29", "30", "31", "33", "34", "35"}
 	for _, api := range apiLevels {
 		api := api
@@ -44,7 +64,7 @@ func TestAndroidSave_AllApiLevels(t *testing.T) {
 			defer cancel()
 
 			cmd := exec.CommandContext(ctx, "bash",
-				scriptPath, api,
+				scriptPath, api, apkPath,
 			)
 			cmd.Env = append(os.Environ(),
 				fmt.Sprintf("AVD_NAME=yole_test_api%s", api),
