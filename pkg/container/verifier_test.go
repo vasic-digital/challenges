@@ -119,7 +119,7 @@ func TestPreConditionCheck(t *testing.T) {
 	if err != nil {
 		// Check if it's the "containers module not found" error
 		if err.Error() == "containers module not found" {
-			t.Skip("Skipping test - containers module not found in test environment")
+			t.Skip("Skipping test - containers module not found in test environment") // SKIP-OK: #env-containers-module-missing
 		}
 		t.Logf("PreConditionCheck returned error: %v", err)
 	}
