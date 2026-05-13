@@ -17,12 +17,18 @@ var _ BuildAdapter = (*GradleCLIAdapter)(nil)
 func TestGradleCLIAdapter_Available_True(t *testing.T) {
 	// Available now requires java in PATH.
 	if _, err := exec.LookPath("java"); err != nil {
-		t.Skip("java not in PATH, skipping")
+		t.Skip("java not in PATH, skipping") // SKIP-OK: #env-java-missing
 	}
 
 	dir := t.TempDir()
 	gradlew := filepath.Join(dir, "gradlew")
-	err := os.WriteFile(gradlew, []byte("#!/bin/sh"), 0755)
+	// macOS requires a trailing newline after the shebang line; without
+	// it the kernel reports `bad interpreter: /bin/sh: exec format error`
+	// and the test's `Available()` returns false against the test's
+	// expectation. Linux is more lenient. Use a full-line shebang +
+	// silent successful exit so `gradlew --version` returns 0 on every
+	// supported dev host.
+	err := os.WriteFile(gradlew, []byte("#!/bin/sh\nexit 0\n"), 0755)
 	require.NoError(t, err)
 
 	adapter := NewGradleCLIAdapter(dir, false)
