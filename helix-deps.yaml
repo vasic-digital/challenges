@@ -1,0 +1,37 @@
+# helix-deps.yaml — Challenges submodule Submodule-Dependency Manifest
+# Per HelixConstitution §11.4.31 (Submodule-Dependency-Manifest Mandate).
+#
+# Challenges provides anti-bluff Compose UI Challenge Test infrastructure
+# (§6.J / §6.AB / §6.AE) consumed by parent Lava + other vasic-digital
+# projects. It currently nests vasic-digital/Panoptic as a sub-submodule
+# at Submodules/Challenges/Panoptic — the SINGLE §11.4.28 violation
+# tracked in the parent Lava CM-NO-NESTED-OWN-ORG-SUBMODULES gate.
+#
+# Per §11.4.31 directly composes with §11.4.28: this manifest IS the
+# bridge that allows §11.4.28 enforcement to flatten the chain.
+# Declaring Panoptic with `layout: flat` documents that the
+# incorporator script SHOULD add Panoptic at the parent root, NOT
+# keep it nested under Challenges. After Phase 5-debt refactor,
+# Submodules/Challenges/Panoptic disappears + Submodules/Panoptic
+# appears at the parent level + this declaration is what authorized
+# the migration.
+#
+# Schema reference: <constitution-submodule>/Constitution.md §11.4.31.
+# Last updated: 2026-05-15 (Phase 3-debt closure for Challenges).
+
+schema_version: 1
+
+deps:
+  - name: Panoptic
+    ssh_url: git@github.com:vasic-digital/Panoptic.git
+    ref: main
+    why: "Browser harness for end-to-end Challenge Tests (currently nested at Submodules/Challenges/Panoptic per §11.4.28 violation; flat-layout migration owed in Phase 5-debt of constitution-compliance plan)"
+    layout: flat
+
+transitive_handling:
+  recursive: true
+  conflict_resolution: operator-required
+
+# Challenges contains Go primitives + Kotlin/Bash test orchestration
+# scripts. Mixed-language; not a single-language subtree per §11.4.29.
+language_specific_subtree: false
