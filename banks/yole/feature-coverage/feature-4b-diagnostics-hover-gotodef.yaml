@@ -26,7 +26,7 @@ platforms:
   - android
   - desktop
   - web
-  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+  - ios
 
 timeout: 5m
 
@@ -43,7 +43,7 @@ test_cases:
     name: "Diagnostics: open error file and assert squiggle + Problems panel"
     category: functional
     priority: critical
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "cold-launch"
@@ -86,7 +86,7 @@ test_cases:
     name: "Hover: hover identifier and assert HoverPopup"
     category: functional
     priority: high
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "hover-identifier"
@@ -120,7 +120,7 @@ test_cases:
     name: "Go to Definition: long-press and assert navigation"
     category: functional
     priority: high
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "dismiss-hover"

@@ -23,7 +23,7 @@ platforms:
   - android
   - desktop
   - web
-  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+  - ios
 
 timeout: 5m
 
@@ -41,7 +41,7 @@ test_cases:
     name: "Trigger rename refactoring and assert RenamePreviewPanel"
     category: functional
     priority: high
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "cold-launch"
