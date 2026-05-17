@@ -1,6 +1,7 @@
 package panoptic
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -171,7 +172,21 @@ func fileExists(path string) bool {
 }
 
 // extractAIConfidence reads the AI error report and extracts a
-// confidence score. Returns -1 if not available.
+// confidence score. Returns -1 when:
+//   - no AIErrorReport path is configured
+//   - the file does not exist
+//   - the file cannot be read or parsed
+//   - no confidence field is present in the JSON
+//
+// Previously this function returned 1.0 (exit 0) / 0.5 (non-zero exit)
+// based only on exit code without opening the JSON file — a §11.4
+// PASS-bluff: any Challenge assertion on AI confidence was
+// certifying a fabricated value derived from the exit code, not the
+// real model output. Now it parses the JSON and reads the actual
+// confidence field (top-level "confidence" or "ai_confidence"); on
+// any parse failure it returns -1 so the caller's "if confidence
+// >= 0" gate correctly omits the value rather than asserting on a
+// lie.
 func extractAIConfidence(r *PanopticRunResult) float64 {
 	if r.AIErrorReport == "" {
 		return -1
@@ -179,11 +194,25 @@ func extractAIConfidence(r *PanopticRunResult) float64 {
 	if !fileExists(r.AIErrorReport) {
 		return -1
 	}
-	// Placeholder: AI confidence would be parsed from the
-	// error report JSON. For now, if the file exists and
-	// exit code is 0, assume high confidence.
-	if r.ExitCode == 0 {
-		return 1.0
+	data, err := os.ReadFile(r.AIErrorReport)
+	if err != nil {
+		return -1
 	}
-	return 0.5
+	// Accept either flat {"confidence": ...} or {"ai_confidence": ...}
+	// as the canonical fields. Other layouts return -1 (unknown).
+	var payload struct {
+		Confidence   *float64 `json:"confidence"`
+		AIConfidence *float64 `json:"ai_confidence"`
+	}
+	if err := json.Unmarshal(data, &payload); err != nil {
+		return -1
+	}
+	switch {
+	case payload.Confidence != nil:
+		return *payload.Confidence
+	case payload.AIConfidence != nil:
+		return *payload.AIConfidence
+	default:
+		return -1
+	}
 }
