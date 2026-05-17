@@ -30,7 +30,7 @@ environment and produce evidence.
 ## Procedure
 
 1. Build the F19 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f19_challenge`.
+   `helix_code/tests/integration/cmd/p1f19_challenge`.
 2. Run the harness; it executes five phases:
 
    a. **Phase A — TTY-WITH-INPUT-RETURNS-CHOICE (always runs).**

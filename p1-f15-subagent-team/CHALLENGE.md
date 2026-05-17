@@ -38,7 +38,7 @@ the F11/F12/F13/F14 precedent.
 ## Procedure
 
 1. Build the F15 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f15_challenge`.
+   `helix_code/tests/integration/cmd/p1f15_challenge`.
 2. Run the harness — the FIRST statement of `main()` is the subagent
    helper-mode dispatch (`if subagent.IsSubagentInvocation() { os.Exit(subagent.RunAsSubagent(harnessLLMFactory)) }`).
    Without this short-circuit, Phase B's re-exec'd child would

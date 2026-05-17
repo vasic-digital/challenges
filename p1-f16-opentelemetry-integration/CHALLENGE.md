@@ -43,7 +43,7 @@ counted as PASS, per the F11/F12/F13/F14/F15 precedent.
 ## Procedure
 
 1. Build the F16 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f16_challenge` with the
+   `helix_code/tests/integration/cmd/p1f16_challenge` with the
    `testing_export` build tag (so the harness can call
    `telemetry.SetStdoutWriterForTest`).
 2. Run the harness; it executes five phases:

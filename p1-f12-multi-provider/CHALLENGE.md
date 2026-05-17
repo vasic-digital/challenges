@@ -23,7 +23,7 @@ runs only when `ANTHROPIC_API_KEY` is present in the environment.
 ## Procedure
 
 1. Build the F12 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f12_challenge`.
+   `helix_code/tests/integration/cmd/p1f12_challenge`.
 2. Run the harness — it executes five phases:
    a. **Phase A — Selector precedence.** Asserts that
       (env=anthropic) -> Anthropic; (flag=bedrock + env=anthropic) ->

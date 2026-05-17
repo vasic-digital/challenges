@@ -54,7 +54,7 @@ the legacy `browser_legacy_*` multi-browser tools.
 ## Run
 
 ```bash
-cd Challenges/p2-f23-cline-browser-tool
+cd challenges/p2-f23-cline-browser-tool
 ./run.sh
 ```
 

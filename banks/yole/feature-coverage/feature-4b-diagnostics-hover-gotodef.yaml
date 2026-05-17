@@ -1,0 +1,169 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: LSP Diagnostics, Hover, Go-to-Definition (Feature 4b)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-4b-diagnostics-hover-gotodef"
+description: |
+  Validates three related LSP capabilities in a single end-to-end flow for Rust:
+  1. Diagnostics: open a .rs file with a deliberate type error; assert squiggle
+     decoration + Problems panel populated.
+  2. Hover: hover over an identifier; assert HoverPopup visible with type info.
+  3. Go to Definition: long-press / Ctrl+click an identifier; assert navigation
+     to the definition site (file + line).
+  All three capture positive screenshot evidence.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "lsp-diagnostics-hover-gotodef"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 5m
+
+fixtures:
+  - id: rust-error
+    path: "Challenges/banks/yole/fixtures/type-error.rs"
+    description: |
+      Rust file with a deliberate type mismatch:
+        fn foo() -> i32 { "not an int" }
+      rust-analyzer will emit E0308 diagnostic.
+
+test_cases:
+  - id: LSP-DIAG-001
+    name: "Diagnostics: open error file and assert squiggle + Problems panel"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "open-error-rs-file"
+        action: "Open Challenges/banks/yole/fixtures/type-error.rs"
+        expected: "Editor shows Rust source with deliberate type error"
+        evidence: false
+
+      - name: "wait-lsp-diagnostics"
+        action: "Wait 3s for rust-analyzer to publish diagnostics (textDocument/publishDiagnostics)"
+        expected: "Squiggle underline appears on the 'not an int' string literal"
+        evidence: false
+
+      - name: "capture-diagnostics-screenshot"
+        action: "Capture editor screenshot showing squiggle"
+        checkpoint: "diagnostics-squiggle"
+        evidence: true
+        evidence_type: screenshot
+        expected: "Screenshot at qa-results/evidence/feature-4b/diagnostics-squiggle.png (> 1 KB)"
+
+      - name: "assert-problems-panel"
+        action: |
+          Open Problems / Diagnostics panel.
+          A11y: count nodes with testTag='diagnostic-item'.
+          Assertion: ≥ 1 item; message contains 'E0308' or 'mismatched types'.
+          Evidence: diagnostic messages written to
+          qa-results/evidence/feature-4b/diagnostics-list.txt.
+        expected: "≥ 1 diagnostic item; message references type mismatch"
+        evidence: true
+        evidence_type: accessibility_node
+        failure_message: |
+          Diagnostics FAIL: no 'diagnostic-item' found after 3s.
+          Check LspDiagnosticsPanel registration + rust-analyzer initialisation.
+
+  - id: LSP-HOVER-001
+    name: "Hover: hover identifier and assert HoverPopup"
+    category: functional
+    priority: high
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "hover-identifier"
+        action: |
+          Android: long-press on 'foo' function name token.
+          Desktop: move mouse over 'foo' token and wait 500ms.
+          Web: hover cursor over 'foo' token.
+        expected: "HoverPopup appears with type/doc info for 'foo'"
+        evidence: false
+
+      - name: "capture-hover-screenshot"
+        action: "Capture screenshot of HoverPopup"
+        checkpoint: "hover-popup"
+        evidence: true
+        evidence_type: screenshot
+        expected: "Screenshot at qa-results/evidence/feature-4b/hover-popup.png (> 1 KB)"
+
+      - name: "assert-hover-content"
+        action: |
+          A11y: find node with testTag='hover-popup'.
+          Assertion: node visible; text contains 'fn foo' or '-> i32'.
+          Evidence: hover text written to qa-results/evidence/feature-4b/hover-content.txt.
+        expected: "hover-popup node visible with function signature text"
+        evidence: true
+        evidence_type: accessibility_node
+        failure_message: |
+          Hover FAIL: 'hover-popup' not found or empty.
+          Check HoverPopup composable testTag assignment in LspEditorOverlay.
+
+  - id: LSP-GOTODEF-001
+    name: "Go to Definition: long-press and assert navigation"
+    category: functional
+    priority: high
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "dismiss-hover"
+        action: "Dismiss hover popup (tap elsewhere / press Escape)"
+        expected: "HoverPopup dismissed"
+        evidence: false
+
+      - name: "trigger-gotodef"
+        action: |
+          Android: long-press on 'foo' token; tap 'Go to Definition' in context menu.
+          Desktop: Ctrl+Click on 'foo' token or F12.
+          Web: Ctrl+Click on 'foo' token.
+        expected: "Navigation triggered; editor scrolls / opens definition site"
+        evidence: false
+
+      - name: "wait-navigation"
+        action: "Wait 500ms for navigation to settle"
+        expected: "Cursor at definition site of 'foo'"
+        evidence: false
+
+      - name: "capture-gotodef-screenshot"
+        action: "Capture screenshot of editor at definition site"
+        checkpoint: "gotodef-destination"
+        evidence: true
+        evidence_type: screenshot
+        expected: "Screenshot at qa-results/evidence/feature-4b/gotodef-destination.png (> 1 KB)"
+
+      - name: "assert-cursor-at-def"
+        action: |
+          A11y: read current cursor line number from editor state.
+          Assertion: cursor line matches fn foo() declaration line (line 1 in fixture).
+          Evidence: cursor position written to
+          qa-results/evidence/feature-4b/gotodef-cursor-line.txt.
+        expected: "Cursor at line 1 (fn foo() definition)"
+        evidence: true
+        evidence_type: editor_state
+        failure_message: |
+          Go-to-Definition FAIL: cursor did not navigate to definition site.
+          Check GotoDefinitionHandler in LspEditorBridge.
+
+    tags: [lsp, diagnostics, hover, gotodef, rust, rust-analyzer, screenshot]
+    estimated_duration: "90s"
+    expected_result: |
+      Three evidence checkpoints: squiggle screenshot, hover popup screenshot,
+      definition-site screenshot — plus a11y node confirmations and text files.
+      All three prove LSP diagnostics/hover/gotodef are functional for the end user.

@@ -31,7 +31,7 @@ synthesised `HOME` and a tempdir-only `pwd`, so the developer's real
 ## Procedure
 
 1. Build the P1.5 challenge harness from
-   `HelixCode/tests/integration/cmd/p1_5_challenge`.
+   `helix_code/tests/integration/cmd/p1_5_challenge`.
 2. Run the harness; it executes five phases:
 
    a. **Phase A — NO-DUPLICATE-SUBMODULES (always runs).** Use
@@ -64,11 +64,11 @@ synthesised `HOME` and a tempdir-only `pwd`, so the developer's real
       any directory whose basename equals `Documentation`
       (case-insensitive — including `documentation`, `DOCUMENTATION`)
       but is NOT exactly `docs`. Assert zero hits. Verify the
-      canonical `docs/` exists at meta-repo root and at `HelixCode/`.
+      canonical `docs/` exists at meta-repo root and at `helix_code/`.
    d. **Phase D — SNAKE_CASE (always runs).** Walk meta-repo
       directly-tracked directories at depth ≤ 4 (submodule subtrees
       skipped — WP7 normalised the meta-repo's tracked dirs and the
-      inner `HelixCode/` tree only). Skip dotted dirs. Apply the WP7
+      inner `helix_code/` tree only). Skip dotted dirs. Apply the WP7
       deferred allowlist (Go-application packages like
       `applications/aurora-os`, `Specification/CLI_Specs_*`,
       `cmd/<binary>` Go convention, repo names from `.gitmodules`,
@@ -95,7 +95,7 @@ synthesised `HOME` and a tempdir-only `pwd`, so the developer's real
 - **Phase B**: `branch1=PASS branch2=PASS branch3=PASS` — `value_from_sh`,
   `value_from_env`, and empty respectively.
 - **Phase C**: zero `Documentation/` (any non-`docs` casing) directories
-  in first-party tree; canonical `docs/` exists at root + `HelixCode/`.
+  in first-party tree; canonical `docs/` exists at root + `helix_code/`.
 - **Phase D**: nonzero scanned count, zero violations.
 - **Phase E**: cascade verifier exit code 0; "OK: anti-bluff anchor
   present in all 39 files across 13 repos" line in captured output.
@@ -106,7 +106,7 @@ synthesised `HOME` and a tempdir-only `pwd`, so the developer's real
 ## Anti-bluff anchors
 
 - **Phase A — URL-uniqueness check is real.** A regression that re-added
-  `HelixAgent/Containers`, `HelixAgent/HelixLLM/submodules/HelixQA`, or
+  `helix_agent/Containers`, `helix_agent/HelixLLM/submodules/HelixQA`, or
   any other canonical-name copy under a first-party path would re-introduce
   a duplicate URL declaration; the harness fails on the duplicate-URL
   count immediately. The "occurrence-count == 1" check independently

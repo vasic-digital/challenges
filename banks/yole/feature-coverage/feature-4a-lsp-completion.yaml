@@ -1,0 +1,104 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: LSP Completion — Rust (Feature 4a)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-4a-lsp-completion"
+description: |
+  Validates LSP-backed completion for Rust source files via the bundled
+  rust-analyzer binary. The test opens a .rs fixture, types a prefix, waits
+  for the rust-analyzer LSP server to respond, and asserts that completion items
+  from the server (not just the snippet engine) are rendered in the popup.
+  Distinguishes LSP items from snippet items via the 'lsp-completion-item'
+  testTag or the icon badge in the completion popup.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "lsp-completion"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 5m
+
+fixtures:
+  - id: rust-hello
+    path: "Challenges/banks/yole/fixtures/hello-world.rs"
+    description: "Minimal Rust file; typing 'prin' triggers println! LSP completion"
+
+test_cases:
+  - id: LSP-COMP-001
+    name: "Type Rust prefix and assert LSP completion items"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "open-rs-file"
+        action: "Open Challenges/banks/yole/fixtures/hello-world.rs"
+        expected: "Editor shows Rust source; rust-analyzer LSP starts (background)"
+        evidence: false
+
+      - name: "wait-lsp-ready"
+        action: "Wait 3s for rust-analyzer to initialise (initialized notification)"
+        expected: "LSP status indicator shows 'ready' or no spinner"
+        evidence: false
+
+      - name: "position-cursor"
+        action: "Place cursor inside fn main() body on empty line"
+        expected: "Cursor positioned"
+        evidence: false
+
+      - name: "type-prefix"
+        action: "Type 'prin'"
+        expected: "Characters in editor; LSP textDocument/completion request queued"
+        evidence: false
+
+      - name: "wait-lsp-response"
+        action: "Wait 800ms for LSP completion response (rust-analyzer is fast locally)"
+        expected: "Completion popup appears with LSP-sourced items"
+        evidence: false
+
+      - name: "capture-lsp-popup-screenshot"
+        action: "Capture full editor screenshot"
+        checkpoint: "lsp-completion-popup"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot written to qa-results/evidence/feature-4a/lsp-completion-popup.png.
+          Must be > 1 KB.
+
+      - name: "assert-lsp-item-present"
+        action: |
+          Via a11y bridge: find nodes with testTag='lsp-completion-item'.
+          Assertion: ≥ 1 node found.
+          Positive evidence: item labels written to
+          qa-results/evidence/feature-4a/lsp-completion-items.txt.
+          At least one label must contain 'println' (Rust stdlib).
+        expected: "≥ 1 LSP completion item; at least one labelled 'println'"
+        evidence: true
+        evidence_type: accessibility_node
+        failure_message: |
+          LSP completion FAIL: no 'lsp-completion-item' nodes found after 'prin' + 800ms.
+          Check rust-analyzer binary at shared/src/commonMain/resources/lsp/rust-analyzer.
+          Check LSP host registration in LspHostRegistry.
+          Checkpoint screenshot: qa-results/evidence/feature-4a/lsp-completion-popup.png.
+
+    tags: [lsp, completion, rust, rust-analyzer, accessibility, screenshot]
+    estimated_duration: "60s"
+    expected_result: |
+      Screenshot shows LSP popup with Rust completions. Item list file confirms
+      rust-specific labels (e.g. 'println!') — proving LSP completion is live for the end user.

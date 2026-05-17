@@ -38,7 +38,7 @@ runner.
 ## Procedure
 
 1. Build the F18 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f18_challenge`.
+   `helix_code/tests/integration/cmd/p1f18_challenge`.
 2. Run the harness; it executes five phases:
    a. **Phase A — STREAMING-FANCY (always runs).** Construct an
       `ansiRenderer` over a `bytes.Buffer`. Call `Begin("a")`, then

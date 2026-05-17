@@ -25,7 +25,7 @@ round-trip) runs only when `gopls` is on `PATH`.
 ## Procedure
 
 1. Build the F13 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f13_challenge`.
+   `helix_code/tests/integration/cmd/p1f13_challenge`.
 2. Run the harness — it executes seven phases:
    a. **Phase 0 — Setup.** `go build` the in-tree fake LSP server into
       a tempdir; print path + on-disk size; construct an `LSPManager`

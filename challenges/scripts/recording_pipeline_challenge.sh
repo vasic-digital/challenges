@@ -37,7 +37,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Anti-bluff library — same pattern as no_suspend_calls_challenge.sh.
 LIB_AB="$SCRIPT_DIR/../../lib/anti_bluff.sh"
-[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR/../../../Challenges/lib/anti_bluff.sh"
+[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR/../../../challenges/lib/anti_bluff.sh"
 if [ ! -f "$LIB_AB" ]; then
     echo "FATAL: anti_bluff.sh missing (looked in $LIB_AB)" >&2
     exit 2

@@ -17,7 +17,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Phase 23.0 — anti-bluff compliance promotion (Constitution §11.2.5 + §11.4).
 LIB_AB="$SCRIPT_DIR/../../lib/anti_bluff.sh"
-[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR/../../../Challenges/lib/anti_bluff.sh"
+[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR/../../../challenges/lib/anti_bluff.sh"
 . "$LIB_AB"
 ab_init "no_suspend_calls_challenge" "/tmp/no_suspend_calls_challenge.results"
 ab_send_action "Source-tree scan for forbidden host-power-management calls (CONST-033)"

@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: Auto-Complete / Completion Popup (Feature 3)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-3-autocomplete"
+description: |
+  Validates the in-editor auto-complete (non-LSP, Tree-Sitter / snippet path)
+  for Kotlin source files. The scenario types a prefix ("fu") in a .kt file,
+  waits for the debounce window, captures a screenshot, and asserts the
+  completion popup is visible via the 'completion-popup' testTag.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "autocomplete"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 3m
+
+fixtures:
+  - id: kotlin-snippet
+    path: "Challenges/banks/yole/fixtures/hello-world.kt"
+    description: "Minimal Kotlin file; typing 'fu' in its body triggers function completions"
+
+test_cases:
+  - id: AC-001
+    name: "Type prefix 'fu' and assert completion popup visible"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "open-kt-file"
+        action: "Open Challenges/banks/yole/fixtures/hello-world.kt"
+        expected: "Editor active with Kotlin file"
+        evidence: false
+
+      - name: "position-cursor"
+        action: "Place cursor at empty line inside function body"
+        expected: "Cursor positioned, no completion popup yet"
+        evidence: false
+
+      - name: "type-prefix"
+        action: "Type 'fu' (two characters)"
+        expected: "Characters appear in editor; debounce timer starts"
+        evidence: false
+
+      - name: "wait-debounce"
+        action: "Wait 250ms (debounce window is 200ms in CompletionContext)"
+        expected: "Debounce elapsed; completion engine queries providers"
+        evidence: false
+
+      - name: "capture-popup-screenshot"
+        action: "Capture full editor screenshot"
+        checkpoint: "completion-popup"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot written to qa-results/evidence/feature-3/completion-popup.png.
+          Must be > 1 KB.
+
+      - name: "assert-popup-visible"
+        action: |
+          Via HelixQA a11y bridge: find node with testTag='completion-popup'.
+          Assertion: node exists and isDisplayed() = true.
+          Positive evidence: a11y dump excerpt written to
+          qa-results/evidence/feature-3/completion-popup-a11y.txt.
+        expected: "completion-popup node visible in a11y tree"
+        evidence: true
+        evidence_type: accessibility_node
+        failure_message: |
+          Auto-complete FAIL: no 'completion-popup' node found 250ms after typing 'fu'.
+          Checkpoint screenshot at qa-results/evidence/feature-3/completion-popup.png.
+          Check CompletionProvider registration and debounce logic in
+          shared/src/commonMain/kotlin/digital/vasic/yole/completion/.
+
+      - name: "assert-item-count"
+        action: |
+          Count child nodes with testTag='completion-item' inside 'completion-popup'.
+          Assertion: ≥ 1 item.
+          Evidence: count written to qa-results/evidence/feature-3/completion-item-count.txt.
+        expected: "≥ 1 completion item present in popup"
+        evidence: true
+        evidence_type: accessibility_count
+        failure_message: |
+          Auto-complete popup visible but empty — provider returned no items for 'fu'.
+
+    tags: [autocomplete, completion-popup, kotlin, accessibility, screenshot]
+    estimated_duration: "30s"
+    expected_result: |
+      Screenshot proves popup is on screen. A11y node query confirms 'completion-popup'
+      is displayed with ≥ 1 item — proving auto-complete is functional for the end user.

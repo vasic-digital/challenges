@@ -35,7 +35,7 @@ tree), and tears it down on completion.
 ## Procedure
 
 1. Build the F17 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f17_challenge`.
+   `helix_code/tests/integration/cmd/p1f17_challenge`.
 2. Run the harness; it executes seven phases:
    a. **Phase A — SINGLE-FILE edit applied (always runs).** Write
       `a.txt` with content `"hello\nold-line\nworld\n"`. Build a

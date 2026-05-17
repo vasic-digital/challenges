@@ -35,7 +35,7 @@ satisfies `approval.PromptResponder` deterministically.
 ## Procedure
 
 1. Build the F21 challenge harness from
-   `HelixCode/tests/integration/cmd/p2f21_challenge`.
+   `helix_code/tests/integration/cmd/p2f21_challenge`.
 2. Run the harness; it executes five phases:
 
    a. **Phase A — SUGGEST-DENY (always runs).** Construct

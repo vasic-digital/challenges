@@ -30,7 +30,7 @@ the F11/F12/F13 precedent.
 ## Procedure
 
 1. Build the F14 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f14_challenge`.
+   `helix_code/tests/integration/cmd/p1f14_challenge`.
 2. Run the harness — the first statement of `main()` is the native-helper
    dispatch (`if sandbox.IsHelperInvocation() { os.Exit(sandbox.RunAsHelper()) }`)
    so Phase D's re-exec into the new namespaces does not recurse into the

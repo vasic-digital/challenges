@@ -20,7 +20,7 @@ Per Article XI §11.9, every PASS must carry positive runtime evidence.
 5. Run `helixcode mcp list` — assert table includes "echo" with transport
    "stdio".
 6. Anti-bluff smoke: `grep -rn "simulated\|for now\|TODO implement\|placeholder"
-   HelixCode/internal/mcp/` returns empty.
+   helix_code/internal/mcp/` returns empty.
 7. Cross-compile (Linux only — Windows has pre-existing CGO failures unrelated
    to F06: `cd HelixCode && go build ./cmd/cli/... ./internal/mcp/...`).
 

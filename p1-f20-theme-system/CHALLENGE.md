@@ -33,7 +33,7 @@ or styling is supplied by the harness.
 ## Procedure
 
 1. Build the F20 challenge harness from
-   `HelixCode/tests/integration/cmd/p1f20_challenge`.
+   `helix_code/tests/integration/cmd/p1f20_challenge`.
 2. Run the harness; it executes five phases:
 
    a. **Phase A — BUILT-IN-DARK (always runs).** Construct
