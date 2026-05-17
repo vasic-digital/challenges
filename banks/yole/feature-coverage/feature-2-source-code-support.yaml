@@ -1,0 +1,96 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: Source Code Support / Outline (Feature 2)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-2-source-code-support"
+description: |
+  Validates that Yole's source-code support includes an Outline panel that
+  surfaces document symbols (classes, functions) for Python source files.
+  The test opens a .py fixture, activates the Outline drawer, and captures
+  a screenshot proving ≥ 1 symbol entry is rendered — confirming the feature
+  works for the end user, not just compiles.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "source-code-support"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 3m
+
+fixtures:
+  - id: python-class
+    path: "Challenges/banks/yole/fixtures/sample-class.py"
+    description: "Python file with one class and two methods for outline extraction"
+
+test_cases:
+  - id: SCS-001
+    name: "Open Python file and verify Outline shows symbols"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "open-py-file"
+        action: "Open Challenges/banks/yole/fixtures/sample-class.py"
+        expected: "Editor shows Python source"
+        evidence: false
+
+      - name: "open-outline-panel"
+        action: |
+          Android: swipe left edge / tap Outline drawer icon.
+          Desktop: View → Outline or keyboard shortcut.
+          Web: tap Outline icon in toolbar.
+        expected: "Outline drawer opens and begins populating"
+        evidence: false
+
+      - name: "wait-outline-populated"
+        action: "Wait 800ms for outline to populate (LSP or Tree-Sitter document-symbol pass)"
+        expected: "At least one symbol row visible in the outline list"
+        evidence: false
+
+      - name: "capture-outline-screenshot"
+        action: "Capture screenshot of Outline panel"
+        checkpoint: "outline-panel-symbols"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot written to qa-results/evidence/feature-2/outline-panel-symbols.png.
+          File must be > 1 KB.
+
+      - name: "assert-symbol-count"
+        action: |
+          Via HelixQA a11y bridge: count nodes with testTag 'outline-item' or
+          accessibility class 'OutlineSymbolRow'.
+          Assertion: ≥ 1 symbol item found.
+          Positive evidence: a11y node count written to
+          qa-results/evidence/feature-2/outline-symbol-count.txt.
+        expected: "≥ 1 outline symbol row present"
+        evidence: true
+        evidence_type: accessibility_count
+        failure_message: |
+          Outline FAIL: no symbol entries found after 800ms.
+          Checkpoint 'outline-panel-symbols' screenshot shows empty panel.
+          Check DocumentSymbolProvider registration in LSP / Tree-Sitter pipeline.
+
+    tags: [source-code-support, outline, python, accessibility, screenshot]
+    estimated_duration: "30s"
+    expected_result: |
+      Screenshot at qa-results/evidence/feature-2/outline-panel-symbols.png shows ≥ 1 symbol
+      row and the a11y count file confirms the live count — proving outline is functional for
+      the end user.

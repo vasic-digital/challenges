@@ -1,0 +1,108 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: LSP Refactoring / Rename (Feature 4c)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-4c-refactoring"
+description: |
+  Validates the LSP-backed rename refactoring flow for Rust via rust-analyzer.
+  The test opens a Rust fixture, triggers rename on a function symbol, and
+  asserts that the RenamePreviewPanel (showing the list of WorkspaceEdit sites)
+  is visible — proving refactoring is functional for the end user.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "lsp-refactoring"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 5m
+
+fixtures:
+  - id: rust-rename
+    path: "Challenges/banks/yole/fixtures/rename-target.rs"
+    description: |
+      Rust file with a function 'old_name' called from main():
+        fn old_name() {}
+        fn main() { old_name(); }
+      Rename 'old_name' to 'new_name'; expected WorkspaceEdit has 2 sites.
+
+test_cases:
+  - id: REF-RENAME-001
+    name: "Trigger rename refactoring and assert RenamePreviewPanel"
+    category: functional
+    priority: high
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "open-rename-rs-file"
+        action: "Open Challenges/banks/yole/fixtures/rename-target.rs"
+        expected: "Editor shows Rust source with 'old_name' symbol"
+        evidence: false
+
+      - name: "wait-lsp-ready"
+        action: "Wait 3s for rust-analyzer LSP initialisation"
+        expected: "LSP ready indicator"
+        evidence: false
+
+      - name: "select-symbol"
+        action: "Place cursor on 'old_name' in the fn declaration (line 1)"
+        expected: "Cursor on renameable symbol"
+        evidence: false
+
+      - name: "trigger-rename"
+        action: |
+          Android: long-press → 'Rename Symbol' context menu item.
+          Desktop: F2 or right-click → Rename Symbol.
+          Web: right-click → Rename Symbol.
+        expected: "Rename input dialog or inline rename field appears"
+        evidence: false
+
+      - name: "enter-new-name"
+        action: "Type 'new_name' in rename input field; confirm (Enter / Apply)"
+        expected: "WorkspaceEdit computed; RenamePreviewPanel (or apply-directly flow) shown"
+        evidence: false
+
+      - name: "capture-rename-panel-screenshot"
+        action: "Capture screenshot of RenamePreviewPanel or post-rename editor state"
+        checkpoint: "rename-preview-panel"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot at qa-results/evidence/feature-4c/rename-preview-panel.png (> 1 KB).
+
+      - name: "assert-rename-panel-visible"
+        action: |
+          A11y bridge: find node with testTag='rename-preview-panel' OR
+          verify editor text has been updated to 'new_name' at all sites.
+          Path A (preview panel): ≥ 1 'rename-site-item' node visible.
+          Path B (direct apply): both occurrences of 'old_name' in editor replaced
+            — verified by reading editor text and asserting 0 occurrences of 'old_name'.
+          Evidence written to qa-results/evidence/feature-4c/rename-result.txt.
+        expected: "Rename applied to ≥ 2 sites; 'old_name' no longer in editor"
+        evidence: true
+        evidence_type: accessibility_node
+        failure_message: |
+          Refactoring FAIL: rename did not apply or preview panel not found.
+          Check WorkspaceEditApplier and LspRenameHandler.
+          Checkpoint screenshot: qa-results/evidence/feature-4c/rename-preview-panel.png.
+
+    tags: [lsp, refactoring, rename, rust, rust-analyzer, workspace-edit, screenshot]
+    estimated_duration: "60s"
+    expected_result: |
+      Screenshot of rename preview or post-rename editor proves the rename flow is
+      functional for the end user. Evidence file confirms all occurrences renamed.

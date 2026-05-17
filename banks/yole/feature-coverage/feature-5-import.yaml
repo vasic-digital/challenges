@@ -1,0 +1,115 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: Import From / Document Import (Feature 5)
+# iter-76 — CONST-039: positive on-device evidence per feature
+
+version: "1.0"
+name: "feature-5-import"
+description: |
+  Validates the Import-From feature end-to-end: the user taps the import button,
+  selects a bundled test fixture (.docx), and the ImportPreview screen renders
+  the converted Markdown content. The test asserts that the preview contains
+  the expected heading text from the fixture — proving import is functional for
+  the end user, not just wired at the API level.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "import-from"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 4m
+
+fixtures:
+  - id: docx-test
+    path: "Challenges/banks/yole/fixtures/test-import.docx"
+    description: |
+      Minimal .docx with content:
+        Heading 1: "Hello Import"
+        Paragraph: "This is a test paragraph."
+      Expected Markdown output contains "# Hello Import" and "This is a test paragraph."
+    # NOTE: A 1-paragraph .docx must be committed to fixtures/.
+    # The file was generated via LibreOffice Writer and committed as binary.
+    # Tracker: #iter-76-import-fixture-docx-committed
+
+test_cases:
+  - id: IMP-001
+    name: "Import .docx and assert ImportPreview shows Markdown"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch"
+        expected: "Main screen visible"
+        evidence: false
+
+      - name: "tap-import-button"
+        action: |
+          Android: tap '+' FAB → 'Import From…' menu item.
+          Desktop: File → Import From… menu item.
+          Web: tap Import icon in toolbar.
+        expected: "File picker / Import-From dialog opens"
+        evidence: false
+
+      - name: "select-fixture-docx"
+        action: |
+          Navigate to Challenges/banks/yole/fixtures/test-import.docx.
+          Select the file and confirm.
+          On Android the file is pre-copied to app storage by the HelixQA host bridge
+          before this step runs (device push via adb).
+        expected: "File selected; import conversion starts"
+        evidence: false
+
+      - name: "wait-import-conversion"
+        action: "Wait 1s for DocxImporter conversion to complete"
+        expected: "ImportPreview screen rendered with Markdown content"
+        evidence: false
+
+      - name: "capture-import-preview-screenshot"
+        action: "Capture full ImportPreview screenshot"
+        checkpoint: "import-preview"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot at qa-results/evidence/feature-5/import-preview.png (> 1 KB).
+
+      - name: "assert-heading-present"
+        action: |
+          Via HelixQA OCR on the screenshot OR via a11y text content:
+          Assertion: preview text contains "Hello Import".
+          Evidence: OCR output or a11y text written to
+          qa-results/evidence/feature-5/import-preview-text.txt.
+        expected: "Preview contains 'Hello Import' heading"
+        evidence: true
+        evidence_type: ocr_text
+        failure_message: |
+          Import FAIL: 'Hello Import' not found in ImportPreview text.
+          Check DocxImporter.convert() in shared format pipeline.
+          Checkpoint screenshot: qa-results/evidence/feature-5/import-preview.png.
+
+      - name: "assert-paragraph-present"
+        action: |
+          Assertion: preview text contains "This is a test paragraph."
+          Evidence appended to qa-results/evidence/feature-5/import-preview-text.txt.
+        expected: "Preview contains 'This is a test paragraph.'"
+        evidence: true
+        evidence_type: ocr_text
+        failure_message: |
+          Import FAIL: paragraph text not found in ImportPreview.
+          Possible Markdown conversion truncation — check DocxImporter paragraph handler.
+
+    tags: [import-from, docx, markdown-conversion, ocr, screenshot]
+    estimated_duration: "45s"
+    expected_result: |
+      Screenshot of ImportPreview plus OCR/a11y text file proving the expected heading
+      and paragraph are rendered — confirming Import-From is functional for the end user.

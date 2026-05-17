@@ -1,0 +1,93 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixQA Feature Scenario: Syntax Highlighting (Feature 1)
+# iter-76 — CONST-039: positive on-device evidence per feature
+#
+# Platform-agnostic design: iOS scenarios inherit this scenario verbatim when
+# Xcode automation is available (operator deferred — see CONTINUATION.md
+# tracker #iter-76-ios-scenarios-pending-xcode).
+
+version: "1.0"
+name: "feature-1-syntax-highlighting"
+description: |
+  Validates that Yole renders syntax-highlighted tokens for Kotlin source code.
+  A cold-launch is performed, a .kt file with a well-known code snippet is
+  opened (or created), and a screenshot is captured after Tree-Sitter tokenisation.
+  The assertion verifies that the rendered output contains coloured tokens —
+  not a single-colour plain-text dump — by comparing the screenshot pixel-colour
+  histogram against a plain-text baseline.
+
+metadata:
+  author: "vasic-digital"
+  app: "Yole"
+  feature: "syntax-highlighting"
+  iteration: "76"
+  const: "CONST-039"
+
+platforms:
+  - android
+  - desktop
+  - web
+  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+
+timeout: 3m
+
+fixtures:
+  - id: kotlin-snippet
+    path: "Challenges/banks/yole/fixtures/hello-world.kt"
+    description: "Minimal Kotlin file with class + function for tokenisation"
+
+test_cases:
+  - id: SH-001
+    name: "Cold-launch and open Kotlin file"
+    category: functional
+    priority: critical
+    platforms: [android, desktop, web]
+    evidence_required: true
+    steps:
+      - name: "cold-launch"
+        action: "Launch Yole from scratch (no retained state)"
+        expected: "Main screen visible, no prior file open"
+        evidence: false
+
+      - name: "open-kt-file"
+        action: "Open or import Challenges/banks/yole/fixtures/hello-world.kt"
+        expected: "Editor shows Kotlin source code"
+        evidence: false
+
+      - name: "wait-tokeniser"
+        action: "Wait 500ms for Tree-Sitter tokenisation pass to complete"
+        expected: "Syntax tokens applied (no spinner visible)"
+        evidence: false
+
+      - name: "capture-editor-screenshot"
+        action: "Capture full editor screen"
+        checkpoint: "syntax-highlight-tokens"
+        evidence: true
+        evidence_type: screenshot
+        expected: |
+          Screenshot captured and non-empty (> 1 KB).
+          File written to qa-results/evidence/feature-1/syntax-highlight-tokens.png.
+
+      - name: "assert-coloured-tokens"
+        action: |
+          Compare screenshot pixel-colour histogram.
+          Assertion: ≥ 3 distinct hue clusters present in the editor viewport.
+          If only 1 hue cluster: plain-text fallback — FAIL.
+          Positive evidence: pixel histogram JSON written to
+          qa-results/evidence/feature-1/syntax-highlight-histogram.json.
+        expected: "≥ 3 distinct hue clusters (keywords, strings, identifiers each distinct)"
+        evidence: true
+        evidence_type: pixel_histogram
+        failure_message: |
+          Syntax-highlighting FAIL: editor rendered as plain text (single hue cluster).
+          Checkpoint 'syntax-highlight-tokens' screenshot shows no coloured tokens.
+          Check Tree-Sitter grammar bundle at shared/src/commonMain/resources/grammars/.
+
+    tags: [syntax-highlighting, tree-sitter, kotlin, screenshot, positive-evidence]
+    estimated_duration: "30s"
+    expected_result: |
+      Screenshot at qa-results/evidence/feature-1/syntax-highlight-tokens.png is non-empty
+      and the pixel-histogram assertion confirms ≥ 3 hue clusters — proving syntax colouring
+      is live for the end user, not just registered in code.
