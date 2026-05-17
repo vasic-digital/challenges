@@ -505,15 +505,23 @@ func (r *DefaultRunner) executeChallenge(
 		result.RecordedActions = execResult.RecordedActions
 		result.Metrics = execResult.Metrics
 		result.Outputs = execResult.Outputs
-		// Preserve execution status if it indicates failure
+		// Preserve execution status if it indicates failure OR honest
+		// skip. close-out⁷⁵: Skipped was previously dropped here, which
+		// silently re-derived Status from assertions and converted a
+		// challenge that the implementation explicitly skipped (e.g.
+		// helixqa's definitionChallenge with no backend dispatcher)
+		// into a Passed result via a vacuous "declaration-loaded"
+		// assertion. Per CONST-035 §11.4.3 SKIP must be terminal when
+		// the implementation explicitly says SKIP.
 		if execResult.Status == challenge.StatusFailed ||
 			execResult.Status == challenge.StatusTimedOut ||
-			execResult.Status == challenge.StatusError {
+			execResult.Status == challenge.StatusError ||
+			execResult.Status == challenge.StatusSkipped {
 			result.Status = execResult.Status
 			result.Error = execResult.Error
 			result.EndTime = time.Now()
 			result.Duration = result.EndTime.Sub(result.StartTime)
-			r.logEvent("challenge_failed", map[string]any{
+			r.logEvent("challenge_terminal", map[string]any{
 				"challenge_id": c.ID(),
 				"status":       result.Status,
 				"error":        result.Error,
