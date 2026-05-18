@@ -80,3 +80,38 @@ challenges_userflow_recorded_ai_testgen_video_integrity:
 
 challenges_userflow_recorded_ai_testgen_recording_failed:
   other: "recording failed: {{.err}}"
+
+# Round 102 — challenge_desktop.go (10 user-facing assertion-message
+# call sites in desktopLaunchMessage / windowMessage /
+# desktopStabilityMessage / ipcMessage helpers).
+# Namespace prefix: challenges_userflow_desktop_
+
+challenges_userflow_desktop_launched_successfully:
+  other: "desktop app launched successfully"
+
+challenges_userflow_desktop_launch_failed:
+  other: "desktop app launch failed: {{.err}}"
+
+challenges_userflow_desktop_window_appeared:
+  other: "application window appeared"
+
+challenges_userflow_desktop_window_failed:
+  other: "window did not appear: {{.err}}"
+
+challenges_userflow_desktop_stability_failed:
+  other: "stability check failed: {{.err}}"
+
+challenges_userflow_desktop_stable:
+  other: "desktop app remained stable"
+
+challenges_userflow_desktop_crashed:
+  other: "desktop app crashed during stability wait"
+
+challenges_userflow_desktop_ipc_succeeded:
+  other: "IPC command {{.name}} succeeded"
+
+challenges_userflow_desktop_ipc_failed:
+  other: "IPC command {{.name}} failed: {{.err}}"
+
+challenges_userflow_desktop_ipc_mismatch:
+  other: "IPC command {{.name}} response mismatch"
