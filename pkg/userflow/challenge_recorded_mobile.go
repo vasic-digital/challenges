@@ -6,7 +6,29 @@ import (
 	"time"
 
 	"digital.vasic.challenges/pkg/challenge"
+	"digital.vasic.challenges/pkg/i18n"
 )
+
+// trRecMob looks up a CONST-046 message ID through the package-
+// level translator and returns the rendered string. If the
+// translator is NoopTranslator{} (returns id verbatim) or fails,
+// the supplied fallback is returned so user-visible text is
+// preserved when no consumer translator is wired. Translation
+// is a non-blocking in-memory lookup per CONST-051(B) decoupling
+// guarantee.
+func trRecMob(
+	id string,
+	data map[string]any,
+	fallback string,
+) string {
+	out, err := i18n.Pkg().T(
+		context.Background(), id, data,
+	)
+	if err != nil || out == "" || out == id {
+		return fallback
+	}
+	return out
+}
 
 // RecordedMobileLaunchChallenge installs, launches, and
 // verifies stability of a mobile application while recording
@@ -64,8 +86,11 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "platform_available",
 				Passed: false,
-				Message: "Mobile adapter not " +
-					"available - skipped",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_adapter_unavailable",
+					nil,
+					"Mobile adapter not available - skipped",
+				),
 			}},
 			nil, nil,
 			"mobile adapter not available",
@@ -82,8 +107,11 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "recorder_available",
 				Passed: false,
-				Message: "Recorder not " +
-					"available - skipped",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_recorder_unavailable",
+					nil,
+					"Recorder not available - skipped",
+				),
 			}},
 			nil, nil,
 			"recorder not available",
@@ -113,9 +141,13 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				Type:   "recording_start",
 				Target: "start_recording",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"start recording failed: %s",
-					err.Error(),
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_start_recording_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"start recording failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -130,10 +162,14 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 
 	assertions = append(
 		assertions, challenge.AssertionResult{
-			Type:    "recording_start",
-			Target:  "start_recording",
-			Passed:  true,
-			Message: "recording started successfully",
+			Type:   "recording_start",
+			Target: "start_recording",
+			Passed: true,
+			Message: trRecMob(
+				"challenges_userflow_recorded_mobile_recording_started",
+				nil,
+				"recording started successfully",
+			),
 		},
 	)
 
@@ -287,19 +323,30 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				Type:   "recording",
 				Target: "video_recorded",
 				Passed: recResult != nil,
-				Message: "video recording captured " +
-					"successfully",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_video_captured",
+					nil,
+					"video recording captured successfully",
+				),
 			},
 			challenge.AssertionResult{
 				Type:   "recording",
 				Target: "video_integrity",
 				Passed: integrity,
-				Message: fmt.Sprintf(
-					"video integrity: size=%d "+
-						"duration=%s frames=%d",
-					recResult.FileSize,
-					recResult.Duration,
-					recResult.FrameCount,
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_video_integrity",
+					map[string]any{
+						"fileSize":   recResult.FileSize,
+						"duration":   recResult.Duration.String(),
+						"frameCount": recResult.FrameCount,
+					},
+					fmt.Sprintf(
+						"video integrity: size=%d "+
+							"duration=%s frames=%d",
+						recResult.FileSize,
+						recResult.Duration,
+						recResult.FrameCount,
+					),
 				),
 			},
 		)
@@ -317,8 +364,12 @@ func (c *RecordedMobileLaunchChallenge) Execute(
 				Type:   "recording",
 				Target: "video_recorded",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"recording failed: %s", errMsg,
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_recording_failed",
+					map[string]any{"err": errMsg},
+					fmt.Sprintf(
+						"recording failed: %s", errMsg,
+					),
 				),
 			},
 		)
@@ -388,8 +439,11 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "platform_available",
 				Passed: false,
-				Message: "Mobile adapter not " +
-					"available - skipped",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_adapter_unavailable",
+					nil,
+					"Mobile adapter not available - skipped",
+				),
 			}},
 			nil, nil,
 			"mobile adapter not available",
@@ -406,8 +460,11 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "recorder_available",
 				Passed: false,
-				Message: "Recorder not " +
-					"available - skipped",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_recorder_unavailable",
+					nil,
+					"Recorder not available - skipped",
+				),
 			}},
 			nil, nil,
 			"recorder not available",
@@ -438,9 +495,13 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				Type:   "recording_start",
 				Target: "start_recording",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"start recording failed: %s",
-					err.Error(),
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_start_recording_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"start recording failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -455,10 +516,14 @@ func (c *RecordedMobileFlowChallenge) Execute(
 
 	assertions = append(
 		assertions, challenge.AssertionResult{
-			Type:    "recording_start",
-			Target:  "start_recording",
-			Passed:  true,
-			Message: "recording started successfully",
+			Type:   "recording_start",
+			Target: "start_recording",
+			Passed: true,
+			Message: trRecMob(
+				"challenges_userflow_recorded_mobile_recording_started",
+				nil,
+				"recording started successfully",
+			),
 		},
 	)
 
@@ -559,19 +624,30 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				Type:   "recording",
 				Target: "video_recorded",
 				Passed: recResult != nil,
-				Message: "video recording captured " +
-					"successfully",
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_video_captured",
+					nil,
+					"video recording captured successfully",
+				),
 			},
 			challenge.AssertionResult{
 				Type:   "recording",
 				Target: "video_integrity",
 				Passed: integrity,
-				Message: fmt.Sprintf(
-					"video integrity: size=%d "+
-						"duration=%s frames=%d",
-					recResult.FileSize,
-					recResult.Duration,
-					recResult.FrameCount,
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_video_integrity",
+					map[string]any{
+						"fileSize":   recResult.FileSize,
+						"duration":   recResult.Duration.String(),
+						"frameCount": recResult.FrameCount,
+					},
+					fmt.Sprintf(
+						"video integrity: size=%d "+
+							"duration=%s frames=%d",
+						recResult.FileSize,
+						recResult.Duration,
+						recResult.FrameCount,
+					),
 				),
 			},
 		)
@@ -589,8 +665,12 @@ func (c *RecordedMobileFlowChallenge) Execute(
 				Type:   "recording",
 				Target: "video_recorded",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"recording failed: %s", errMsg,
+				Message: trRecMob(
+					"challenges_userflow_recorded_mobile_recording_failed",
+					map[string]any{"err": errMsg},
+					fmt.Sprintf(
+						"recording failed: %s", errMsg,
+					),
 				),
 			},
 		)

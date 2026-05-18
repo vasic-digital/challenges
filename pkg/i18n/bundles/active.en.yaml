@@ -151,3 +151,29 @@ challenges_userflow_ai_testgen_write_file_failed:
 
 challenges_userflow_ai_testgen_generated_summary:
   other: "generated {{.count}} test(s)"
+
+# Round 104 — challenge_recorded_mobile.go (7 unique user-facing
+# AssertionResult.Message IDs covering 14 call sites across the
+# RecordedMobileLaunchChallenge and RecordedMobileFlowChallenge
+# variants). Namespace prefix: challenges_userflow_recorded_mobile_
+
+challenges_userflow_recorded_mobile_adapter_unavailable:
+  other: "Mobile adapter not available - skipped"
+
+challenges_userflow_recorded_mobile_recorder_unavailable:
+  other: "Recorder not available - skipped"
+
+challenges_userflow_recorded_mobile_start_recording_failed:
+  other: "start recording failed: {{.err}}"
+
+challenges_userflow_recorded_mobile_recording_started:
+  other: "recording started successfully"
+
+challenges_userflow_recorded_mobile_video_captured:
+  other: "video recording captured successfully"
+
+challenges_userflow_recorded_mobile_video_integrity:
+  other: "video integrity: size={{.fileSize}} duration={{.duration}} frames={{.frameCount}}"
+
+challenges_userflow_recorded_mobile_recording_failed:
+  other: "recording failed: {{.err}}"
