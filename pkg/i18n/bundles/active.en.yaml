@@ -45,3 +45,38 @@ challenges_userflow_evaluators_video_integrity_zero_frames:
 
 challenges_userflow_evaluators_video_integrity_summary:
   other: "video integrity: {{.fileSize}} bytes, {{.durationMs}}ms, {{.frameCount}} frames"
+
+# Round 101 — challenges/pkg/userflow/challenge_recorded_ai_testgen.go
+# 10 user-facing AssertionResult.Message strings migrated to CONST-046
+# message IDs. Remaining 15 hits (RecordAction debug-trace strings)
+# are developer-facing and queued for later rounds.
+
+challenges_userflow_recorded_ai_testgen_browser_unavailable:
+  other: "Browser not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_recorder_unavailable:
+  other: "Recorder not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_testgen_unavailable:
+  other: "TestGen not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_browser_init_failed:
+  other: "browser init failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_start_recording_failed:
+  other: "start recording failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_navigate_failed:
+  other: "navigate to {{.url}} failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_screenshot_failed:
+  other: "screenshot failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_testgen_failed:
+  other: "test generation failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_video_integrity:
+  other: "video integrity: size={{.fileSize}} duration={{.duration}} frames={{.frameCount}}"
+
+challenges_userflow_recorded_ai_testgen_recording_failed:
+  other: "recording failed: {{.err}}"
