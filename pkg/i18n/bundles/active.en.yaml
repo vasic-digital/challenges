@@ -1,0 +1,47 @@
+# CONST-046 active bundle — English source-of-truth message
+# strings for challenges/pkg/userflow/evaluators.go.
+#
+# Each entry's "other" value is the EXACT original English literal
+# that previously lived as a hardcoded format string inside an
+# evaluator return path. Consumers of the challenges submodule
+# load this bundle (or a locale-specific override) into their
+# Translator implementation; the package-level translator (set
+# via i18n.SetPkgTranslator) then renders these IDs at runtime
+# with the templateData supplied by the call site.
+#
+# Format-string convention: arguments are referenced by name via
+# {{.fieldname}} (Go text/template syntax). Order of the original
+# %d/%T/%s is preserved as documentation in the bundle key name.
+#
+# Round 100 — first 10 entries (evaluators.go, 27 hits total).
+# Remaining 17 hits planned for round 101+ migration.
+
+challenges_userflow_evaluators_build_succeeds_wrong_type:
+  other: "build_succeeds: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_all_tests_pass_wrong_type:
+  other: "all_tests_pass: expected int, got {{.gotType}}"
+
+challenges_userflow_evaluators_all_tests_pass_failures:
+  other: "tests failed: {{.failures}} failures"
+
+challenges_userflow_evaluators_lint_passes_wrong_type:
+  other: "lint_passes: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_app_launches_wrong_type:
+  other: "app_launches: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_status_code_mismatch:
+  other: "status code: expected {{.expected}}, got {{.actual}}"
+
+challenges_userflow_evaluators_video_integrity_zero_filesize:
+  other: "video integrity: file_size is {{.fileSize}} (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_zero_duration:
+  other: "video integrity: duration is {{.durationMs}}ms (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_zero_frames:
+  other: "video integrity: frame_count is {{.frameCount}} (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_summary:
+  other: "video integrity: {{.fileSize}} bytes, {{.durationMs}}ms, {{.frameCount}} frames"
