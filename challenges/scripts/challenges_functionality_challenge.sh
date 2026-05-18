@@ -9,7 +9,7 @@ MODULE_NAME="Challenges"
 # Phase 23.0 — anti-bluff compliance promotion (Constitution §11.2.5 + §11.4).
 SCRIPT_DIR_AB="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_AB="$SCRIPT_DIR_AB/../../lib/anti_bluff.sh"
-[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR_AB/../../../Challenges/lib/anti_bluff.sh"
+[ -f "$LIB_AB" ] || LIB_AB="$SCRIPT_DIR_AB/../../../challenges/lib/anti_bluff.sh"
 . "$LIB_AB"
 ab_init "challenges_functionality_challenge" "/tmp/challenges_functionality_challenge.results"
 ab_send_action "challenges_functionality_challenge.sh - Validates Challenges module core functionality and structure"
