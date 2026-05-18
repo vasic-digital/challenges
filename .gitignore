@@ -39,6 +39,3 @@ results/
 # go-mutesting artifacts
 report.json
 go-mutesting-report.html
-logs/
-*.log
-*.go.tmp

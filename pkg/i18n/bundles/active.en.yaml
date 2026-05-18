@@ -1,0 +1,179 @@
+# CONST-046 active bundle — English source-of-truth message
+# strings for challenges/pkg/userflow/evaluators.go.
+#
+# Each entry's "other" value is the EXACT original English literal
+# that previously lived as a hardcoded format string inside an
+# evaluator return path. Consumers of the challenges submodule
+# load this bundle (or a locale-specific override) into their
+# Translator implementation; the package-level translator (set
+# via i18n.SetPkgTranslator) then renders these IDs at runtime
+# with the templateData supplied by the call site.
+#
+# Format-string convention: arguments are referenced by name via
+# {{.fieldname}} (Go text/template syntax). Order of the original
+# %d/%T/%s is preserved as documentation in the bundle key name.
+#
+# Round 100 — first 10 entries (evaluators.go, 27 hits total).
+# Remaining 17 hits planned for round 101+ migration.
+
+challenges_userflow_evaluators_build_succeeds_wrong_type:
+  other: "build_succeeds: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_all_tests_pass_wrong_type:
+  other: "all_tests_pass: expected int, got {{.gotType}}"
+
+challenges_userflow_evaluators_all_tests_pass_failures:
+  other: "tests failed: {{.failures}} failures"
+
+challenges_userflow_evaluators_lint_passes_wrong_type:
+  other: "lint_passes: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_app_launches_wrong_type:
+  other: "app_launches: expected bool, got {{.gotType}}"
+
+challenges_userflow_evaluators_status_code_mismatch:
+  other: "status code: expected {{.expected}}, got {{.actual}}"
+
+challenges_userflow_evaluators_video_integrity_zero_filesize:
+  other: "video integrity: file_size is {{.fileSize}} (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_zero_duration:
+  other: "video integrity: duration is {{.durationMs}}ms (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_zero_frames:
+  other: "video integrity: frame_count is {{.frameCount}} (must be > 0)"
+
+challenges_userflow_evaluators_video_integrity_summary:
+  other: "video integrity: {{.fileSize}} bytes, {{.durationMs}}ms, {{.frameCount}} frames"
+
+# Round 101 — challenges/pkg/userflow/challenge_recorded_ai_testgen.go
+# 10 user-facing AssertionResult.Message strings migrated to CONST-046
+# message IDs. Remaining 15 hits (RecordAction debug-trace strings)
+# are developer-facing and queued for later rounds.
+
+challenges_userflow_recorded_ai_testgen_browser_unavailable:
+  other: "Browser not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_recorder_unavailable:
+  other: "Recorder not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_testgen_unavailable:
+  other: "TestGen not available - skipped"
+
+challenges_userflow_recorded_ai_testgen_browser_init_failed:
+  other: "browser init failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_start_recording_failed:
+  other: "start recording failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_navigate_failed:
+  other: "navigate to {{.url}} failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_screenshot_failed:
+  other: "screenshot failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_testgen_failed:
+  other: "test generation failed: {{.err}}"
+
+challenges_userflow_recorded_ai_testgen_video_integrity:
+  other: "video integrity: size={{.fileSize}} duration={{.duration}} frames={{.frameCount}}"
+
+challenges_userflow_recorded_ai_testgen_recording_failed:
+  other: "recording failed: {{.err}}"
+
+# Round 102 — challenge_desktop.go (10 user-facing assertion-message
+# call sites in desktopLaunchMessage / windowMessage /
+# desktopStabilityMessage / ipcMessage helpers).
+# Namespace prefix: challenges_userflow_desktop_
+
+challenges_userflow_desktop_launched_successfully:
+  other: "desktop app launched successfully"
+
+challenges_userflow_desktop_launch_failed:
+  other: "desktop app launch failed: {{.err}}"
+
+challenges_userflow_desktop_window_appeared:
+  other: "application window appeared"
+
+challenges_userflow_desktop_window_failed:
+  other: "window did not appear: {{.err}}"
+
+challenges_userflow_desktop_stability_failed:
+  other: "stability check failed: {{.err}}"
+
+challenges_userflow_desktop_stable:
+  other: "desktop app remained stable"
+
+challenges_userflow_desktop_crashed:
+  other: "desktop app crashed during stability wait"
+
+challenges_userflow_desktop_ipc_succeeded:
+  other: "IPC command {{.name}} succeeded"
+
+challenges_userflow_desktop_ipc_failed:
+  other: "IPC command {{.name}} failed: {{.err}}"
+
+challenges_userflow_desktop_ipc_mismatch:
+  other: "IPC command {{.name}} response mismatch"
+
+# Round 103 — challenge_ai_testgen.go (10 user-facing
+# AssertionResult.Message strings migrated to CONST-046 message IDs).
+# Namespace prefix: challenges_userflow_ai_testgen_
+# Remaining ~10 hits (RecordAction debug-trace strings, ReportProgress
+# diagnostic strings) are developer-facing and queued for later rounds.
+
+challenges_userflow_ai_testgen_browser_unavailable:
+  other: "Browser not available - skipped (requires infrastructure)"
+
+challenges_userflow_ai_testgen_testgen_unavailable:
+  other: "TestGen not available - skipped (requires infrastructure)"
+
+challenges_userflow_ai_testgen_browser_init_failed:
+  other: "browser init failed: {{.err}}"
+
+challenges_userflow_ai_testgen_navigate_failed:
+  other: "navigate to {{.url}} failed: {{.err}}"
+
+challenges_userflow_ai_testgen_screenshot_failed:
+  other: "screenshot failed: {{.err}}"
+
+challenges_userflow_ai_testgen_testgen_failed:
+  other: "test generation failed: {{.err}}"
+
+challenges_userflow_ai_testgen_create_dir_failed:
+  other: "create output dir failed: {{.err}}"
+
+challenges_userflow_ai_testgen_marshal_json_failed:
+  other: "JSON marshal failed: {{.err}}"
+
+challenges_userflow_ai_testgen_write_file_failed:
+  other: "write file failed: {{.err}}"
+
+challenges_userflow_ai_testgen_generated_summary:
+  other: "generated {{.count}} test(s)"
+
+# Round 104 — challenge_recorded_mobile.go (7 unique user-facing
+# AssertionResult.Message IDs covering 14 call sites across the
+# RecordedMobileLaunchChallenge and RecordedMobileFlowChallenge
+# variants). Namespace prefix: challenges_userflow_recorded_mobile_
+
+challenges_userflow_recorded_mobile_adapter_unavailable:
+  other: "Mobile adapter not available - skipped"
+
+challenges_userflow_recorded_mobile_recorder_unavailable:
+  other: "Recorder not available - skipped"
+
+challenges_userflow_recorded_mobile_start_recording_failed:
+  other: "start recording failed: {{.err}}"
+
+challenges_userflow_recorded_mobile_recording_started:
+  other: "recording started successfully"
+
+challenges_userflow_recorded_mobile_video_captured:
+  other: "video recording captured successfully"
+
+challenges_userflow_recorded_mobile_video_integrity:
+  other: "video integrity: size={{.fileSize}} duration={{.duration}} frames={{.frameCount}}"
+
+challenges_userflow_recorded_mobile_recording_failed:
+  other: "recording failed: {{.err}}"

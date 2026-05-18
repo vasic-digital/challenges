@@ -1,11 +1,35 @@
 package userflow
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"digital.vasic.challenges/pkg/assertion"
+	"digital.vasic.challenges/pkg/i18n"
 )
+
+// tr is a thin helper that calls the package-level translator and
+// falls back to the previous English literal if no consumer has
+// wired a real translator (NoopTranslator returns the messageID
+// verbatim — we detect that and use the fallback so end-user-
+// visible text is preserved without a translator). Evaluator
+// signatures here are pre-existing (do not accept ctx), so we use
+// context.Background() — translation MUST be a non-blocking
+// in-memory lookup per CONST-051(B) decoupling guarantee.
+func tr(
+	id string,
+	data map[string]any,
+	fallback string,
+) string {
+	out, err := i18n.Pkg().T(
+		context.Background(), id, data,
+	)
+	if err != nil || out == "" || out == id {
+		return fallback
+	}
+	return out
+}
 
 // RegisterEvaluators registers all 19 userflow assertion
 // evaluators with the given engine.
@@ -67,8 +91,14 @@ func evaluateBuildSucceeds(
 ) (bool, string) {
 	b, ok := value.(bool)
 	if !ok {
-		return false, fmt.Sprintf(
-			"build_succeeds: expected bool, got %T", value,
+		return false, tr(
+			"challenges_userflow_evaluators_build_succeeds_wrong_type",
+			map[string]any{
+				"gotType": fmt.Sprintf("%T", value),
+			},
+			fmt.Sprintf(
+				"build_succeeds: expected bool, got %T", value,
+			),
 		)
 	}
 	if b {
@@ -83,15 +113,25 @@ func evaluateAllTestsPass(
 ) (bool, string) {
 	failures, ok := toIntVal(value)
 	if !ok {
-		return false, fmt.Sprintf(
-			"all_tests_pass: expected int, got %T", value,
+		return false, tr(
+			"challenges_userflow_evaluators_all_tests_pass_wrong_type",
+			map[string]any{
+				"gotType": fmt.Sprintf("%T", value),
+			},
+			fmt.Sprintf(
+				"all_tests_pass: expected int, got %T", value,
+			),
 		)
 	}
 	if failures == 0 {
 		return true, "all tests passed (0 failures)"
 	}
-	return false, fmt.Sprintf(
-		"tests failed: %d failures", failures,
+	return false, tr(
+		"challenges_userflow_evaluators_all_tests_pass_failures",
+		map[string]any{"failures": failures},
+		fmt.Sprintf(
+			"tests failed: %d failures", failures,
+		),
 	)
 }
 
@@ -101,8 +141,14 @@ func evaluateLintPasses(
 ) (bool, string) {
 	b, ok := value.(bool)
 	if !ok {
-		return false, fmt.Sprintf(
-			"lint_passes: expected bool, got %T", value,
+		return false, tr(
+			"challenges_userflow_evaluators_lint_passes_wrong_type",
+			map[string]any{
+				"gotType": fmt.Sprintf("%T", value),
+			},
+			fmt.Sprintf(
+				"lint_passes: expected bool, got %T", value,
+			),
 		)
 	}
 	if b {
@@ -117,8 +163,14 @@ func evaluateAppLaunches(
 ) (bool, string) {
 	b, ok := value.(bool)
 	if !ok {
-		return false, fmt.Sprintf(
-			"app_launches: expected bool, got %T", value,
+		return false, tr(
+			"challenges_userflow_evaluators_app_launches_wrong_type",
+			map[string]any{
+				"gotType": fmt.Sprintf("%T", value),
+			},
+			fmt.Sprintf(
+				"app_launches: expected bool, got %T", value,
+			),
 		)
 	}
 	if b {
@@ -166,8 +218,16 @@ func evaluateStatusCode(
 			"status code is %d", actual,
 		)
 	}
-	return false, fmt.Sprintf(
-		"status code: expected %d, got %d", expected, actual,
+	return false, tr(
+		"challenges_userflow_evaluators_status_code_mismatch",
+		map[string]any{
+			"expected": expected,
+			"actual":   actual,
+		},
+		fmt.Sprintf(
+			"status code: expected %d, got %d",
+			expected, actual,
+		),
 	)
 }
 
@@ -423,26 +483,46 @@ func evaluateVideoIntegrity(
 	frameCount, _ := toIntVal(m["frame_count"])
 
 	if fileSize <= 0 {
-		return false, fmt.Sprintf(
-			"video integrity: file_size is %d (must be > 0)",
-			fileSize,
+		return false, tr(
+			"challenges_userflow_evaluators_video_integrity_zero_filesize",
+			map[string]any{"fileSize": fileSize},
+			fmt.Sprintf(
+				"video integrity: file_size is %d (must be > 0)",
+				fileSize,
+			),
 		)
 	}
 	if durationMs <= 0 {
-		return false, fmt.Sprintf(
-			"video integrity: duration is %dms "+
-				"(must be > 0)", durationMs,
+		return false, tr(
+			"challenges_userflow_evaluators_video_integrity_zero_duration",
+			map[string]any{"durationMs": durationMs},
+			fmt.Sprintf(
+				"video integrity: duration is %dms "+
+					"(must be > 0)", durationMs,
+			),
 		)
 	}
 	if frameCount <= 0 {
-		return false, fmt.Sprintf(
-			"video integrity: frame_count is %d "+
-				"(must be > 0)", frameCount,
+		return false, tr(
+			"challenges_userflow_evaluators_video_integrity_zero_frames",
+			map[string]any{"frameCount": frameCount},
+			fmt.Sprintf(
+				"video integrity: frame_count is %d "+
+					"(must be > 0)", frameCount,
+			),
 		)
 	}
-	return true, fmt.Sprintf(
-		"video integrity: %d bytes, %dms, %d frames",
-		fileSize, durationMs, frameCount,
+	return true, tr(
+		"challenges_userflow_evaluators_video_integrity_summary",
+		map[string]any{
+			"fileSize":   fileSize,
+			"durationMs": durationMs,
+			"frameCount": frameCount,
+		},
+		fmt.Sprintf(
+			"video integrity: %d bytes, %dms, %d frames",
+			fileSize, durationMs, frameCount,
+		),
 	)
 }
 

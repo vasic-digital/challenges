@@ -9,7 +9,29 @@ import (
 	"time"
 
 	"digital.vasic.challenges/pkg/challenge"
+	"digital.vasic.challenges/pkg/i18n"
 )
+
+// trAITG looks up a CONST-046 message ID through the package-
+// level translator and returns the rendered string. If the
+// translator is NoopTranslator{} (returns id verbatim) or fails,
+// the supplied fallback is returned so user-visible text is
+// preserved without a translator installed. Translation is a
+// non-blocking in-memory lookup per CONST-051(B) decoupling
+// guarantee.
+func trAITG(
+	id string,
+	data map[string]any,
+	fallback string,
+) string {
+	out, err := i18n.Pkg().T(
+		context.Background(), id, data,
+	)
+	if err != nil || out == "" || out == id {
+		return fallback
+	}
+	return out
+}
 
 // AITestGenerationChallenge navigates to a target URL, takes
 // a screenshot, and generates test cases using AI analysis.
@@ -63,8 +85,12 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "browser_available",
 				Passed: true,
-				Message: "Browser not available" +
-					" - skipped (requires infrastructure)",
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_browser_unavailable",
+					nil,
+					"Browser not available"+
+						" - skipped (requires infrastructure)",
+				),
 			}},
 			nil, nil, "",
 		)
@@ -78,8 +104,12 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "testgen_available",
 				Passed: true,
-				Message: "TestGen not available" +
-					" - skipped (requires infrastructure)",
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_testgen_unavailable",
+					nil,
+					"TestGen not available"+
+						" - skipped (requires infrastructure)",
+				),
 			}},
 			nil, nil, "",
 		)
@@ -103,9 +133,13 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "browser_init",
 				Target: "initialize",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"browser init failed: %s",
-					err.Error(),
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_browser_init_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"browser init failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -133,9 +167,16 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "navigate",
 				Target: "target_url",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"navigate to %s failed: %s",
-					c.targetURL, err.Error(),
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_navigate_failed",
+					map[string]any{
+						"url": c.targetURL,
+						"err": err.Error(),
+					},
+					fmt.Sprintf(
+						"navigate to %s failed: %s",
+						c.targetURL, err.Error(),
+					),
 				),
 			},
 		)
@@ -161,9 +202,13 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "screenshot",
 				Target: "capture",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"screenshot failed: %s",
-					err.Error(),
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_screenshot_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"screenshot failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -191,9 +236,13 @@ func (c *AITestGenerationChallenge) Execute(
 				Type:   "testgen",
 				Target: "generate_tests",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"test generation failed: %s",
-					err.Error(),
+				Message: trAITG(
+					"challenges_userflow_ai_testgen_testgen_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"test generation failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -264,9 +313,13 @@ func (c *AITestGenerationChallenge) Execute(
 					Type:   "output",
 					Target: "create_dir",
 					Passed: false,
-					Message: fmt.Sprintf(
-						"create output dir failed: %s",
-						mkErr.Error(),
+					Message: trAITG(
+						"challenges_userflow_ai_testgen_create_dir_failed",
+						map[string]any{"err": mkErr.Error()},
+						fmt.Sprintf(
+							"create output dir failed: %s",
+							mkErr.Error(),
+						),
 					),
 				},
 			)
@@ -289,9 +342,13 @@ func (c *AITestGenerationChallenge) Execute(
 					Type:   "output",
 					Target: "marshal_json",
 					Passed: false,
-					Message: fmt.Sprintf(
-						"JSON marshal failed: %s",
-						mErr.Error(),
+					Message: trAITG(
+						"challenges_userflow_ai_testgen_marshal_json_failed",
+						map[string]any{"err": mErr.Error()},
+						fmt.Sprintf(
+							"JSON marshal failed: %s",
+							mErr.Error(),
+						),
 					),
 				},
 			)
@@ -316,9 +373,13 @@ func (c *AITestGenerationChallenge) Execute(
 					Type:   "output",
 					Target: "write_file",
 					Passed: false,
-					Message: fmt.Sprintf(
-						"write file failed: %s",
-						wErr.Error(),
+					Message: trAITG(
+						"challenges_userflow_ai_testgen_write_file_failed",
+						map[string]any{"err": wErr.Error()},
+						fmt.Sprintf(
+							"write file failed: %s",
+							wErr.Error(),
+						),
 					),
 				},
 			)
@@ -347,8 +408,12 @@ func (c *AITestGenerationChallenge) Execute(
 			Type:   "testgen",
 			Target: "tests_generated",
 			Passed: len(tests) > 0,
-			Message: fmt.Sprintf(
-				"generated %d test(s)", len(tests),
+			Message: trAITG(
+				"challenges_userflow_ai_testgen_generated_summary",
+				map[string]any{"count": len(tests)},
+				fmt.Sprintf(
+					"generated %d test(s)", len(tests),
+				),
 			),
 		},
 	)

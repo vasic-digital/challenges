@@ -23,11 +23,7 @@ Canonical reference: <https://github.com/HelixDevelopment/HelixConstitution>
 ## INHERITED FROM constitution/CLAUDE.md
 
 All rules in `constitution/CLAUDE.md` (and the `constitution/Constitution.md` it references) apply unconditionally. This file's rules below extend them — they MUST NOT weaken any inherited rule. See parent root `CLAUDE.md` §6.AD for the Lava-specific incorporation context (29th §6.L cycle, 2026-05-14) and §6.AD-debt for the implementation-gap inventory. Use `constitution/find_constitution.sh` from the parent project root to resolve the absolute path of the submodule from any nested location.
-## INHERITED FROM HelixConstitution/CLAUDE.md
 
-All rules in `HelixConstitution/CLAUDE.md` (and the `HelixConstitution/Constitution.md`
-it references) apply unconditionally. The project-specific rules below extend them.
-Rules below MUST NOT weaken any inherited clause.
 
 ## Definition of Done
 
@@ -43,7 +39,7 @@ same session as the change.** Coverage and green suites are not evidence.
 cd Challenges && GOMAXPROCS=2 nice -n 19 go test -count=1 -race -v \
   -run 'TestRunner_Execute' ./...
 ```
-Expect: PASS; a sample challenge runs to completion, assertion engine evaluates, and JSON/Markdown reports are emitted. The `cmd/userflow-runner` CLI (see `challenges/README.md`) drives the same pipeline end-to-end.
+Expect: PASS; a sample challenge runs to completion, assertion engine evaluates, and JSON/Markdown reports are emitted. The `cmd/userflow-runner` CLI (see `Challenges/README.md`) drives the same pipeline end-to-end.
 
 
 ## MANDATORY HOST-SESSION SAFETY (Constitution §12)
@@ -674,7 +670,7 @@ The authoritative verbatim text lives in the parent Lava `CLAUDE.md` "Seventh La
 
 ## Clause 6.N (added 2026-05-05, inherited per 6.F)
 
-- **Clause 6.N — Bluff-Hunt Cadence Tightening + Production Code Coverage** — see root `/CLAUDE.md` §6.N. Beyond the Seventh Law clause 5 baseline (5 random `*Test.kt` files every 2-4 weeks), bluff hunts now fire IN-cycle on three triggers: (1) per operator anti-bluff-mandate invocation — first/day full 5+2, subsequent same-day lighter 1-2 file incident-response; (2) per matrix-runner/gate change (pre-push enforced via §6.N-debt — owed); (3) per phase-gating attestation file added (pre-push enforced via §6.N-debt — owed). Bluff hunts MUST also sample production code: 2 files per phase from gate-shaping code (canonical list in root §6.N.2: `scripts/tag.sh` helpers, `scripts/check-constitution.sh`, `Submodules/containers/pkg/emulator/`, `Submodules/containers/cmd/emulator-matrix/`, the matrix runner's `writeAttestation` function) plus 0-2 from broader CI-touched code. Conceptual filter: "would a bug here be invisible to existing tests?". Forensic anchor: 2026-05-05 ultrathink-driven discovery of the 7-day-old `pkg/emulator/Boot()` port-collision bluff that was invisible to all existing test-only bluff hunts. §6.N-debt tracks the pre-push hook implementation owed via the Group A-prime spec (next brainstorming target).
+- **Clause 6.N — Bluff-Hunt Cadence Tightening + Production Code Coverage** — see root `/CLAUDE.md` §6.N. Beyond the Seventh Law clause 5 baseline (5 random `*Test.kt` files every 2-4 weeks), bluff hunts now fire IN-cycle on three triggers: (1) per operator anti-bluff-mandate invocation — first/day full 5+2, subsequent same-day lighter 1-2 file incident-response; (2) per matrix-runner/gate change (pre-push enforced via §6.N-debt — owed); (3) per phase-gating attestation file added (pre-push enforced via §6.N-debt — owed). Bluff hunts MUST also sample production code: 2 files per phase from gate-shaping code (canonical list in root §6.N.2: `scripts/tag.sh` helpers, `scripts/check-constitution.sh`, `Submodules/Containers/pkg/emulator/`, `Submodules/Containers/cmd/emulator-matrix/`, the matrix runner's `writeAttestation` function) plus 0-2 from broader CI-touched code. Conceptual filter: "would a bug here be invisible to existing tests?". Forensic anchor: 2026-05-05 ultrathink-driven discovery of the 7-day-old `pkg/emulator/Boot()` port-collision bluff that was invisible to all existing test-only bluff hunts. §6.N-debt tracks the pre-push hook implementation owed via the Group A-prime spec (next brainstorming target).
 
 
 ## MANDATORY §12.6 MEMORY-BUDGET CEILING — 60% MAXIMUM (User mandate, 2026-04-30)
@@ -1058,7 +1054,7 @@ See root `/CLAUDE.md` §6.W. Only GitHub (`vasic-digital/*`, `HelixDevelopment/*
 
 ## §6.X — Container-Submodule Emulator Wiring Mandate (inherited 2026-05-13, per §6.F)
 
-See root `/CLAUDE.md` §6.X. Every Android emulator instance the project depends on for testing MUST execute its emulator process INSIDE a podman/docker container managed by `Submodules/containers/`, NOT be host-direct-launched by Containers-submodule code that runs on the host. The Containers submodule's `pkg/runtime/` (rootless podman/docker auto-detection) brings the container up; `pkg/emulator/` orchestrates the AVD lifecycle inside it. Lava-side `scripts/run-emulator-tests.sh` is thin glue forwarding to the Containers CLI. The container-bound path is the gate — host-direct emulators are permitted for workstation iteration only. §6.X-debt tracks the wiring implementation owed to `Submodules/containers/`. This submodule MAY add stricter rules but MUST NOT relax.
+See root `/CLAUDE.md` §6.X. Every Android emulator instance the project depends on for testing MUST execute its emulator process INSIDE a podman/docker container managed by `Submodules/Containers/`, NOT be host-direct-launched by Containers-submodule code that runs on the host. The Containers submodule's `pkg/runtime/` (rootless podman/docker auto-detection) brings the container up; `pkg/emulator/` orchestrates the AVD lifecycle inside it. Lava-side `scripts/run-emulator-tests.sh` is thin glue forwarding to the Containers CLI. The container-bound path is the gate — host-direct emulators are permitted for workstation iteration only. §6.X-debt tracks the wiring implementation owed to `Submodules/Containers/`. This submodule MAY add stricter rules but MUST NOT relax.
 
 <!-- BEGIN submodule-decoupling-and-reusability (parent-mirror) -->
 
@@ -1100,24 +1096,6 @@ See root `/CLAUDE.md` §6.Z. No artifact may be distributed (Firebase App Distri
 ## §6.AA — Two-Stage Distribute Mandate (inherited 2026-05-14, per §6.F)
 
 See root `/CLAUDE.md` §6.AA. When an artifact has both a debug and a release variant (or analogous dev-vs-prod build types — including this submodule's binary release if it ships separate dev / prod variants), distribute MUST happen in TWO STAGES with operator-confirmed verification between them. Stage 1 distributes the debug / dev variant only; the operator verifies the **distributed** debug variant on the failure-surface device class. Stage 2 distributes the release / prod variant only ONLY AFTER written stage-1 verification, with the §6.Z test-evidence file appended with a `release-stage` section. No combined distribute permitted by default; the combined path requires explicit per-cycle operator authorization recorded in the evidence file. The R8 / minification surprise class on Android (or analogous stripping / production-only optimization classes on other artifacts) is the load-bearing reason. §6.AA-debt is open: mechanical enforcement via `scripts/firebase-distribute.sh` default flip + refusal of out-of-order `--release-only` + paired `last-version-{debug,release}` per-channel pre-push check is documented but not yet enforced. Forensic anchor: 2026-05-14 operator directive immediately after the §6.Z forensic-anchor crash on Lava-Android-1.2.19-1039: "for purposes like this one we shall distribute via Firebase DEV / DEBUG version only. Once we try it, you continue and once all verified you distribute RELEASE too!" This submodule MAY add stricter rules but MUST NOT relax this clause.
-<<<<<<< HEAD
-
-**§11.4.40 — Full-suite retest before release tag mandate (User mandate, 2026-05-17)**
-
-A release tag MUST NOT be created until a COMPLETE retest with ALL existing tests has been executed on a clean baseline AFTER every workable item in the batch is done, fixed, polished, and individually verified. Spot-check retests that run only the tests touched by the batch are FORBIDDEN — they miss interaction defects between the batch's fixes and previously-stable code.
-
-The complete retest comprises: (1) pre-build full sweep, (2) post-build full sweep, (3) on-device 4-phase cycle on EVERY owned device, (4) meta-test full mutation sweep, (5) Challenge bank full sweep, (6) Issues.md/Fixed.md state audit, (7) CONTINUATION.md sync check.
-
-Time is essential — complete retest is typically 12–48 hour elapsed effort. NOT optional, NOT abbreviated. Skipping is the exact "tests passed but feature broken" failure mode §11.4 specifically prohibits.
-
-Composes with §11.4.4 (per-fix retest) — §11.4.37 is the additional final integrity check at RELEASE granularity. Composes with §11.4.7 — full-suite retest is the authoritative baseline for closures in the batch. No escape hatch — no `--skip-full-retest` or `--quick-release` flag exists.
-
-Pre-build gate `CM-FULL-SUITE-RETEST-MANDATE` + paired mutation. Propagation gate `CM-COVENANT-114-40-PROPAGATION` enforces this anchor in every CLAUDE.md/AGENTS.md across parent + 10 owned submodules + HelixQA dependencies.
-
-**Canonical authority:** constitution submodule [`Constitution.md`](../../../constitution/Constitution.md) §11.4.37.
-
-Non-compliance is a release blocker regardless of context.
-=======
 ## §6.AB — Anti-Bluff Test-Suite Reinforcement (inherited 2026-05-14, per §6.F)
 
 See root `/CLAUDE.md` §6.AB. Every existing test + Challenge in this submodule MUST be auditable for the anti-bluff property "would this test fail if the user-visible behavior broke in a way a real user would notice?" Per-feature completeness checklist: rendering correctness (assert dominant color matches expected hue, not just RGB-variance), state-machine completeness (negative tests for forbidden transitions), gating logic (gate fires only on actual completion criterion). Bluff-hunt cadence escalation: every defect not caught by an existing test triggers a 5-file defect-driven hunt of adjacent tests, recorded under `.lava-ci-evidence/bluff-hunt/<date>-defect-driven-<slug>.json`. Discrimination test mandatory per Challenge Test: deliberately-broken-but-non-crashing production code MUST cause the Challenge Test to fail. Forensic anchor: 2026-05-14 Lava-Android-1.2.20-1040 white-icon + onboarding-gate-bypass — both passed all existing tests but failed for the user. Operator's 27th §6.L invocation: "all existing tests and Challenges do work in anti-bluff manner — they MUST confirm that all tested codebase really works as expected!" This submodule MAY add stricter rules but MUST NOT relax this clause.
@@ -1305,6 +1283,7 @@ If `HEAD..@{u}` is non-empty, integrate the upstream changes BEFORE any local ed
 **Anti-bluff invariant**: the fetch+log check MUST produce captured evidence — the actual `HEAD..@{u}` output, even if empty. Skipping the check on the basis of "I just fetched" or "nothing could have changed in the last N minutes" is a §11.4.6 (no-guessing) violation: the remote state is not knowable without a fetch.
 
 **Cascade requirement**: This anchor (verbatim or by `CONST-060` ID reference) MUST appear in every owned submodule's `CONSTITUTION.md`, `CLAUDE.md`, and `AGENTS.md`. Severity-equivalent to §11.4 PASS-bluff at the parallel-session-coordination layer. See constitution submodule `Constitution.md` §11.4.37 for the full mandate.
+<<<<<<< HEAD
 <!-- BEGIN helix-constitution-inheritance + anti-bluff escalation -->
 
 ## Anti-Bluff End-User Quality Guarantee (Escalated via HelixConstitution)
@@ -1349,3 +1328,5 @@ Pre-build gates: `CM-COVENANT-114-52-PROPAGATION` + `CM-AF-AUTONOMOUS-PATH-PER-F
 **Canonical authority:** constitution submodule Constitution.md §11.4.52.
 
 Non-compliance is a release blocker regardless of context.
+=======
+>>>>>>> 012164cc164a2a309404173b5404fcad40c13374

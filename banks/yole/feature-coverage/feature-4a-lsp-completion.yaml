@@ -25,7 +25,7 @@ platforms:
   - android
   - desktop
   - web
-  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+  - ios
 
 timeout: 5m
 
@@ -39,7 +39,7 @@ test_cases:
     name: "Type Rust prefix and assert LSP completion items"
     category: functional
     priority: critical
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "cold-launch"

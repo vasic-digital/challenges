@@ -7,7 +7,29 @@ import (
 	"time"
 
 	"digital.vasic.challenges/pkg/challenge"
+	"digital.vasic.challenges/pkg/i18n"
 )
+
+// trDesktop routes a hardcoded English message through the package-
+// level Translator (CONST-046). NoopTranslator returns the messageID
+// verbatim — we detect that and fall back to the previous English
+// literal so end-user-visible text is preserved when no consumer
+// has wired a real translator. Uses context.Background() — these
+// helpers are pre-existing synchronous string builders, and per
+// CONST-051(B) translation MUST be a non-blocking in-memory lookup.
+func trDesktop(
+	id string,
+	data map[string]any,
+	fallback string,
+) string {
+	out, err := i18n.Pkg().T(
+		context.Background(), id, data,
+	)
+	if err != nil || out == "" || out == id {
+		return fallback
+	}
+	return out
+}
 
 // DesktopLaunchChallenge launches a desktop application,
 // waits for its window to appear, verifies stability over a
@@ -203,20 +225,36 @@ func (c *DesktopLaunchChallenge) Execute(
 // assertion.
 func desktopLaunchMessage(err error) string {
 	if err == nil {
-		return "desktop app launched successfully"
+		return trDesktop(
+			"challenges_userflow_desktop_launched_successfully",
+			nil,
+			"desktop app launched successfully",
+		)
 	}
-	return fmt.Sprintf(
-		"desktop app launch failed: %s", err.Error(),
+	return trDesktop(
+		"challenges_userflow_desktop_launch_failed",
+		map[string]any{"err": err.Error()},
+		fmt.Sprintf(
+			"desktop app launch failed: %s", err.Error(),
+		),
 	)
 }
 
 // windowMessage returns a message for the window assertion.
 func windowMessage(err error) string {
 	if err == nil {
-		return "application window appeared"
+		return trDesktop(
+			"challenges_userflow_desktop_window_appeared",
+			nil,
+			"application window appeared",
+		)
 	}
-	return fmt.Sprintf(
-		"window did not appear: %s", err.Error(),
+	return trDesktop(
+		"challenges_userflow_desktop_window_failed",
+		map[string]any{"err": err.Error()},
+		fmt.Sprintf(
+			"window did not appear: %s", err.Error(),
+		),
 	)
 }
 
@@ -226,14 +264,26 @@ func desktopStabilityMessage(
 	running bool, err error,
 ) string {
 	if err != nil {
-		return fmt.Sprintf(
-			"stability check failed: %s", err.Error(),
+		return trDesktop(
+			"challenges_userflow_desktop_stability_failed",
+			map[string]any{"err": err.Error()},
+			fmt.Sprintf(
+				"stability check failed: %s", err.Error(),
+			),
 		)
 	}
 	if running {
-		return "desktop app remained stable"
+		return trDesktop(
+			"challenges_userflow_desktop_stable",
+			nil,
+			"desktop app remained stable",
+		)
 	}
-	return "desktop app crashed during stability wait"
+	return trDesktop(
+		"challenges_userflow_desktop_crashed",
+		nil,
+		"desktop app crashed during stability wait",
+	)
 }
 
 // DesktopFlowChallenge executes a BrowserFlow in the context
@@ -706,17 +756,32 @@ func ipcMessage(
 	name string, passed bool, err error,
 ) string {
 	if passed {
-		return fmt.Sprintf(
-			"IPC command %q succeeded", name,
+		return trDesktop(
+			"challenges_userflow_desktop_ipc_succeeded",
+			map[string]any{"name": name},
+			fmt.Sprintf(
+				"IPC command %q succeeded", name,
+			),
 		)
 	}
 	if err != nil {
-		return fmt.Sprintf(
-			"IPC command %q failed: %s",
-			name, err.Error(),
+		return trDesktop(
+			"challenges_userflow_desktop_ipc_failed",
+			map[string]any{
+				"name": name,
+				"err":  err.Error(),
+			},
+			fmt.Sprintf(
+				"IPC command %q failed: %s",
+				name, err.Error(),
+			),
 		)
 	}
-	return fmt.Sprintf(
-		"IPC command %q response mismatch", name,
+	return trDesktop(
+		"challenges_userflow_desktop_ipc_mismatch",
+		map[string]any{"name": name},
+		fmt.Sprintf(
+			"IPC command %q response mismatch", name,
+		),
 	)
 }

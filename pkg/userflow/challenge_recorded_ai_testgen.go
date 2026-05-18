@@ -9,7 +9,30 @@ import (
 	"time"
 
 	"digital.vasic.challenges/pkg/challenge"
+	"digital.vasic.challenges/pkg/i18n"
 )
+
+// trRAITG looks up a CONST-046 message ID through the package-
+// level translator and returns the rendered string. If the
+// translator is the NoopTranslator{} (returns id verbatim) or
+// fails, the supplied fallback is returned so user-visible text
+// is preserved without a translator installed. Evaluator-side
+// signatures here are pre-existing (do not accept ctx), so we
+// use context.Background() — translation MUST be a non-blocking
+// in-memory lookup per CONST-051(B) decoupling guarantee.
+func trRAITG(
+	id string,
+	data map[string]any,
+	fallback string,
+) string {
+	out, err := i18n.Pkg().T(
+		context.Background(), id, data,
+	)
+	if err != nil || out == "" || out == id {
+		return fallback
+	}
+	return out
+}
 
 // RecordedAITestGenChallenge wraps AI test generation with
 // video recording. It navigates to a target URL, records the
@@ -70,8 +93,12 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "browser_available",
 				Passed: false,
-				Message: "Browser not available" +
-					" - skipped",
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_browser_unavailable",
+					nil,
+					"Browser not available"+
+						" - skipped",
+				),
 			}},
 			nil, nil, "browser not available",
 		)
@@ -87,8 +114,12 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "recorder_available",
 				Passed: false,
-				Message: "Recorder not available" +
-					" - skipped",
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_recorder_unavailable",
+					nil,
+					"Recorder not available"+
+						" - skipped",
+				),
 			}},
 			nil, nil, "recorder not available",
 		)
@@ -104,8 +135,12 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "infrastructure",
 				Target: "testgen_available",
 				Passed: false,
-				Message: "TestGen not available" +
-					" - skipped",
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_testgen_unavailable",
+					nil,
+					"TestGen not available"+
+						" - skipped",
+				),
 			}},
 			nil, nil, "testgen not available",
 		)
@@ -131,9 +166,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "browser_init",
 				Target: "initialize",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"browser init failed: %s",
-					err.Error(),
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_browser_init_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"browser init failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -168,9 +207,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "recording_start",
 				Target: "start_recording",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"start recording failed: %s",
-					err.Error(),
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_start_recording_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"start recording failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -206,9 +249,16 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "navigate",
 				Target: "target_url",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"navigate to %s failed: %s",
-					c.targetURL, err.Error(),
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_navigate_failed",
+					map[string]any{
+						"url": c.targetURL,
+						"err": err.Error(),
+					},
+					fmt.Sprintf(
+						"navigate to %s failed: %s",
+						c.targetURL, err.Error(),
+					),
 				),
 			},
 		)
@@ -235,9 +285,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "screenshot",
 				Target: "capture",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"screenshot failed: %s",
-					err.Error(),
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_screenshot_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"screenshot failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -266,9 +320,13 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "testgen",
 				Target: "generate_tests",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"test generation failed: %s",
-					err.Error(),
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_testgen_failed",
+					map[string]any{"err": err.Error()},
+					fmt.Sprintf(
+						"test generation failed: %s",
+						err.Error(),
+					),
 				),
 			},
 		)
@@ -345,12 +403,20 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "recording",
 				Target: "video_integrity",
 				Passed: integrity,
-				Message: fmt.Sprintf(
-					"video integrity: size=%d "+
-						"duration=%s frames=%d",
-					recResult.FileSize,
-					recResult.Duration,
-					recResult.FrameCount,
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_video_integrity",
+					map[string]any{
+						"fileSize":   recResult.FileSize,
+						"duration":   recResult.Duration,
+						"frameCount": recResult.FrameCount,
+					},
+					fmt.Sprintf(
+						"video integrity: size=%d "+
+							"duration=%s frames=%d",
+						recResult.FileSize,
+						recResult.Duration,
+						recResult.FrameCount,
+					),
 				),
 			},
 		)
@@ -368,8 +434,12 @@ func (c *RecordedAITestGenChallenge) Execute(
 				Type:   "recording",
 				Target: "video_recorded",
 				Passed: false,
-				Message: fmt.Sprintf(
-					"recording failed: %s", errMsg,
+				Message: trRAITG(
+					"challenges_userflow_recorded_ai_testgen_recording_failed",
+					map[string]any{"err": errMsg},
+					fmt.Sprintf(
+						"recording failed: %s", errMsg,
+					),
 				),
 			},
 		)

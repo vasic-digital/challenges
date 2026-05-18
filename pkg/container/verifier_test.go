@@ -190,6 +190,6 @@ func TestIntegration_VerifyRunningContainers(t *testing.T) {
 
 	err := verifier.Verify(ctx)
 	if err != nil {
-		t.Skipf("Integration test skipped (containers not running) SKIP-OK: #container-runtime-optional: %v", err)
+		t.Skipf("Integration test skipped (containers not running): %v", err)
 	}
 }

@@ -13,8 +13,8 @@ import (
 func TestNewTestEnvironment_Defaults(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
-		t.Skipf( // SKIP-OK: #container-runtime-optional
-			"no container runtime available SKIP-OK: #container-runtime-optional: %v",
+		t.Skipf(
+			"skipping: no container runtime available: %v",
 			err,
 		)
 	}
@@ -53,8 +53,8 @@ func TestNewTestEnvironment_WithOptions(t *testing.T) {
 		WithLogger(logger),
 	)
 	if err != nil {
-		t.Skipf( // SKIP-OK: #container-runtime-optional
-			"no container runtime available SKIP-OK: #container-runtime-optional: %v",
+		t.Skipf(
+			"skipping: no container runtime available: %v",
 			err,
 		)
 	}
@@ -163,8 +163,8 @@ func TestPlatformGroup_Fields(t *testing.T) {
 func TestTestEnvironment_Accessors(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
-		t.Skipf( // SKIP-OK: #container-runtime-optional
-			"no container runtime available SKIP-OK: #container-runtime-optional: %v",
+		t.Skipf(
+			"skipping: no container runtime available: %v",
 			err,
 		)
 	}

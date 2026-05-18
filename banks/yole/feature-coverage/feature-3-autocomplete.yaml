@@ -23,7 +23,7 @@ platforms:
   - android
   - desktop
   - web
-  # iOS: deferred — tracker #iter-76-ios-scenarios-pending-xcode
+  - ios
 
 timeout: 3m
 
@@ -37,7 +37,7 @@ test_cases:
     name: "Type prefix 'fu' and assert completion popup visible"
     category: functional
     priority: critical
-    platforms: [android, desktop, web]
+    platforms: [android, desktop, web, ios]
     evidence_required: true
     steps:
       - name: "cold-launch"
