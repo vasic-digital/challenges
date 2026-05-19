@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>selenium-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">selenium-adapter</h1>
+</header>
+<h1 id="selenium-adapter">Selenium Adapter</h1>
+<p>The Selenium adapter implements <code>BrowserAdapter</code> using the
+W3C WebDriver protocol. It communicates with a Selenium Grid, standalone
+server, or any W3C-compliant WebDriver implementation (Selenoid, Moon,
+Aerokube) over HTTP.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>Go Challenge  --&gt;  SeleniumAdapter  --&gt;  HTTP (JSON Wire / W3C WebDriver)
+                                              |
+                                        Selenium Server (Grid / Standalone)
+                                              |
+                                    Browser (Chrome, Firefox, Edge, Safari)</code></pre>
+<p>Each adapter method translates to one or more WebDriver HTTP calls.
+The adapter creates a session during <code>Initialize</code>, executes
+commands against that session, and deletes the session on
+<code>Close</code>. All communication uses JSON over HTTP -- no binary
+protocols or WebSocket connections are needed.</p>
+<h3 id="w3c-webdriver-protocol">W3C WebDriver Protocol</h3>
+<p>The adapter uses the W3C WebDriver standard (successor to the JSON
+Wire Protocol). Key protocol details:</p>
+<ul>
+<li><strong>Session creation</strong>: <code>POST /session</code> with
+<code>capabilities.alwaysMatch</code></li>
+<li><strong>Element location</strong>:
+<code>POST /session/{id}/element</code> with
+<code>using: "css selector"</code></li>
+<li><strong>Element ID format</strong>: W3C uses the well-known key
+<code>element-6066-11e4-a52e-4f735466cecf</code>; the adapter also
+supports the legacy <code>ELEMENT</code> key</li>
+<li><strong>JavaScript execution</strong>:
+<code>POST /session/{id}/execute/sync</code></li>
+<li><strong>Screenshots</strong>:
+<code>GET /session/{id}/screenshot</code> returns base64-encoded
+PNG</li>
+<li><strong>Session deletion</strong>:
+<code>DELETE /session/{id}</code></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol type="1">
+<li>A running Selenium server (Grid or standalone) accessible over
+HTTP</li>
+<li>The target browser installed on the machine running the Selenium
+server</li>
+<li>The corresponding browser driver (ChromeDriver, GeckoDriver,
+etc.)</li>
+</ol>
+<h2 id="configuration">Configuration</h2>
+<h3 id="browserconfig">BrowserConfig</h3>
+<p>The <code>Initialize</code> method accepts the standard
+<code>BrowserConfig</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BrowserConfig <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    BrowserType <span class="dt">string</span>   <span class="st">`json:&quot;browser_type&quot;`</span>  <span class="co">// &quot;chrome&quot;, &quot;firefox&quot;, &quot;edge&quot;, &quot;safari&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Headless    <span class="dt">bool</span>     <span class="st">`json:&quot;headless&quot;`</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    WindowSize  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span>   <span class="st">`json:&quot;window_size&quot;`</span>   <span class="co">// [width, height]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ExtraArgs   <span class="op">[]</span><span class="dt">string</span> <span class="st">`json:&quot;extra_args&quot;`</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Browser type mapping:</p>
+<table>
+<thead>
+<tr>
+<th>BrowserConfig Value</th>
+<th>WebDriver <code>browserName</code></th>
+<th>Options Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chrome</code>, <code>chromium</code></td>
+<td><code>chrome</code></td>
+<td><code>goog:chromeOptions</code></td>
+</tr>
+<tr>
+<td><code>firefox</code>, <code>gecko</code></td>
+<td><code>firefox</code></td>
+<td><code>moz:firefoxOptions</code></td>
+</tr>
+<tr>
+<td><code>edge</code>, <code>msedge</code></td>
+<td><code>MicrosoftEdge</code></td>
+<td><code>ms:edgeOptions</code></td>
+</tr>
+<tr>
+<td><code>safari</code></td>
+<td><code>safari</code></td>
+<td>(no options key)</td>
+</tr>
+</tbody>
+</table>
+<p>When <code>Headless</code> is true, <code>--headless</code> is added
+to the browser arguments. Window size is passed as
+<code>--window-size=W,H</code>. Any strings in <code>ExtraArgs</code>
+are appended to the arguments list.</p>
+<h2 id="constructor">Constructor</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewSeleniumAdapter<span class="op">(</span><span class="st">&quot;http://localhost:4444&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>The single argument is the base URL of the Selenium WebDriver server.
+Trailing slashes are stripped. The adapter creates an internal
+<code>http.Client</code> with a 30-second timeout.</p>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="initialize">Initialize</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Initialize<span class="op">(</span>ctx<span class="op">,</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    BrowserType<span class="op">:</span> <span class="st">&quot;chrome&quot;</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    Headless<span class="op">:</span>    <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    WindowSize<span class="op">:</span>  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p>Creates a new WebDriver session. The session ID is stored internally
+and used for all subsequent operations.</p>
+<h3 id="navigate-click-fill-selectoption">Navigate, Click, Fill,
+SelectOption</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Navigate<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;https://example.com&quot;</span><span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>Click<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#submit-button&quot;</span><span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>Fill<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#email&quot;</span><span class="op">,</span> <span class="st">&quot;user@example.com&quot;</span><span class="op">)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>SelectOption<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#country&quot;</span><span class="op">,</span> <span class="st">&quot;US&quot;</span><span class="op">)</span></span></code></pre></div>
+<p><code>SelectOption</code> uses JavaScript execution
+(<code>document.querySelector</code> + <code>dispatchEvent</code>) since
+WebDriver does not have a native select endpoint for arbitrary
+dropdowns.</p>
+<h3 id="isvisible-waitforselector">IsVisible, WaitForSelector</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>visible<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>IsVisible<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;.alert-success&quot;</span><span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>WaitForSelector<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;.dashboard&quot;</span><span class="op">,</span> <span class="dv">10</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">)</span></span></code></pre></div>
+<p><code>WaitForSelector</code> polls every 200ms until the element is
+found or the timeout expires.</p>
+<h3 id="gettext-getattribute">GetText, GetAttribute</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>text<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>GetText<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;h1.title&quot;</span><span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>href<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>GetAttribute<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;a.link&quot;</span><span class="op">,</span> <span class="st">&quot;href&quot;</span><span class="op">)</span></span></code></pre></div>
+<h3 id="screenshot-evaluatejs">Screenshot, EvaluateJS</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>png<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>Screenshot<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>EvaluateJS<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;return document.title&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>Screenshot returns base64-decoded PNG bytes. EvaluateJS uses the
+synchronous script execution endpoint.</p>
+<h3 id="networkintercept">NetworkIntercept</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>NetworkIntercept<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;**/api/*&quot;</span><span class="op">,</span> handler<span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns nil; handler will NOT fire.</span></span></code></pre></div>
+<p>Network interception is not supported by the WebDriver protocol. The
+method returns nil to avoid breaking challenge flows. Use a proxy-based
+solution (e.g., BrowserMob Proxy) for network interception with
+Selenium.</p>
+<h3 id="close-available">Close, Available</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Close<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ok <span class="op">:=</span> adapter<span class="op">.</span>Available<span class="op">(</span>ctx<span class="op">)</span> <span class="co">// Checks GET /status</span></span></code></pre></div>
+<h2 id="docker-setup-for-selenium-grid">Docker Setup for Selenium
+Grid</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;3.8&quot;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selenium-hub</span><span class="kw">:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> selenium/hub:4.18</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;4444:4444&quot;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">chrome</span><span class="kw">:</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> selenium/node-chrome:4.18</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> selenium-hub</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_HOST=selenium-hub</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_PUBLISH_PORT=4442</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_SUBSCRIBE_PORT=4443</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">firefox</span><span class="kw">:</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> selenium/node-firefox:4.18</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> selenium-hub</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_HOST=selenium-hub</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_PUBLISH_PORT=4442</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> SE_EVENT_BUS_SUBSCRIBE_PORT=4443</span></span></code></pre></div>
+<p>Standalone mode (single browser, simpler setup):</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">selenium</span><span class="kw">:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> selenium/standalone-chrome:4.18</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;4444:4444&quot;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">shm_size</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;2g&quot;</span></span></code></pre></div>
+<h2 id="limitations-vs-playwright">Limitations vs Playwright</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Selenium</th>
+<th>Playwright</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Network interception</td>
+<td>Not supported (use proxy)</td>
+<td>Native support</td>
+</tr>
+<tr>
+<td>Multi-tab control</td>
+<td>Limited</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td>Protocol</td>
+<td>HTTP (higher latency)</td>
+<td>CDP WebSocket (lower latency)</td>
+</tr>
+<tr>
+<td>Browser install</td>
+<td>Manual driver management</td>
+<td>Auto-downloads browsers</td>
+</tr>
+<tr>
+<td>Cross-browser</td>
+<td>Chrome, Firefox, Edge, Safari</td>
+<td>Chromium, Firefox, WebKit</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Slower (HTTP round-trips)</td>
+<td>Faster (persistent connection)</td>
+</tr>
+<tr>
+<td>Mobile emulation</td>
+<td>Requires Appium</td>
+<td>Built-in device emulation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="integration-with-challenge-templates">Integration with Challenge
+Templates</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewSeleniumAdapter<span class="op">(</span><span class="st">&quot;http://selenium:4444&quot;</span><span class="op">)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewBrowserFlowChallenge<span class="op">(</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-SELENIUM-001&quot;</span><span class="op">,</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Selenium Login Flow&quot;</span><span class="op">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify login using Selenium WebDriver&quot;</span><span class="op">,</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>BrowserFlow<span class="op">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        Name<span class="op">:</span>     <span class="st">&quot;selenium-login&quot;</span><span class="op">,</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        StartURL<span class="op">:</span> <span class="st">&quot;http://app:3000/login&quot;</span><span class="op">,</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        Config<span class="op">:</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            BrowserType<span class="op">:</span> <span class="st">&quot;chrome&quot;</span><span class="op">,</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            Headless<span class="op">:</span>    <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>            WindowSize<span class="op">:</span>  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>BrowserStep<span class="op">{</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;enter-email&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;fill&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;#email&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;test@test.com&quot;</span><span class="op">},</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;enter-pass&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;fill&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;#password&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;secret&quot;</span><span class="op">},</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;submit&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;click&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;button[type=submit]&quot;</span><span class="op">},</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;verify&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;assert_visible&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;.dashboard&quot;</span><span class="op">},</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="source-files">Source Files</h2>
+<ul>
+<li>Interface: <code>pkg/userflow/adapter_browser.go</code></li>
+<li>Implementation: <code>pkg/userflow/selenium_adapter.go</code></li>
+</ul>
+</body>
+</html>

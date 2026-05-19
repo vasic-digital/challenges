@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>appium-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">appium-adapter</h1>
+</header>
+<h1 id="appium-adapter">Appium Adapter</h1>
+<p>The Appium adapter implements <code>MobileAdapter</code> using Appium
+2.0, a cross-platform mobile testing server built on the W3C WebDriver
+protocol with Appium-specific extensions. It supports both Android and
+iOS through a unified interface.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>Go Challenge  --&gt;  AppiumAdapter  --&gt;  HTTP (W3C WebDriver + Appium Extensions)
+                                            |
+                                      Appium Server (2.0)
+                                            |
+                                   +--------+---------+
+                                   |                  |
+                             UiAutomator2         XCUITest
+                             (Android)            (iOS)
+                                   |                  |
+                             Device / Emulator   Device / Simulator</code></pre>
+<p>The adapter communicates with the Appium server over HTTP using the
+W3C WebDriver session model. Appium extends the protocol with
+<code>appium:</code>-prefixed capabilities and mobile-specific endpoints
+(<code>/appium/device/install_app</code>,
+<code>/appium/app/launch</code>, etc.).</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol type="1">
+<li><strong>Appium Server 2.0</strong> running and accessible over HTTP
+(default port 4723)</li>
+<li><strong>Automation driver</strong> installed:
+<code>appium driver install uiautomator2</code> (Android) or
+<code>appium driver install xcuitest</code> (iOS)</li>
+<li><strong>Android</strong>: Android SDK, ADB in PATH, emulator or
+physical device connected</li>
+<li><strong>iOS</strong>: Xcode, Xcode Command Line Tools,
+WebDriverAgent built and deployed</li>
+</ol>
+<h2 id="appiumcapabilities-reference">AppiumCapabilities Reference</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> AppiumCapabilities <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    PlatformName    <span class="dt">string</span> <span class="st">`json:&quot;platformName&quot;`</span>              <span class="co">// &quot;Android&quot; or &quot;iOS&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    AutomationName  <span class="dt">string</span> <span class="st">`json:&quot;appium:automationName&quot;`</span>     <span class="co">// &quot;UiAutomator2&quot;, &quot;XCUITest&quot;, &quot;Espresso&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    DeviceName      <span class="dt">string</span> <span class="st">`json:&quot;appium:deviceName&quot;`</span>         <span class="co">// &quot;emulator-5554&quot;, &quot;iPhone 15&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    App             <span class="dt">string</span> <span class="st">`json:&quot;appium:app,omitempty&quot;`</span>      <span class="co">// Path to APK/IPA</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    AppPackage      <span class="dt">string</span> <span class="st">`json:&quot;appium:appPackage,omitempty&quot;`</span>     <span class="co">// Android package</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    AppActivity     <span class="dt">string</span> <span class="st">`json:&quot;appium:appActivity,omitempty&quot;`</span>   <span class="co">// Android launch activity</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    BundleID        <span class="dt">string</span> <span class="st">`json:&quot;appium:bundleId,omitempty&quot;`</span>      <span class="co">// iOS bundle ID</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    PlatformVersion <span class="dt">string</span> <span class="st">`json:&quot;appium:platformVersion,omitempty&quot;`</span> <span class="co">// OS version</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    NoReset         <span class="dt">bool</span>   <span class="st">`json:&quot;appium:noReset,omitempty&quot;`</span>       <span class="co">// Keep app data</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    FullReset       <span class="dt">bool</span>   <span class="st">`json:&quot;appium:fullReset,omitempty&quot;`</span>     <span class="co">// Reinstall between sessions</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    NewCommandTimeout <span class="dt">int</span>  <span class="st">`json:&quot;appium:newCommandTimeout,omitempty&quot;`</span> <span class="co">// Idle timeout (seconds)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="capability-notes">Capability Notes</h3>
+<ul>
+<li><code>NoReset: true</code> preserves app data and state between
+sessions (useful for login persistence)</li>
+<li><code>FullReset: true</code> uninstalls and reinstalls the app
+before each session</li>
+<li><code>NewCommandTimeout</code> prevents the Appium server from
+killing idle sessions</li>
+<li>When <code>App</code> is set, Appium auto-installs it on session
+creation</li>
+</ul>
+<h2 id="constructor">Constructor</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewAppiumAdapter<span class="op">(</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://localhost:4723&quot;</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>AppiumCapabilities<span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        PlatformName<span class="op">:</span>   <span class="st">&quot;Android&quot;</span><span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        AutomationName<span class="op">:</span> <span class="st">&quot;UiAutomator2&quot;</span><span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        DeviceName<span class="op">:</span>     <span class="st">&quot;emulator-5554&quot;</span><span class="op">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        AppPackage<span class="op">:</span>     <span class="st">&quot;com.example.app&quot;</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        AppActivity<span class="op">:</span>    <span class="st">&quot;.MainActivity&quot;</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<p>The constructor creates a <code>MobileConfig</code> from the
+capabilities and sets a 60-second HTTP timeout (longer than Selenium due
+to mobile device latency).</p>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="session-management">Session Management</h3>
+<p>Session creation is deferred -- <code>initialize()</code> is called
+automatically by <code>LaunchApp</code>, <code>InstallApp</code>, or
+<code>RunInstrumentedTests</code> on first use. This avoids session
+timeouts when the adapter is created early.</p>
+<h3 id="isdeviceavailable">IsDeviceAvailable</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>available<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>IsDeviceAvailable<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Queries <code>GET /status</code> on the Appium server. Returns true
+if <code>value.ready</code> is true in the response.</p>
+<h3 id="installapp-launchapp-stopapp">InstallApp, LaunchApp,
+StopApp</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>InstallApp<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;/path/to/app.apk&quot;</span><span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>LaunchApp<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>StopApp<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Uses Appium-specific endpoints:
+<code>/appium/device/install_app</code>,
+<code>/appium/app/launch</code>, <code>/appium/app/close</code>.</p>
+<h3 id="isapprunning">IsAppRunning</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>running<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>IsAppRunning<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Queries <code>/appium/device/app_state</code>. Returns true when the
+state value is &gt;= 3 (running in background or foreground). States: 0
+= not installed, 1 = not running, 2 = running in background (suspended),
+3 = running in background, 4 = running in foreground.</p>
+<h3 id="takescreenshot">TakeScreenshot</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>png<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>TakeScreenshot<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Uses the standard WebDriver <code>GET /session/{id}/screenshot</code>
+endpoint. Returns decoded PNG bytes.</p>
+<h3 id="tap-sendkeys-presskey">Tap, SendKeys, PressKey</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Tap<span class="op">(</span>ctx<span class="op">,</span> <span class="dv">500</span><span class="op">,</span> <span class="dv">300</span><span class="op">)</span>        <span class="co">// Tap at coordinates</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>SendKeys<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;hello&quot;</span><span class="op">)</span>     <span class="co">// Type into active element</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>PressKey<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;KEYCODE_BACK&quot;</span><span class="op">)</span> <span class="co">// Android key event</span></span></code></pre></div>
+<p><code>Tap</code> uses W3C Actions API with pointer type "touch".
+<code>SendKeys</code> finds the active element first, then sends text
+via <code>/element/{id}/value</code>. <code>PressKey</code> uses
+Appium's <code>/appium/device/press_keycode</code> endpoint.</p>
+<p>Supported key codes include: <code>KEYCODE_HOME</code> (3),
+<code>KEYCODE_BACK</code> (4), <code>KEYCODE_MENU</code> (82),
+<code>KEYCODE_ENTER</code> (66), <code>KEYCODE_DEL</code> (67),
+<code>KEYCODE_VOLUME_UP</code> (24), <code>KEYCODE_VOLUME_DOWN</code>
+(25), <code>KEYCODE_POWER</code> (26), <code>KEYCODE_TAB</code> (61),
+<code>KEYCODE_SPACE</code> (62), <code>KEYCODE_ESCAPE</code> (111), and
+media keys.</p>
+<h3 id="waitforapp">WaitForApp</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>WaitForApp<span class="op">(</span>ctx<span class="op">,</span> <span class="dv">30</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">)</span></span></code></pre></div>
+<p>Polls <code>IsAppRunning</code> every 500ms until the app is detected
+or the timeout expires.</p>
+<h3 id="runinstrumentedtests">RunInstrumentedTests</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>RunInstrumentedTests<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;com.example.LoginTest&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>Executes <code>am instrument</code> via Appium's
+<code>execute_driver</code> endpoint. Uses <code>mobile: shell</code> to
+run the Android instrumentation runner. Pass an empty string to run all
+instrumented tests.</p>
+<h2 id="android-example">Android Example</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewAppiumAdapter<span class="op">(</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://localhost:4723&quot;</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>AppiumCapabilities<span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        PlatformName<span class="op">:</span>   <span class="st">&quot;Android&quot;</span><span class="op">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        AutomationName<span class="op">:</span> <span class="st">&quot;UiAutomator2&quot;</span><span class="op">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        DeviceName<span class="op">:</span>     <span class="st">&quot;Pixel_7_API_34&quot;</span><span class="op">,</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        App<span class="op">:</span>            <span class="st">&quot;/builds/app-debug.apk&quot;</span><span class="op">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        NoReset<span class="op">:</span>        <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="ios-example">iOS Example</h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewAppiumAdapter<span class="op">(</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://localhost:4723&quot;</span><span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>AppiumCapabilities<span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        PlatformName<span class="op">:</span>    <span class="st">&quot;iOS&quot;</span><span class="op">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        AutomationName<span class="op">:</span>  <span class="st">&quot;XCUITest&quot;</span><span class="op">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        DeviceName<span class="op">:</span>      <span class="st">&quot;iPhone 15&quot;</span><span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        BundleID<span class="op">:</span>        <span class="st">&quot;com.example.MyApp&quot;</span><span class="op">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        PlatformVersion<span class="op">:</span> <span class="st">&quot;17.0&quot;</span><span class="op">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="docker-setup">Docker Setup</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">appium</span><span class="kw">:</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> appium/appium:2.5</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;4723:4723&quot;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> /dev/bus/usb:/dev/bus/usb</span><span class="co">  # USB passthrough for physical devices</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./apps:/apps</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ANDROID_HOME=/opt/android-sdk</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">privileged</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code></pre></div>
+<p>For emulator-based testing, use an Android emulator image:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">android-emulator</span><span class="kw">:</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> budtmo/docker-android:emulator_14.0</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;5554:5554&quot;</span><span class="co">   # ADB</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;4723:4723&quot;</span><span class="co">   # Appium</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> DEVICE=Samsung Galaxy S24</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> APPIUM=true</span></span></code></pre></div>
+<h2 id="integration-with-mobileflowchallenge">Integration with
+MobileFlowChallenge</h2>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewAppiumAdapter<span class="op">(</span><span class="st">&quot;http://appium:4723&quot;</span><span class="op">,</span> caps<span class="op">)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewMobileFlowChallenge<span class="op">(</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-APPIUM-001&quot;</span><span class="op">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Appium Login Flow&quot;</span><span class="op">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify mobile login via Appium&quot;</span><span class="op">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>MobileFlow<span class="op">{</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        Name<span class="op">:</span> <span class="st">&quot;appium-login&quot;</span><span class="op">,</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>MobileStep<span class="op">{</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;tap-email&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;tap&quot;</span><span class="op">,</span> X<span class="op">:</span> <span class="dv">540</span><span class="op">,</span> Y<span class="op">:</span> <span class="dv">800</span><span class="op">},</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;type-email&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;send_keys&quot;</span><span class="op">,</span> Text<span class="op">:</span> <span class="st">&quot;user@test.com&quot;</span><span class="op">},</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;tap-password&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;tap&quot;</span><span class="op">,</span> X<span class="op">:</span> <span class="dv">540</span><span class="op">,</span> Y<span class="op">:</span> <span class="dv">950</span><span class="op">},</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;type-password&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;send_keys&quot;</span><span class="op">,</span> Text<span class="op">:</span> <span class="st">&quot;secret123&quot;</span><span class="op">},</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;tap-login&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;tap&quot;</span><span class="op">,</span> X<span class="op">:</span> <span class="dv">540</span><span class="op">,</span> Y<span class="op">:</span> <span class="dv">1100</span><span class="op">},</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;verify&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;screenshot&quot;</span><span class="op">},</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="source-files">Source Files</h2>
+<ul>
+<li>Interface: <code>pkg/userflow/adapter_mobile.go</code></li>
+<li>Implementation: <code>pkg/userflow/appium_adapter.go</code></li>
+<li>Challenge template:
+<code>pkg/userflow/challenge_mobile.go</code></li>
+</ul>
+</body>
+</html>

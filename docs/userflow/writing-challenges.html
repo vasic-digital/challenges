@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>writing-challenges</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">writing-challenges</h1>
+</header>
+<h1 id="writing-challenges">Writing Challenges</h1>
+<p>This guide walks through creating new challenges using the
+<code>pkg/userflow</code> templates. It covers the full workflow from
+choosing a template to registering the challenge with the framework.</p>
+<h2 id="step-1-choose-a-template">Step 1: Choose a Template</h2>
+<p>Select the template that matches your testing goal:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Template</th>
+<th>Adapter Needed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Check an API health endpoint</td>
+<td><code>NewAPIHealthChallenge</code></td>
+<td><code>APIAdapter</code></td>
+</tr>
+<tr>
+<td>Execute a multi-step API flow</td>
+<td><code>NewAPIFlowChallenge</code></td>
+<td><code>APIAdapter</code></td>
+</tr>
+<tr>
+<td>Automate a browser workflow</td>
+<td><code>NewBrowserFlowChallenge</code></td>
+<td><code>BrowserAdapter</code></td>
+</tr>
+<tr>
+<td>Verify a project builds</td>
+<td><code>NewBuildChallenge</code></td>
+<td><code>BuildAdapter</code></td>
+</tr>
+<tr>
+<td>Run test suites</td>
+<td><code>NewUnitTestChallenge</code></td>
+<td><code>BuildAdapter</code></td>
+</tr>
+<tr>
+<td>Run linters</td>
+<td><code>NewLintChallenge</code></td>
+<td><code>BuildAdapter</code></td>
+</tr>
+<tr>
+<td>Install and launch a mobile app</td>
+<td><code>NewMobileLaunchChallenge</code></td>
+<td><code>MobileAdapter</code></td>
+</tr>
+<tr>
+<td>Automate mobile interactions</td>
+<td><code>NewMobileFlowChallenge</code></td>
+<td><code>MobileAdapter</code></td>
+</tr>
+<tr>
+<td>Run on-device tests</td>
+<td><code>NewInstrumentedTestChallenge</code></td>
+<td><code>MobileAdapter</code></td>
+</tr>
+<tr>
+<td>Launch and verify a desktop app</td>
+<td><code>NewDesktopLaunchChallenge</code></td>
+<td><code>DesktopAdapter</code></td>
+</tr>
+<tr>
+<td>Automate desktop WebView</td>
+<td><code>NewDesktopFlowChallenge</code></td>
+<td><code>DesktopAdapter</code></td>
+</tr>
+<tr>
+<td>Test desktop IPC commands</td>
+<td><code>NewDesktopIPCChallenge</code></td>
+<td><code>DesktopAdapter</code></td>
+</tr>
+<tr>
+<td>Set up test infrastructure</td>
+<td><code>NewEnvironmentSetupChallenge</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>Tear down test infrastructure</td>
+<td><code>NewEnvironmentTeardownChallenge</code></td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step-2-create-the-adapter">Step 2: Create the Adapter</h2>
+<p>Instantiate the adapter for your platform:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// API</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>api <span class="op">:=</span> userflow<span class="op">.</span>NewHTTPAPIAdapter<span class="op">(</span><span class="st">&quot;http://localhost:8080&quot;</span><span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Browser</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>browser <span class="op">:=</span> userflow<span class="op">.</span>NewPlaywrightCLIAdapter<span class="op">(</span><span class="st">&quot;ws://localhost:9222&quot;</span><span class="op">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Mobile</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>mobile <span class="op">:=</span> userflow<span class="op">.</span>NewADBCLIAdapter<span class="op">(</span>userflow<span class="op">.</span>MobileConfig<span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    PackageName<span class="op">:</span>  <span class="st">&quot;com.example.app&quot;</span><span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    ActivityName<span class="op">:</span> <span class="st">&quot;.MainActivity&quot;</span><span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Desktop</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>desktop <span class="op">:=</span> userflow<span class="op">.</span>NewTauriCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/binary&quot;</span><span class="op">)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Build (choose one per toolchain)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>goBuild <span class="op">:=</span> userflow<span class="op">.</span>NewGoCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>npmBuild <span class="op">:=</span> userflow<span class="op">.</span>NewNPMCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>gradleBuild <span class="op">:=</span> userflow<span class="op">.</span>NewGradleCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">,</span> <span class="ot">false</span><span class="op">)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>cargoBuild <span class="op">:=</span> userflow<span class="op">.</span>NewCargoCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span></code></pre></div>
+<h2 id="step-3-define-the-flow">Step 3: Define the Flow</h2>
+<p>For flow-based templates, create the flow definition. Flows are
+JSON-serializable, so they can also be loaded from configuration
+files.</p>
+<h3 id="api-flow-example">API Flow Example</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>flow <span class="op">:=</span> userflow<span class="op">.</span>APIFlow<span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span> <span class="st">&quot;user-management&quot;</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Credentials<span class="op">:</span> userflow<span class="op">.</span>Credentials<span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        Username<span class="op">:</span> <span class="st">&quot;admin&quot;</span><span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        Password<span class="op">:</span> <span class="st">&quot;secret&quot;</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>APIStep<span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>           <span class="st">&quot;create-user&quot;</span><span class="op">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            Method<span class="op">:</span>         <span class="st">&quot;POST&quot;</span><span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            Path<span class="op">:</span>           <span class="st">&quot;/api/v1/users&quot;</span><span class="op">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            Body<span class="op">:</span>           <span class="st">`{&quot;name&quot;:&quot;testuser&quot;,&quot;email&quot;:&quot;test@example.com&quot;}`</span><span class="op">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            ExpectedStatus<span class="op">:</span> <span class="dv">201</span><span class="op">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            ExtractTo<span class="op">:</span>      <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="dt">string</span><span class="op">{</span><span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="st">&quot;user_id&quot;</span><span class="op">},</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>           <span class="st">&quot;verify-user&quot;</span><span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            Method<span class="op">:</span>         <span class="st">&quot;GET&quot;</span><span class="op">,</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            Path<span class="op">:</span>           <span class="st">&quot;/api/v1/users/{{user_id}}&quot;</span><span class="op">,</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            ExpectedStatus<span class="op">:</span> <span class="dv">200</span><span class="op">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            Assertions<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>StepAssertion<span class="op">{</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                <span class="op">{</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                    Type<span class="op">:</span>    <span class="st">&quot;response_contains&quot;</span><span class="op">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                    Target<span class="op">:</span>  <span class="st">&quot;body&quot;</span><span class="op">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                    Value<span class="op">:</span>   <span class="st">&quot;testuser&quot;</span><span class="op">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                    Message<span class="op">:</span> <span class="st">&quot;response should contain user name&quot;</span><span class="op">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">},</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="browser-flow-example">Browser Flow Example</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>flow <span class="op">:=</span> userflow<span class="op">.</span>BrowserFlow<span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span>     <span class="st">&quot;signup-flow&quot;</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    StartURL<span class="op">:</span> <span class="st">&quot;http://localhost:3000/signup&quot;</span><span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Config<span class="op">:</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        Headless<span class="op">:</span>   <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        WindowSize<span class="op">:</span> <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>BrowserStep<span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;fill-email&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;fill&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;#email&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;test@example.com&quot;</span><span class="op">},</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;fill-pass&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;fill&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;#password&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;secret123&quot;</span><span class="op">},</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;submit&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;click&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;button[type=submit]&quot;</span><span class="op">},</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;wait-redirect&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;wait&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;.dashboard&quot;</span><span class="op">,</span> Timeout<span class="op">:</span> <span class="dv">5</span> <span class="op">*</span> time<span class="op">.</span>Second<span class="op">},</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;verify-url&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;assert_url&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;/dashboard&quot;</span><span class="op">},</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="step-4-create-the-challenge">Step 4: Create the Challenge</h2>
+<p>Combine the adapter and flow into a challenge:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ch <span class="op">:=</span> userflow<span class="op">.</span>NewAPIFlowChallenge<span class="op">(</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-USER-MGMT-001&quot;</span><span class="op">,</span>       <span class="co">// unique ID</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;User Management Flow&quot;</span><span class="op">,</span>    <span class="co">// display name</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Test user CRUD lifecycle&quot;</span><span class="op">,</span> <span class="co">// description</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-ENV-001&quot;</span><span class="op">},</span> <span class="co">// depends on environment setup</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    api<span class="op">,</span>                       <span class="co">// adapter</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    flow<span class="op">,</span>                      <span class="co">// flow definition</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h3 id="choosing-an-id">Choosing an ID</h3>
+<p>Challenge IDs must be unique within the registry. A common convention
+is <code>CH-&lt;CATEGORY&gt;-&lt;NUMBER&gt;</code>:</p>
+<ul>
+<li><code>CH-API-001</code>, <code>CH-API-002</code>, ...</li>
+<li><code>CH-BROWSER-001</code>, ...</li>
+<li><code>CH-BUILD-001</code>, ...</li>
+<li><code>CH-ENV-001</code>, <code>CH-ENV-TEARDOWN</code></li>
+</ul>
+<h3 id="setting-dependencies">Setting Dependencies</h3>
+<p>The <code>deps</code> parameter is a slice of
+<code>challenge.ID</code> values that must pass before this challenge
+runs. Common patterns:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// No dependencies (root challenge)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>deps <span class="op">:=</span> <span class="ot">nil</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Depends on environment setup</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>deps <span class="op">:=</span> <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-ENV-001&quot;</span><span class="op">}</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Depends on build passing</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>deps <span class="op">:=</span> <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">}</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Multiple dependencies</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>deps <span class="op">:=</span> <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-ENV-001&quot;</span><span class="op">,</span> <span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">}</span></span></code></pre></div>
+<h2 id="step-5-register-the-challenge">Step 5: Register the
+Challenge</h2>
+<p>Register the challenge with the challenge registry so the runner can
+discover and execute it:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="st">&quot;digital.vasic.challenges/pkg/registry&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>reg <span class="op">:=</span> registry<span class="op">.</span>New<span class="op">()</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>ch<span class="op">)</span></span></code></pre></div>
+<p>Or register multiple challenges:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>setup<span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>buildChallenge<span class="op">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>testChallenge<span class="op">)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>apiChallenge<span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(</span>teardown<span class="op">)</span></span></code></pre></div>
+<p>The registry uses Kahn's algorithm for topological sorting, so
+challenges are executed in dependency order automatically.</p>
+<h2 id="step-6-build-a-pipeline">Step 6: Build a Pipeline</h2>
+<p>A typical multi-platform pipeline looks like:</p>
+<pre><code>CH-ENV-001 (Environment Setup)
+    |
+    +-- CH-BUILD-001 (Build)
+    |       |
+    |       +-- CH-TEST-001 (Unit Tests)
+    |       |
+    |       +-- CH-LINT-001 (Lint)
+    |
+    +-- CH-API-001 (API Health)
+    |       |
+    |       +-- CH-API-002 (API Flow)
+    |
+    +-- CH-BROWSER-001 (Browser Flow)
+    |
+    +-- CH-MOBILE-001 (Mobile Launch)
+            |
+            +-- CH-MOBILE-002 (Mobile Flow)
+
+CH-ENV-TEARDOWN (Environment Teardown)</code></pre>
+<h2 id="complete-example">Complete Example</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> mychallenge</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;context&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;time&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/challenge&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/registry&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/userflow&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> RegisterAll<span class="op">(</span>reg <span class="op">*</span>registry<span class="op">.</span>Registry<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    api <span class="op">:=</span> userflow<span class="op">.</span>NewHTTPAPIAdapter<span class="op">(</span><span class="st">&quot;http://localhost:8080&quot;</span><span class="op">)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    goBuild <span class="op">:=</span> userflow<span class="op">.</span>NewGoCLIAdapter<span class="op">(</span><span class="st">&quot;.&quot;</span><span class="op">)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Environment setup</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(</span>userflow<span class="op">.</span>NewEnvironmentSetupChallenge<span class="op">(</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CH-ENV-001&quot;</span><span class="op">,</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">func</span><span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Start services, seed data, etc.</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="dv">60</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">,</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">))</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Build</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(</span>userflow<span class="op">.</span>NewBuildChallenge<span class="op">(</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">,</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Build Project&quot;</span><span class="op">,</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Verify the project compiles&quot;</span><span class="op">,</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-ENV-001&quot;</span><span class="op">},</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        goBuild<span class="op">,</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">[]</span>userflow<span class="op">.</span>BuildTarget<span class="op">{</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;all&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./...&quot;</span><span class="op">},</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="op">))</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Tests</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(</span>userflow<span class="op">.</span>NewUnitTestChallenge<span class="op">(</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CH-TEST-001&quot;</span><span class="op">,</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Unit Tests&quot;</span><span class="op">,</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;All tests must pass&quot;</span><span class="op">,</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">},</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        goBuild<span class="op">,</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">[]</span>userflow<span class="op">.</span>TestTarget<span class="op">{</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;all&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./...&quot;</span><span class="op">},</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">))</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    <span class="co">// API health</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(</span>userflow<span class="op">.</span>NewAPIHealthChallenge<span class="op">(</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CH-API-001&quot;</span><span class="op">,</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>        api<span class="op">,</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;/api/v1/health&quot;</span><span class="op">,</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>        <span class="dv">200</span><span class="op">,</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>        <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-ENV-001&quot;</span><span class="op">},</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">))</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Teardown</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(</span>userflow<span class="op">.</span>NewEnvironmentTeardownChallenge<span class="op">(</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CH-ENV-TEARDOWN&quot;</span><span class="op">,</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        <span class="kw">func</span><span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="op">))</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="tips">Tips</h2>
+<ul>
+<li><strong>Progress reporting</strong>: All templates call
+<code>ReportProgress</code> automatically. No additional code is needed
+for liveness detection.</li>
+<li><strong>Assertions</strong>: Templates produce detailed
+<code>AssertionResult</code> values for each step. The challenge runner
+aggregates these into the final report.</li>
+<li><strong>Metrics</strong>: Templates record duration metrics in
+seconds. Use <code>ParseTestResultToMetrics</code> and
+<code>ParseBuildResultToMetrics</code> if you need to extract metrics
+manually.</li>
+<li><strong>Error handling</strong>: Templates do not return Go errors
+from <code>Execute()</code>. Instead, failures are captured as assertion
+results and the challenge status is set to
+<code>StatusFailed</code>.</li>
+</ul>
+</body>
+</html>

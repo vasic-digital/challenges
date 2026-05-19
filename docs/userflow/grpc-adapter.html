@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>grpc-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">grpc-adapter</h1>
+</header>
+<h1 id="grpc-adapter">gRPC Adapter</h1>
+<p>The gRPC adapter defines a <code>GRPCAdapter</code> interface and
+provides a CLI implementation (<code>GRPCCLIAdapter</code>) that wraps
+the <code>grpcurl</code> command-line tool. It supports service
+discovery, unary and streaming method invocation, health checking, and
+TLS configuration.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>Go Challenge  --&gt;  GRPCCLIAdapter  --&gt;  grpcurl [flags] &lt;server&gt; &lt;method&gt;
+                                              |
+                                        gRPC Server
+                                              |
+                                    +----+----+----+----+
+                                    |    |    |    |    |
+                                  Unary Server Client Bidi
+                                  RPC  Stream Stream Stream</code></pre>
+<p>The adapter shells out to <code>grpcurl</code> for each operation.
+<code>grpcurl</code> handles serialization, TLS, and protocol details.
+Responses are captured from stdout and parsed by the adapter.</p>
+<h3 id="server-reflection">Server Reflection</h3>
+<p>By default, the adapter uses gRPC server reflection to discover
+services and methods. This requires the server to register the
+reflection service:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="st">&quot;google.golang.org/grpc/reflection&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reflection<span class="op">.</span>Register<span class="op">(</span>grpcServer<span class="op">)</span></span></code></pre></div>
+<p>For servers without reflection, use <code>WithProtoFiles()</code> to
+provide <code>.proto</code> file paths.</p>
+<h2 id="grpcadapter-interface">GRPCAdapter Interface</h2>
+<p>Defined in <code>adapter_grpc.go</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> GRPCAdapter <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ListServices<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">([]</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ListMethods<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> service <span class="dt">string</span><span class="op">)</span> <span class="op">([]</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Invoke<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> method<span class="op">,</span> request <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    InvokeStream<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> method<span class="op">,</span> request <span class="dt">string</span><span class="op">)</span> <span class="op">([]</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    HealthCheck<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> service <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">bool</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    Available<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">bool</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Close<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="method-summary">Method Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ListServices</code></td>
+<td>Returns all gRPC services via server reflection</td>
+</tr>
+<tr>
+<td><code>ListMethods</code></td>
+<td>Returns all methods for a given service</td>
+</tr>
+<tr>
+<td><code>Invoke</code></td>
+<td>Calls a unary gRPC method with JSON request, returns JSON
+response</td>
+</tr>
+<tr>
+<td><code>InvokeStream</code></td>
+<td>Calls a server-streaming method, returns all JSON responses</td>
+</tr>
+<tr>
+<td><code>HealthCheck</code></td>
+<td>Performs standard <code>grpc.health.v1.Health/Check</code></td>
+</tr>
+<tr>
+<td><code>Available</code></td>
+<td>Returns true if the server is reachable (attempts
+<code>ListServices</code>)</td>
+</tr>
+<tr>
+<td><code>Close</code></td>
+<td>No-op (grpcurl does not maintain persistent connections)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="grpcoption-reference">GRPCOption Reference</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> GRPCOption <span class="kw">func</span><span class="op">(*</span>grpcCLIConfig<span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WithTLS()</code></td>
+<td>Enable TLS for connections</td>
+<td>Disabled (plaintext)</td>
+</tr>
+<tr>
+<td><code>WithCert(certFile)</code></td>
+<td>Set TLS CA certificate file (also enables TLS)</td>
+<td>(none)</td>
+</tr>
+<tr>
+<td><code>WithInsecure()</code></td>
+<td>Disable TLS certificate verification</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>WithProtoFiles(files...)</code></td>
+<td>Use proto files instead of server reflection</td>
+<td>(none)</td>
+</tr>
+<tr>
+<td><code>WithHeaders(map)</code></td>
+<td>Add metadata headers to every request</td>
+<td>(none)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="constructor">Constructor</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Plaintext connection (default)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGRPCCLIAdapter<span class="op">(</span><span class="st">&quot;localhost:50051&quot;</span><span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">// TLS with custom cert</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGRPCCLIAdapter<span class="op">(</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;api.example.com:443&quot;</span><span class="op">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithCert<span class="op">(</span><span class="st">&quot;/path/to/ca.pem&quot;</span><span class="op">),</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">// With auth header and proto files</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGRPCCLIAdapter<span class="op">(</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;localhost:50051&quot;</span><span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithInsecure<span class="op">(),</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithHeaders<span class="op">(</span><span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="dt">string</span><span class="op">{</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Authorization&quot;</span><span class="op">:</span> <span class="st">&quot;Bearer &lt;token&gt;&quot;</span><span class="op">,</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}),</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithProtoFiles<span class="op">(</span><span class="st">&quot;api/v1/service.proto&quot;</span><span class="op">),</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="listservices">ListServices</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>services<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>ListServices<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">// [&quot;grpc.health.v1.Health&quot;, &quot;myapp.v1.UserService&quot;, ...]</span></span></code></pre></div>
+<p>Runs: <code>grpcurl -plaintext localhost:50051 list</code></p>
+<h3 id="listmethods">ListMethods</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>methods<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>ListMethods<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;myapp.v1.UserService&quot;</span><span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// [&quot;myapp.v1.UserService/CreateUser&quot;, &quot;myapp.v1.UserService/GetUser&quot;, ...]</span></span></code></pre></div>
+<p>Runs:
+<code>grpcurl -plaintext localhost:50051 list myapp.v1.UserService</code></p>
+<h3 id="invoke-unary-rpc">Invoke (Unary RPC)</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>response<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>Invoke<span class="op">(</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;myapp.v1.UserService/GetUser&quot;</span><span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`{&quot;id&quot;: &quot;user-123&quot;}`</span><span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">// response: `{&quot;id&quot;:&quot;user-123&quot;,&quot;name&quot;:&quot;Alice&quot;,&quot;email&quot;:&quot;alice@example.com&quot;}`</span></span></code></pre></div>
+<p>Runs:
+<code>grpcurl -plaintext -d '{"id":"user-123"}' localhost:50051 myapp.v1.UserService/GetUser</code></p>
+<h3 id="invokestream-server-streaming">InvokeStream (Server
+Streaming)</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>responses<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>InvokeStream<span class="op">(</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;myapp.v1.EventService/StreamEvents&quot;</span><span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`{&quot;topic&quot;: &quot;orders&quot;}`</span><span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">// responses: [&quot;{\&quot;event\&quot;:\&quot;created\&quot;,...}&quot;, &quot;{\&quot;event\&quot;:\&quot;updated\&quot;,...}&quot;]</span></span></code></pre></div>
+<p>The adapter parses streaming output by tracking JSON brace depth.
+Each complete <code>{...}</code> object is returned as a separate string
+in the slice.</p>
+<h3 id="healthcheck">HealthCheck</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>serving<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>HealthCheck<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;myapp.v1.UserService&quot;</span><span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">// serving: true if response contains &quot;SERVING&quot;</span></span></code></pre></div>
+<p>Invokes <code>grpc.health.v1.Health/Check</code> with
+<code>{"service": "myapp.v1.UserService"}</code>. Pass an empty string
+to check the overall server health.</p>
+<h2 id="streaming-support">Streaming Support</h2>
+<p>The <code>InvokeStream</code> method handles server-streaming RPCs.
+The <code>parseJSONObjects</code> function splits grpcurl's streaming
+output into individual JSON objects by tracking brace nesting depth:</p>
+<pre><code>Input:  {&quot;event&quot;:&quot;a&quot;}{&quot;event&quot;:&quot;b&quot;}{&quot;event&quot;:&quot;c&quot;}
+Output: [&quot;{&quot;event&quot;:&quot;a&quot;}&quot;, &quot;{&quot;event&quot;:&quot;b&quot;}&quot;, &quot;{&quot;event&quot;:&quot;c&quot;}&quot;]</code></pre>
+<p>Client-streaming and bidirectional-streaming RPCs are not supported
+by the CLI adapter, as <code>grpcurl</code> has limited support for
+interactive streaming.</p>
+<h2 id="grpcflowchallenge">GRPCFlowChallenge</h2>
+<p>The <code>GRPCFlowChallenge</code> template executes a multi-step
+gRPC flow:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewGRPCFlowChallenge<span class="op">(</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-GRPC-001&quot;</span><span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;gRPC User Service Flow&quot;</span><span class="op">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify CRUD operations on the User service&quot;</span><span class="op">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>GRPCFlow<span class="op">{</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        ServerAddr<span class="op">:</span> <span class="st">&quot;localhost:50051&quot;</span><span class="op">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>GRPCStep<span class="op">{</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                Name<span class="op">:</span>    <span class="st">&quot;create-user&quot;</span><span class="op">,</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                Method<span class="op">:</span>  <span class="st">&quot;myapp.v1.UserService/CreateUser&quot;</span><span class="op">,</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                Request<span class="op">:</span> <span class="st">`{&quot;name&quot;:&quot;Alice&quot;,&quot;email&quot;:&quot;alice@example.com&quot;}`</span><span class="op">,</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                ExpectedFields<span class="op">:</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}{</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="ot">nil</span><span class="op">,</span>  <span class="co">// Field must exist (any value)</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                <span class="op">},</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                ExtractTo<span class="op">:</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="dt">string</span><span class="op">{</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="st">&quot;user_id&quot;</span><span class="op">,</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                <span class="op">},</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>                Name<span class="op">:</span>    <span class="st">&quot;get-user&quot;</span><span class="op">,</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>                Method<span class="op">:</span>  <span class="st">&quot;myapp.v1.UserService/GetUser&quot;</span><span class="op">,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>                Request<span class="op">:</span> <span class="st">`{&quot;id&quot;:&quot;{{user_id}}&quot;}`</span><span class="op">,</span>  <span class="co">// Variable substitution</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                ExpectedFields<span class="op">:</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}{</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;name&quot;</span><span class="op">:</span>  <span class="st">&quot;Alice&quot;</span><span class="op">,</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;email&quot;</span><span class="op">:</span> <span class="st">&quot;alice@example.com&quot;</span><span class="op">,</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                <span class="op">},</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>            <span class="op">},</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h3 id="flow-features">Flow Features</h3>
+<ul>
+<li><strong>Variable substitution</strong>: Use
+<code>{{var_name}}</code> in method paths and request bodies</li>
+<li><strong>Field validation</strong>: <code>ExpectedFields</code> with
+<code>nil</code> value means "field must exist"; non-nil values are
+compared as strings</li>
+<li><strong>Value extraction</strong>: <code>ExtractTo</code> maps
+response fields to variables for use in subsequent steps</li>
+<li><strong>Step assertions</strong>: Custom assertions
+(<code>response_contains</code>, <code>not_empty</code>,
+<code>stream_count</code>)</li>
+<li><strong>Per-step metrics</strong>: Duration tracked for each
+step</li>
+<li><strong>Progress reporting</strong>: Each step reports progress to
+the liveness monitor</li>
+</ul>
+<h2 id="source-files">Source Files</h2>
+<ul>
+<li>Interface + CLI adapter:
+<code>pkg/userflow/adapter_grpc.go</code></li>
+<li>Challenge template:
+<code>pkg/userflow/challenge_grpc_flow.go</code></li>
+</ul>
+</body>
+</html>

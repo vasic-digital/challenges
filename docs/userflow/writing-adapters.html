@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>writing-adapters</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">writing-adapters</h1>
+</header>
+<h1 id="writing-adapters">Writing Adapters</h1>
+<p>This guide walks through implementing a new platform adapter for
+<code>pkg/userflow</code>. Adapters are the extension point for adding
+support for new tools, platforms, or protocols.</p>
+<h2 id="when-to-write-a-new-adapter">When to Write a New Adapter</h2>
+<p>Write a new adapter when:</p>
+<ul>
+<li>You need to support a platform not covered by the built-in
+adapters.</li>
+<li>You want to use a different tool for an existing platform (e.g.,
+Selenium instead of Playwright for browser testing).</li>
+<li>You need to customize the behavior of an existing adapter beyond
+what functional options allow.</li>
+</ul>
+<p>The built-in adapters follow a CLI-based approach (shelling out to
+command-line tools). You may want to write adapters that use native Go
+libraries, gRPC, or HTTP APIs instead.</p>
+<h2 id="step-1-choose-the-interface">Step 1: Choose the Interface</h2>
+<p>Select the adapter interface that matches your platform:</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>File</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BrowserAdapter</code></td>
+<td><code>adapter_browser.go</code></td>
+<td>Web UI automation</td>
+</tr>
+<tr>
+<td><code>MobileAdapter</code></td>
+<td><code>adapter_mobile.go</code></td>
+<td>Mobile device testing</td>
+</tr>
+<tr>
+<td><code>DesktopAdapter</code></td>
+<td><code>adapter_desktop.go</code></td>
+<td>Desktop application testing</td>
+</tr>
+<tr>
+<td><code>APIAdapter</code></td>
+<td><code>adapter_api.go</code></td>
+<td>REST API and WebSocket testing</td>
+</tr>
+<tr>
+<td><code>BuildAdapter</code></td>
+<td><code>adapter_build.go</code></td>
+<td>Build, test, lint operations</td>
+</tr>
+<tr>
+<td><code>ProcessAdapter</code></td>
+<td><code>adapter_process.go</code></td>
+<td>Process lifecycle management</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step-2-implement-the-interface">Step 2: Implement the
+Interface</h2>
+<p>Create a new file following the naming convention
+<code>&lt;tool&gt;_&lt;type&gt;_adapter.go</code>. All adapters follow
+the same patterns.</p>
+<h3 id="example-selenium-browser-adapter">Example: Selenium Browser
+Adapter</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> userflow</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;context&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;time&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">// SeleniumAdapter implements BrowserAdapter using Selenium</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">// WebDriver for browser automation.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> SeleniumAdapter <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    webDriverURL <span class="dt">string</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    sessionID    <span class="dt">string</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Compile-time interface check.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> _ BrowserAdapter <span class="op">=</span> <span class="op">(*</span>SeleniumAdapter<span class="op">)(</span><span class="ot">nil</span><span class="op">)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">// NewSeleniumAdapter creates a SeleniumAdapter that connects</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">// to the given WebDriver URL.</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewSeleniumAdapter<span class="op">(</span>webDriverURL <span class="dt">string</span><span class="op">)</span> <span class="op">*</span>SeleniumAdapter <span class="op">{</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">&amp;</span>SeleniumAdapter<span class="op">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        webDriverURL<span class="op">:</span> webDriverURL<span class="op">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>SeleniumAdapter<span class="op">)</span> Initialize<span class="op">(</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> config BrowserConfig<span class="op">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a WebDriver session with the configured browser</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// type, headless mode, and window size.</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Store the session ID for subsequent calls.</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>SeleniumAdapter<span class="op">)</span> Navigate<span class="op">(</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> url <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">// POST /session/{id}/url with the target URL</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>SeleniumAdapter<span class="op">)</span> Click<span class="op">(</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> selector <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Find element by CSS selector, then click it</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>SeleniumAdapter<span class="op">)</span> Fill<span class="op">(</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> selector<span class="op">,</span> value <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Find element, clear it, send keys</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co">// ... implement all remaining interface methods ...</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>SeleniumAdapter<span class="op">)</span> Available<span class="op">(</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Check if the WebDriver endpoint is reachable</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">false</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="key-implementation-requirements">Key Implementation
+Requirements</h3>
+<ol type="1">
+<li><p><strong>All methods must accept
+<code>context.Context</code></strong> as the first parameter (except
+<code>IsRunning</code> and <code>Stop</code> on
+<code>ProcessAdapter</code>). Respect context cancellation.</p></li>
+<li><p><strong><code>Available()</code> must be
+non-destructive</strong>. It should check tool availability without side
+effects (no processes started, no files created).</p></li>
+<li><p><strong><code>Close()</code> must be idempotent</strong>. Calling
+it multiple times should not produce errors.</p></li>
+<li><p><strong>Error wrapping</strong>: Wrap errors with
+<code>fmt.Errorf("operation: %w", err)</code> to provide
+context.</p></li>
+<li><p><strong>Compile-time interface check</strong>: Add a blank
+assignment to verify interface satisfaction:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> _ BrowserAdapter <span class="op">=</span> <span class="op">(*</span>MyAdapter<span class="op">)(</span><span class="ot">nil</span><span class="op">)</span></span></code></pre></div></li>
+</ol>
+<h2 id="step-3-handle-tool-specific-output">Step 3: Handle Tool-Specific
+Output</h2>
+<p>Many adapters need to parse tool output. Follow these patterns from
+the built-in adapters:</p>
+<h3 id="json-output-parsing-go-cargo-eslint">JSON Output Parsing (Go,
+Cargo, ESLint)</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> toolEvent <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    Action <span class="dt">string</span> <span class="st">`json:&quot;action&quot;`</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Name   <span class="dt">string</span> <span class="st">`json:&quot;name&quot;`</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>scanner <span class="op">:=</span> bufio<span class="op">.</span>NewScanner<span class="op">(</span>strings<span class="op">.</span>NewReader<span class="op">(</span>output<span class="op">))</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> scanner<span class="op">.</span>Scan<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> ev toolEvent</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">:=</span> json<span class="op">.</span>Unmarshal<span class="op">([]</span><span class="dt">byte</span><span class="op">(</span>scanner<span class="op">.</span>Text<span class="op">()),</span> <span class="op">&amp;</span>ev<span class="op">);</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span> <span class="co">// skip non-JSON lines</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// process event</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="junit-xml-parsing-gradle-npm">JUnit XML Parsing (Gradle,
+npm)</h3>
+<p>Use the built-in <code>ParseJUnitXML</code> and
+<code>JUnitToTestResult</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data<span class="op">,</span> err <span class="op">:=</span> os<span class="op">.</span>ReadFile<span class="op">(</span>xmlPath<span class="op">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span><span class="op">,</span> err</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>suites<span class="op">,</span> err <span class="op">:=</span> ParseJUnitXML<span class="op">(</span>data<span class="op">)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ot">nil</span><span class="op">,</span> err</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>result <span class="op">:=</span> JUnitToTestResult<span class="op">(</span>suites<span class="op">,</span> elapsed<span class="op">,</span> output<span class="op">)</span></span></code></pre></div>
+<h3 id="plain-text-parsing-adb-instrument">Plain Text Parsing (ADB
+instrument)</h3>
+<p>For tools that output plain text, use string matching:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lines <span class="op">:=</span> strings<span class="op">.</span>Split<span class="op">(</span>output<span class="op">,</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _<span class="op">,</span> line <span class="op">:=</span> <span class="kw">range</span> lines <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> strings<span class="op">.</span>HasPrefix<span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;OK (&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> n <span class="dt">int</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Sscanf<span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;OK (%d tests)&quot;</span><span class="op">,</span> <span class="op">&amp;</span>n<span class="op">)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="step-4-command-execution">Step 4: Command Execution</h2>
+<p>For CLI-based adapters, use <code>os/exec</code> with context:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>MyAdapter<span class="op">)</span> runTool<span class="op">(</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> args <span class="op">...</span><span class="dt">string</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">(</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    cmd <span class="op">:=</span> exec<span class="op">.</span>CommandContext<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;toolname&quot;</span><span class="op">,</span> args<span class="op">...)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    cmd<span class="op">.</span>Dir <span class="op">=</span> a<span class="op">.</span>projectRoot</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    out<span class="op">,</span> err <span class="op">:=</span> cmd<span class="op">.</span>CombinedOutput<span class="op">()</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dt">string</span><span class="op">(</span>out<span class="op">),</span> fmt<span class="op">.</span>Errorf<span class="op">(</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;toolname %v: %w&quot;</span><span class="op">,</span> args<span class="op">,</span> err<span class="op">,</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dt">string</span><span class="op">(</span>out<span class="op">),</span> <span class="ot">nil</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>For adapters that need persistent connections (WebDriver, CDP), use
+<code>net/http</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>a <span class="op">*</span>MyAdapter<span class="op">)</span> wdPost<span class="op">(</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    ctx context<span class="op">.</span>Context<span class="op">,</span> path<span class="op">,</span> body <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">([]</span><span class="dt">byte</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    req<span class="op">,</span> err <span class="op">:=</span> http<span class="op">.</span>NewRequestWithContext<span class="op">(</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">,</span> http<span class="op">.</span>MethodPost<span class="op">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        a<span class="op">.</span>baseURL<span class="op">+</span>path<span class="op">,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        bytes<span class="op">.</span>NewBufferString<span class="op">(</span>body<span class="op">),</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ot">nil</span><span class="op">,</span> err</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    req<span class="op">.</span>Header<span class="op">.</span>Set<span class="op">(</span><span class="st">&quot;Content-Type&quot;</span><span class="op">,</span> <span class="st">&quot;application/json&quot;</span><span class="op">)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    resp<span class="op">,</span> err <span class="op">:=</span> a<span class="op">.</span>httpClient<span class="op">.</span>Do<span class="op">(</span>req<span class="op">)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ot">nil</span><span class="op">,</span> err</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">defer</span> resp<span class="op">.</span>Body<span class="op">.</span>Close<span class="op">()</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    data<span class="op">,</span> err <span class="op">:=</span> io<span class="op">.</span>ReadAll<span class="op">(</span>resp<span class="op">.</span>Body<span class="op">)</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ot">nil</span><span class="op">,</span> err</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> resp<span class="op">.</span>StatusCode <span class="op">&gt;=</span> <span class="dv">400</span> <span class="op">{</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> data<span class="op">,</span> fmt<span class="op">.</span>Errorf<span class="op">(</span><span class="st">&quot;HTTP %d: %s&quot;</span><span class="op">,</span> resp<span class="op">.</span>StatusCode<span class="op">,</span> data<span class="op">)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data<span class="op">,</span> <span class="ot">nil</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="step-5-write-tests">Step 5: Write Tests</h2>
+<p>Follow the naming convention
+<code>&lt;tool&gt;_&lt;type&gt;_adapter_test.go</code>. Test against the
+interface:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> TestMyAdapter_Navigate<span class="op">(</span>t <span class="op">*</span>testing<span class="op">.</span>T<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    adapter <span class="op">:=</span> NewMyAdapter<span class="op">(</span><span class="st">&quot;http://localhost:4444&quot;</span><span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    ctx <span class="op">:=</span> context<span class="op">.</span>Background<span class="op">()</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">!</span>adapter<span class="op">.</span>Available<span class="op">(</span>ctx<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        t<span class="op">.</span>Skip<span class="op">(</span><span class="st">&quot;tool not available&quot;</span><span class="op">)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    err <span class="op">:=</span> adapter<span class="op">.</span>Initialize<span class="op">(</span>ctx<span class="op">,</span> BrowserConfig<span class="op">{</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        Headless<span class="op">:</span>   <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        WindowSize<span class="op">:</span> <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1024</span><span class="op">,</span> <span class="dv">768</span><span class="op">},</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">})</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    require<span class="op">.</span>NoError<span class="op">(</span>t<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">defer</span> adapter<span class="op">.</span>Close<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> adapter<span class="op">.</span>Navigate<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;http://example.com&quot;</span><span class="op">)</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    assert<span class="op">.</span>NoError<span class="op">(</span>t<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="testing-patterns-from-the-codebase">Testing Patterns from the
+Codebase</h3>
+<ul>
+<li>Use <code>t.Skip</code> when the tool is not available (allows tests
+to pass in CI without the tool installed).</li>
+<li>Test the <code>Available()</code> method explicitly.</li>
+<li>Test error conditions (invalid paths, unreachable endpoints).</li>
+<li>For build adapters, create temporary project directories with
+minimal config files.</li>
+</ul>
+<h2 id="step-6-integrate-with-challenge-templates">Step 6: Integrate
+with Challenge Templates</h2>
+<p>The new adapter can be used with existing challenge templates
+immediately, since templates depend on interfaces, not concrete
+types:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> NewMySeleniumAdapter<span class="op">(</span><span class="st">&quot;http://localhost:4444&quot;</span><span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> NewBrowserFlowChallenge<span class="op">(</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-BROWSER-SELENIUM-001&quot;</span><span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Login via Selenium&quot;</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Test login with Selenium adapter&quot;</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span>  <span class="co">// works because it implements BrowserAdapter</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    flow<span class="op">,</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="adapter-checklist">Adapter Checklist</h2>
+<p>Before finalizing a new adapter, verify:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" />Implements all interface
+methods.</label></li>
+<li><label><input type="checkbox" />Has a compile-time interface check
+(<code>var _ Interface = (*Adapter)(nil)</code>).</label></li>
+<li><label><input type="checkbox" />Has a constructor function
+(<code>NewXxxAdapter</code>).</label></li>
+<li><label><input type="checkbox" />Respects
+<code>context.Context</code> cancellation.</label></li>
+<li><label><input type="checkbox" />Wraps errors with descriptive
+messages.</label></li>
+<li><label><input type="checkbox" /><code>Available()</code> is
+non-destructive.</label></li>
+<li><label><input type="checkbox" /><code>Close()</code> is
+idempotent.</label></li>
+<li><label><input type="checkbox" />Has unit tests with
+<code>t.Skip</code> for missing tools.</label></li>
+<li><label><input type="checkbox" />Follows the naming convention:
+<code>&lt;tool&gt;_&lt;type&gt;_adapter.go</code>.</label></li>
+<li><label><input type="checkbox" />Has godoc comments on all exported
+types and functions.</label></li>
+</ul>
+</body>
+</html>

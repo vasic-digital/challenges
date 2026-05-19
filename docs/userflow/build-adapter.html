@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>build-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">build-adapter</h1>
+</header>
+<h1 id="build-adapter">Build Adapter</h1>
+<p>The build adapter provides an interface for build, test, and lint
+operations. It abstracts toolchain-specific commands behind a common
+contract, enabling challenges to validate that projects compile, pass
+tests, and satisfy linting rules.</p>
+<h2 id="buildadapter-interface">BuildAdapter Interface</h2>
+<p>Defined in <code>adapter_build.go</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BuildAdapter <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    Build<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> target BuildTarget<span class="op">)</span> <span class="op">(*</span>BuildResult<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    RunTests<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> target TestTarget<span class="op">)</span> <span class="op">(*</span>TestResult<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    Lint<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> target LintTarget<span class="op">)</span> <span class="op">(*</span>LintResult<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    Available<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">bool</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="method-summary">Method Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Returns</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Build</code></td>
+<td><code>*BuildResult</code></td>
+<td>Execute a build target</td>
+</tr>
+<tr>
+<td><code>RunTests</code></td>
+<td><code>*TestResult</code></td>
+<td>Execute a test suite</td>
+</tr>
+<tr>
+<td><code>Lint</code></td>
+<td><code>*LintResult</code></td>
+<td>Execute a linting tool</td>
+</tr>
+<tr>
+<td><code>Available</code></td>
+<td><code>bool</code></td>
+<td>Check if the build toolchain is installed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="target-types">Target Types</h2>
+<h3 id="buildtarget">BuildTarget</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BuildTarget <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    Name <span class="dt">string</span>   <span class="st">`json:&quot;name&quot;`</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Task <span class="dt">string</span>   <span class="st">`json:&quot;task&quot;`</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Args <span class="op">[]</span><span class="dt">string</span> <span class="st">`json:&quot;args&quot;`</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="testtarget">TestTarget</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> TestTarget <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    Name   <span class="dt">string</span> <span class="st">`json:&quot;name&quot;`</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Task   <span class="dt">string</span> <span class="st">`json:&quot;task&quot;`</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Filter <span class="dt">string</span> <span class="st">`json:&quot;filter&quot;`</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="linttarget">LintTarget</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> LintTarget <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    Name <span class="dt">string</span>   <span class="st">`json:&quot;name&quot;`</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    Task <span class="dt">string</span>   <span class="st">`json:&quot;task&quot;`</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    Args <span class="op">[]</span><span class="dt">string</span> <span class="st">`json:&quot;args&quot;`</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="result-types">Result Types</h2>
+<h3 id="buildresult">BuildResult</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BuildResult <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    Target    <span class="dt">string</span>        <span class="st">`json:&quot;target&quot;`</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    Success   <span class="dt">bool</span>          <span class="st">`json:&quot;success&quot;`</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    Duration  time<span class="op">.</span>Duration <span class="st">`json:&quot;duration&quot;`</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    Output    <span class="dt">string</span>        <span class="st">`json:&quot;output&quot;`</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    Artifacts <span class="op">[]</span><span class="dt">string</span>      <span class="st">`json:&quot;artifacts&quot;`</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="testresult">TestResult</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> TestResult <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    Suites       <span class="op">[]</span>TestSuite   <span class="st">`json:&quot;suites&quot;`</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    TotalTests   <span class="dt">int</span>           <span class="st">`json:&quot;total_tests&quot;`</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    TotalFailed  <span class="dt">int</span>           <span class="st">`json:&quot;total_failed&quot;`</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    TotalErrors  <span class="dt">int</span>           <span class="st">`json:&quot;total_errors&quot;`</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    TotalSkipped <span class="dt">int</span>           <span class="st">`json:&quot;total_skipped&quot;`</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    Duration     time<span class="op">.</span>Duration <span class="st">`json:&quot;duration&quot;`</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    Output       <span class="dt">string</span>        <span class="st">`json:&quot;output&quot;`</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="lintresult">LintResult</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> LintResult <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Tool     <span class="dt">string</span>        <span class="st">`json:&quot;tool&quot;`</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    Success  <span class="dt">bool</span>          <span class="st">`json:&quot;success&quot;`</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    Duration time<span class="op">.</span>Duration <span class="st">`json:&quot;duration&quot;`</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    Warnings <span class="dt">int</span>           <span class="st">`json:&quot;warnings&quot;`</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    Errors   <span class="dt">int</span>           <span class="st">`json:&quot;errors&quot;`</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    Output   <span class="dt">string</span>        <span class="st">`json:&quot;output&quot;`</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="built-in-implementations">Built-in Implementations</h2>
+<h3 id="gradlecliadapter">GradleCLIAdapter</h3>
+<p>For Gradle-based projects (Java, Kotlin, Android).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGradleCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">,</span> <span class="ot">false</span><span class="op">)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Set useContainer=true to run via podman-compose</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Command</th>
+<th>Result Parsing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build</td>
+<td><code>./gradlew &lt;task&gt;</code></td>
+<td>Exit code determines success</td>
+</tr>
+<tr>
+<td>Test</td>
+<td><code>./gradlew &lt;task&gt; [--tests &lt;filter&gt;]</code></td>
+<td>JUnit XML from <code>build/test-results/</code></td>
+</tr>
+<tr>
+<td>Lint</td>
+<td><code>./gradlew &lt;task&gt;</code></td>
+<td>Exit code determines success</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>Checks for <code>gradlew</code> in project root</td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p>When <code>useContainer</code> is true, commands are prefixed with
+<code>podman-compose run --rm build</code>.</p>
+<p>Test result parsing searches for JUnit XML files in
+<code>build/test-results/</code> and
+<code>app/build/test-results/</code>, parses them with
+<code>ParseJUnitXML</code>, and converts to <code>TestResult</code> via
+<code>JUnitToTestResult</code>.</p>
+<h3 id="npmcliadapter">NPMCLIAdapter</h3>
+<p>For Node.js projects (React, Vue, Angular, plain Node).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewNPMCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Command</th>
+<th>Result Parsing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build</td>
+<td><code>npm run &lt;task&gt;</code></td>
+<td>Exit code determines success</td>
+</tr>
+<tr>
+<td>Test</td>
+<td><code>npx vitest run --reporter=junit --outputFile=&lt;tmp&gt;</code></td>
+<td>JUnit XML from temp file</td>
+</tr>
+<tr>
+<td>Lint</td>
+<td><code>npx eslint . --format=json</code></td>
+<td>JSON output parsed for error/warning counts</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>Checks for <code>package.json</code> in project root</td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p>Test results are produced by Vitest in JUnit format, written to a
+temporary file, and parsed. Lint results parse ESLint JSON output to
+extract per-file error and warning counts.</p>
+<h3 id="gocliadapter">GoCLIAdapter</h3>
+<p>For Go projects.</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGoCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Command</th>
+<th>Result Parsing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build</td>
+<td><code>go build &lt;task or ./...&gt;</code></td>
+<td>Exit code determines success</td>
+</tr>
+<tr>
+<td>Test</td>
+<td><code>go test -json &lt;task or ./...&gt; [-run &lt;filter&gt;]</code></td>
+<td>JSON event stream parsed</td>
+</tr>
+<tr>
+<td>Lint</td>
+<td><code>go vet &lt;task or ./...&gt;</code></td>
+<td>Non-empty output lines counted as errors</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>Checks for <code>go.mod</code> in project root</td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p>Test result parsing reads the JSON lines stream from
+<code>go test -json</code>. Each line is a <code>goTestEvent</code> with
+fields: <code>Time</code>, <code>Action</code>, <code>Package</code>,
+<code>Test</code>, <code>Elapsed</code>, <code>Output</code>. Events
+with <code>Action</code> of <code>pass</code>, <code>fail</code>, or
+<code>skip</code> are counted per package and converted to
+<code>TestSuite</code> and <code>TestCase</code> structures.</p>
+<h3 id="cargocliadapter">CargoCLIAdapter</h3>
+<p>For Rust projects.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewCargoCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Command</th>
+<th>Result Parsing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build</td>
+<td><code>cargo build</code></td>
+<td>Exit code determines success</td>
+</tr>
+<tr>
+<td>Test</td>
+<td><code>cargo test [&lt;filter&gt;] -- --format=json -Z unstable-options</code></td>
+<td>JSON event stream parsed</td>
+</tr>
+<tr>
+<td>Lint</td>
+<td><code>cargo clippy -- -D warnings</code></td>
+<td>Lines containing "warning:" or "error:" counted</td>
+</tr>
+<tr>
+<td>Available</td>
+<td>Checks for <code>Cargo.toml</code> in project root</td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+<p>Test result parsing reads JSON lines from Cargo's test output. Events
+with <code>type: "test"</code> and <code>event</code> of
+<code>ok</code>, <code>failed</code>, or <code>ignored</code> are
+counted.</p>
+<h2 id="junit-xml-parsing">JUnit XML Parsing</h2>
+<p>The package includes a JUnit XML parser (<code>ParseJUnitXML</code>)
+that handles both <code>&lt;testsuites&gt;</code> wrappers and
+standalone <code>&lt;testsuite&gt;</code> elements. It supports the
+standard JUnit XML attributes: <code>name</code>, <code>tests</code>,
+<code>failures</code>, <code>errors</code>, <code>skipped</code>,
+<code>time</code>, <code>classname</code>.</p>
+<p><code>JUnitToTestResult</code> converts parsed JUnit suites into the
+framework's <code>TestResult</code> type with aggregated counts.</p>
+<h2 id="result-parsers">Result Parsers</h2>
+<p>Helper functions in <code>result_parser.go</code> convert results to
+maps for assertion evaluation:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// For test results:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>values <span class="op">:=</span> userflow<span class="op">.</span>ParseTestResultToValues<span class="op">(</span>testResult<span class="op">)</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns: total_tests, total_failed, total_errors, total_skipped,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">//          duration_ms, suite_count, output, all_tests_pass</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">:=</span> userflow<span class="op">.</span>ParseTestResultToMetrics<span class="op">(</span>testResult<span class="op">)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns MetricValue entries for total_tests, total_failed,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">//         total_errors, total_skipped, duration</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">// For build results:</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>values <span class="op">:=</span> userflow<span class="op">.</span>ParseBuildResultToValues<span class="op">(</span>buildResult<span class="op">)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns: target, success, duration_ms, output, artifact_count</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">:=</span> userflow<span class="op">.</span>ParseBuildResultToMetrics<span class="op">(</span>buildResult<span class="op">)</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns MetricValue entries for build_success, build_duration,</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">//         artifact_count</span></span></code></pre></div>
+<h2 id="example-multi-target-build-challenge">Example: Multi-Target
+Build Challenge</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewGoCLIAdapter<span class="op">(</span><span class="st">&quot;/path/to/project&quot;</span><span class="op">)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewBuildChallenge<span class="op">(</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">,</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Build All Targets&quot;</span><span class="op">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify all build targets compile successfully&quot;</span><span class="op">,</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>userflow<span class="op">.</span>BuildTarget<span class="op">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;api-server&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./cmd/server&quot;</span><span class="op">},</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;cli-tool&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./cmd/cli&quot;</span><span class="op">},</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="example-test-suite-challenge">Example: Test Suite Challenge</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewUnitTestChallenge<span class="op">(</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-TEST-001&quot;</span><span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Unit Tests&quot;</span><span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Run all unit tests and verify zero failures&quot;</span><span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">},</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>userflow<span class="op">.</span>TestTarget<span class="op">{</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;all-packages&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./...&quot;</span><span class="op">},</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="example-lint-challenge">Example: Lint Challenge</h2>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewLintChallenge<span class="op">(</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-LINT-001&quot;</span><span class="op">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Code Quality&quot;</span><span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Run linters and verify zero errors&quot;</span><span class="op">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-BUILD-001&quot;</span><span class="op">},</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>userflow<span class="op">.</span>LintTarget<span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;go-vet&quot;</span><span class="op">,</span> Task<span class="op">:</span> <span class="st">&quot;./...&quot;</span><span class="op">},</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+</body>
+</html>

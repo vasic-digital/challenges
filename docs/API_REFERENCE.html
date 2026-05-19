@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>API_REFERENCE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">API_REFERENCE</h1>
+</header>
+<h1 id="challenges-api-reference">Challenges API Reference</h1>
+<h2 id="package-challenge">Package <code>challenge</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/challenge</code></p>
+<p>Core types and interfaces for challenge definition.</p>
+<h3 id="interface-challenge">Interface <code>Challenge</code></h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Challenge <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    ID<span class="op">()</span> <span class="dt">string</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    Configure<span class="op">(</span>config Config<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    Validate<span class="op">()</span> <span class="dt">error</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    Execute<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    Cleanup<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    Dependencies<span class="op">()</span> <span class="op">[]</span><span class="dt">string</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    Tags<span class="op">()</span> <span class="op">[]</span><span class="dt">string</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="struct-config">Struct <code>Config</code></h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Config <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    ID          <span class="dt">string</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Name        <span class="dt">string</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    Description <span class="dt">string</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Tags        <span class="op">[]</span><span class="dt">string</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    Dependencies <span class="op">[]</span><span class="dt">string</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    Timeout     time<span class="op">.</span>Duration</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    RetryPolicy <span class="op">*</span>RetryPolicy</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    Assertions  <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    Environment <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="dt">string</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="struct-result">Struct <code>Result</code></h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Result <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ChallengeID <span class="dt">string</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Status      Status</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    StartTime   time<span class="op">.</span>Time</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    EndTime     time<span class="op">.</span>Time</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    Duration    time<span class="op">.</span>Duration</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    Error       <span class="dt">error</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    Output      <span class="dt">string</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    Assertions  <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span>AssertionResult</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="type-status">Type <code>Status</code></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Status <span class="dt">string</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="op">(</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    StatusPending  Status <span class="op">=</span> <span class="st">&quot;pending&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    StatusRunning  Status <span class="op">=</span> <span class="st">&quot;running&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    StatusPassed   Status <span class="op">=</span> <span class="st">&quot;passed&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    StatusFailed   Status <span class="op">=</span> <span class="st">&quot;failed&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    StatusSkipped  Status <span class="op">=</span> <span class="st">&quot;skipped&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    StatusError    Status <span class="op">=</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<hr />
+<h2 id="package-registry">Package <code>registry</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/registry</code></p>
+<p>Challenge registration and dependency management.</p>
+<h3 id="interface-registry">Interface <code>Registry</code></h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Registry <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    Register<span class="op">(</span>challenge Challenge<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    Get<span class="op">(</span>id <span class="dt">string</span><span class="op">)</span> <span class="op">(</span>Challenge<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    GetAll<span class="op">()</span> <span class="op">[]</span>Challenge</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    GetByTag<span class="op">(</span>tag <span class="dt">string</span><span class="op">)</span> <span class="op">[]</span>Challenge</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    GetExecutionOrder<span class="op">()</span> <span class="op">([]</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="function-new">Function <code>New</code></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> New<span class="op">()</span> Registry</span></code></pre></div>
+<p>Creates a new challenge registry.</p>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>reg <span class="op">:=</span> registry<span class="op">.</span>New<span class="op">()</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>reg<span class="op">.</span>Register<span class="op">(&amp;</span>MyChallenge<span class="op">{</span>id<span class="op">:</span> <span class="st">&quot;test-1&quot;</span><span class="op">})</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>order<span class="op">,</span> _ <span class="op">:=</span> reg<span class="op">.</span>GetExecutionOrder<span class="op">()</span>  <span class="co">// Topologically sorted</span></span></code></pre></div>
+<hr />
+<h2 id="package-runner">Package <code>runner</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/runner</code></p>
+<p>Challenge execution engine.</p>
+<h3 id="interface-runner">Interface <code>Runner</code></h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Runner <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    Run<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> challengeID <span class="dt">string</span><span class="op">)</span> <span class="op">(*</span>Result<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    RunAll<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">([]*</span>Result<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    RunSequence<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> challengeIDs <span class="op">[]</span><span class="dt">string</span><span class="op">)</span> <span class="op">([]*</span>Result<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    RunParallel<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> challengeIDs <span class="op">[]</span><span class="dt">string</span><span class="op">)</span> <span class="op">([]*</span>Result<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="function-new-1">Function <code>New</code></h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> New<span class="op">(</span>registry registry<span class="op">.</span>Registry<span class="op">,</span> opts <span class="op">...</span>Option<span class="op">)</span> Runner</span></code></pre></div>
+<p><strong>Options</strong>:</p>
+<ul>
+<li><code>WithParallelism(int)</code> -- Max concurrent challenges</li>
+<li><code>WithTimeout(time.Duration)</code> -- Global timeout</li>
+<li><code>WithLogger(logging.Logger)</code> -- Logger instance</li>
+<li><code>WithMonitor(monitor.Monitor)</code> -- Live monitoring</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>runner <span class="op">:=</span> runner<span class="op">.</span>New<span class="op">(</span>reg<span class="op">,</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    runner<span class="op">.</span>WithParallelism<span class="op">(</span><span class="dv">5</span><span class="op">),</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    runner<span class="op">.</span>WithTimeout<span class="op">(</span><span class="dv">30</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">),</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>results<span class="op">,</span> _ <span class="op">:=</span> runner<span class="op">.</span>RunAll<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<hr />
+<h2 id="package-assertion">Package <code>assertion</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/assertion</code></p>
+<p>Assertion evaluation engine.</p>
+<h3 id="interface-engine">Interface <code>Engine</code></h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Engine <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    Evaluate<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> assertions <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{})</span> <span class="dt">error</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    RegisterEvaluator<span class="op">(</span>name <span class="dt">string</span><span class="op">,</span> evaluator Evaluator<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="type-evaluator">Type <code>Evaluator</code></h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Evaluator <span class="kw">func</span><span class="op">(</span>value <span class="kw">interface</span><span class="op">{},</span> expected <span class="kw">interface</span><span class="op">{})</span> <span class="op">(</span><span class="dt">bool</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span></code></pre></div>
+<h3 id="function-newengine">Function <code>NewEngine</code></h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewEngine<span class="op">()</span> Engine</span></code></pre></div>
+<p>Creates assertion engine with 16 built-in evaluators.</p>
+<p><strong>Built-in Evaluators</strong>:</p>
+<ul>
+<li><code>not_empty</code>, <code>not_mock</code>,
+<code>contains</code>, <code>contains_any</code></li>
+<li><code>min_length</code>, <code>quality_score</code>,
+<code>reasoning_present</code>, <code>code_valid</code></li>
+<li><code>min_count</code>, <code>exact_count</code>,
+<code>max_latency</code>, <code>all_valid</code></li>
+<li><code>no_duplicates</code>, <code>all_pass</code>,
+<code>no_mock_responses</code>, <code>min_score</code></li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>engine <span class="op">:=</span> assertion<span class="op">.</span>NewEngine<span class="op">()</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> engine<span class="op">.</span>Evaluate<span class="op">(</span>ctx<span class="op">,</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;response&quot;</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;not_empty&quot;</span><span class="op">:</span> <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;min_length&quot;</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;contains&quot;</span><span class="op">:</span> <span class="st">&quot;success&quot;</span><span class="op">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;latency&quot;</span><span class="op">:</span> <span class="op">{</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;max_latency&quot;</span><span class="op">:</span> <span class="dv">1000</span><span class="op">,</span>  <span class="co">// milliseconds</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<hr />
+<h2 id="package-report">Package <code>report</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/report</code></p>
+<p>Report generation in multiple formats.</p>
+<h3 id="interface-reporter">Interface <code>Reporter</code></h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Reporter <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    Generate<span class="op">(</span>results <span class="op">[]*</span>Result<span class="op">)</span> <span class="dt">string</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    GenerateToFile<span class="op">(</span>results <span class="op">[]*</span>Result<span class="op">,</span> filepath <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="function-newmarkdownreporter">Function
+<code>NewMarkdownReporter</code></h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewMarkdownReporter<span class="op">()</span> Reporter</span></code></pre></div>
+<h3 id="function-newjsonreporter">Function
+<code>NewJSONReporter</code></h3>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewJSONReporter<span class="op">()</span> Reporter</span></code></pre></div>
+<h3 id="function-newhtmlreporter">Function
+<code>NewHTMLReporter</code></h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewHTMLReporter<span class="op">()</span> Reporter</span></code></pre></div>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>reporter <span class="op">:=</span> report<span class="op">.</span>NewMarkdownReporter<span class="op">()</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>markdown <span class="op">:=</span> reporter<span class="op">.</span>Generate<span class="op">(</span>results<span class="op">)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Println<span class="op">(</span>markdown<span class="op">)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Or save to file</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>reporter<span class="op">.</span>GenerateToFile<span class="op">(</span>results<span class="op">,</span> <span class="st">&quot;report.md&quot;</span><span class="op">)</span></span></code></pre></div>
+<hr />
+<h2 id="package-plugin">Package <code>plugin</code></h2>
+<p><strong>Import</strong>:
+<code>digital.vasic.challenges/pkg/plugin</code></p>
+<p>Plugin system for custom challenge types.</p>
+<h3 id="interface-plugin">Interface <code>Plugin</code></h3>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Plugin <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">()</span> <span class="dt">string</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    Version<span class="op">()</span> <span class="dt">string</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    Init<span class="op">(</span>config <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{})</span> <span class="dt">error</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    CreateChallenge<span class="op">(</span>id <span class="dt">string</span><span class="op">,</span> config challenge<span class="op">.</span>Config<span class="op">)</span> <span class="op">(</span>challenge<span class="op">.</span>Challenge<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    Shutdown<span class="op">()</span> <span class="dt">error</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="function-registerplugin">Function
+<code>RegisterPlugin</code></h3>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> RegisterPlugin<span class="op">(</span>plugin Plugin<span class="op">)</span> <span class="dt">error</span></span></code></pre></div>
+<p><strong>Example</strong>:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> CustomPlugin <span class="kw">struct</span> <span class="op">{}</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>p <span class="op">*</span>CustomPlugin<span class="op">)</span> CreateChallenge<span class="op">(</span>id <span class="dt">string</span><span class="op">,</span> config challenge<span class="op">.</span>Config<span class="op">)</span> <span class="op">(</span>challenge<span class="op">.</span>Challenge<span class="op">,</span> <span class="dt">error</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">&amp;</span>CustomChallenge<span class="op">{</span>id<span class="op">:</span> id<span class="op">,</span> config<span class="op">:</span> config<span class="op">},</span> <span class="ot">nil</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>plugin<span class="op">.</span>RegisterPlugin<span class="op">(&amp;</span>CustomPlugin<span class="op">{})</span></span></code></pre></div>
+<hr />
+<h2 id="complete-usage-example">Complete Usage Example</h2>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;context&quot;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;time&quot;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/challenge&quot;</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/registry&quot;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/runner&quot;</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/assertion&quot;</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;digital.vasic.challenges/pkg/report&quot;</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Custom challenge implementation</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> APITestChallenge <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    challenge<span class="op">.</span>BaseChallenge</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    endpoint <span class="dt">string</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> <span class="op">(</span>c <span class="op">*</span>APITestChallenge<span class="op">)</span> Execute<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Make API call</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    resp<span class="op">,</span> err <span class="op">:=</span> http<span class="op">.</span>Get<span class="op">(</span>c<span class="op">.</span>endpoint<span class="op">)</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> err</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">defer</span> resp<span class="op">.</span>Body<span class="op">.</span>Close<span class="op">()</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    body<span class="op">,</span> _ <span class="op">:=</span> io<span class="op">.</span>ReadAll<span class="op">(</span>resp<span class="op">.</span>Body<span class="op">)</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Evaluate assertions</span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> c<span class="op">.</span>AssertionEngine<span class="op">.</span>Evaluate<span class="op">(</span>ctx<span class="op">,</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}{</span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;status_code&quot;</span><span class="op">:</span> resp<span class="op">.</span>StatusCode<span class="op">,</span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;response_body&quot;</span><span class="op">:</span> <span class="dt">string</span><span class="op">(</span>body<span class="op">),</span></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;assertions&quot;</span><span class="op">:</span> <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="kw">interface</span><span class="op">{}{</span></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;not_empty&quot;</span><span class="op">:</span> <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;contains&quot;</span><span class="op">:</span> <span class="st">&quot;success&quot;</span><span class="op">,</span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;min_length&quot;</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">})</span></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>    ctx <span class="op">:=</span> context<span class="op">.</span>Background<span class="op">()</span></span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create registry</span></span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>    reg <span class="op">:=</span> registry<span class="op">.</span>New<span class="op">()</span></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Register challenges</span></span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    reg<span class="op">.</span>Register<span class="op">(&amp;</span>APITestChallenge<span class="op">{</span></span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>        BaseChallenge<span class="op">:</span> challenge<span class="op">.</span>BaseChallenge<span class="op">{</span></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>            ChallengeID<span class="op">:</span> <span class="st">&quot;api-test-1&quot;</span><span class="op">,</span></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>        endpoint<span class="op">:</span> <span class="st">&quot;http://localhost:8080/api/health&quot;</span><span class="op">,</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>    <span class="op">})</span></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create runner</span></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    run <span class="op">:=</span> runner<span class="op">.</span>New<span class="op">(</span>reg<span class="op">,</span></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>        runner<span class="op">.</span>WithParallelism<span class="op">(</span><span class="dv">5</span><span class="op">),</span></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>        runner<span class="op">.</span>WithTimeout<span class="op">(</span><span class="dv">30</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">),</span></span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Execute all challenges</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>    results<span class="op">,</span> err <span class="op">:=</span> run<span class="op">.</span>RunAll<span class="op">(</span>ctx<span class="op">)</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Println<span class="op">(</span><span class="st">&quot;Execution error:&quot;</span><span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Generate reports</span></span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>    mdReporter <span class="op">:=</span> report<span class="op">.</span>NewMarkdownReporter<span class="op">()</span></span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>    markdown <span class="op">:=</span> mdReporter<span class="op">.</span>Generate<span class="op">(</span>results<span class="op">)</span></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(</span>markdown<span class="op">)</span></span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>    jsonReporter <span class="op">:=</span> report<span class="op">.</span>NewJSONReporter<span class="op">()</span></span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a>    jsonReporter<span class="op">.</span>GenerateToFile<span class="op">(</span>results<span class="op">,</span> <span class="st">&quot;results.json&quot;</span><span class="op">)</span></span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Print summary</span></span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>    passed <span class="op">:=</span> <span class="dv">0</span></span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _<span class="op">,</span> result <span class="op">:=</span> <span class="kw">range</span> results <span class="op">{</span></span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result<span class="op">.</span>Status <span class="op">==</span> challenge<span class="op">.</span>StatusPassed <span class="op">{</span></span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a>            passed<span class="op">++</span></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">Passed: %d/%d</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> passed<span class="op">,</span> <span class="bu">len</span><span class="op">(</span>results<span class="op">))</span></span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+<p><strong>Last Updated</strong>: February 10, 2026
+<strong>Version</strong>: 1.0.0 <strong>Total API Methods</strong>: 40+
+<strong>Status</strong>: ✅ Complete</p>
+</body>
+</html>

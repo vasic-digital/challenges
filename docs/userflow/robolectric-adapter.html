@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>robolectric-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">robolectric-adapter</h1>
+</header>
+<h1 id="robolectric-adapter">Robolectric Adapter</h1>
+<p>The Robolectric adapter implements <code>BuildAdapter</code> for
+running Android unit tests via Robolectric on the JVM. Robolectric
+simulates the Android framework, allowing Android tests to execute
+without an emulator or physical device. All commands are delegated to
+Gradle.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>Go Challenge  --&gt;  RobolectricAdapter  --&gt;  nice -n 19 ionice -c 3
+                                                  |
+                                            ./gradlew testDebugUnitTest
+                                                  |
+                                            Gradle (JVM)
+                                                  |
+                                            Robolectric Shadow APIs
+                                                  |
+                                            Test Classes (JUnit 4/5)
+                                                  |
+                                            JUnit XML Results</code></pre>
+<p>The adapter wraps the Gradle wrapper (<code>./gradlew</code>) and
+provides three operations: build, test, and lint. All commands are
+resource-limited with <code>nice -n 19</code> and
+<code>ionice -c 3</code> to comply with the project's resource
+management rules.</p>
+<h3 id="junit-xml-parsing">JUnit XML Parsing</h3>
+<p>After test execution, the adapter searches standard Robolectric
+output directories for JUnit XML files:</p>
+<ul>
+<li><code>build/test-results/testDebugUnitTest/*.xml</code></li>
+<li><code>app/build/test-results/testDebugUnitTest/*.xml</code></li>
+<li><code>&lt;module&gt;/build/test-results/testDebugUnitTest/*.xml</code>
+(multi-module)</li>
+</ul>
+<p>These XML files are parsed into <code>JUnitTestSuite</code> structs
+and aggregated into a <code>TestResult</code> with counts for total,
+failed, errored, and skipped tests.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol type="1">
+<li><strong>Java JDK</strong> installed and in PATH (JDK 11+
+recommended)</li>
+<li><strong>Gradle wrapper</strong> (<code>gradlew</code>) in the
+project directory</li>
+<li><strong>Robolectric</strong> dependency in the project's
+<code>build.gradle</code>:</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode groovy"><code class="sourceCode groovy"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>testImplementation <span class="st">&#39;org.robolectric:robolectric:4.12&#39;</span></span></code></pre></div>
+<p>No emulator or Android device is required.</p>
+<h2 id="constructor">Constructor</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewRobolectricAdapter<span class="op">(</span><span class="st">&quot;/path/to/android-project&quot;</span><span class="op">)</span></span></code></pre></div>
+<h3 id="functional-options">Functional Options</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> RobolectricOption <span class="kw">func</span><span class="op">(*</span>RobolectricAdapter<span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WithRobolectricGradleWrapper(path)</code></td>
+<td>Custom Gradle wrapper path</td>
+<td><code>./gradlew</code></td>
+</tr>
+<tr>
+<td><code>WithRobolectricModule(module)</code></td>
+<td>Gradle module prefix (e.g., <code>:app</code>)</td>
+<td>(root module)</td>
+</tr>
+<tr>
+<td><code>WithRobolectricTestFilter(filter)</code></td>
+<td>Default test filter for all runs</td>
+<td>(none)</td>
+</tr>
+<tr>
+<td><code>WithRobolectricJVMArgs(args)</code></td>
+<td>Additional JVM arguments</td>
+<td>(none)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-with-options">Example with Options</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewRobolectricAdapter<span class="op">(</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/path/to/android-project&quot;</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricModule<span class="op">(</span><span class="st">&quot;:app&quot;</span><span class="op">),</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricTestFilter<span class="op">(</span><span class="st">&quot;com.example.unit.*&quot;</span><span class="op">),</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricJVMArgs<span class="op">([]</span><span class="dt">string</span><span class="op">{</span><span class="st">&quot;-Xmx2g&quot;</span><span class="op">,</span> <span class="st">&quot;-XX:MaxMetaspaceSize=512m&quot;</span><span class="op">}),</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="build">Build</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>Build<span class="op">(</span>ctx<span class="op">,</span> userflow<span class="op">.</span>BuildTarget<span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span> <span class="st">&quot;debug-apk&quot;</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    Task<span class="op">:</span> <span class="st">&quot;assembleDebug&quot;</span><span class="op">,</span>      <span class="co">// Defaults to &quot;assembleDebug&quot; if empty</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    Args<span class="op">:</span> <span class="op">[]</span><span class="dt">string</span><span class="op">{</span><span class="st">&quot;--stacktrace&quot;</span><span class="op">},</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p>Executes the Gradle build task. Returns a <code>BuildResult</code>
+with success status, duration, and output.</p>
+<h3 id="runtests">RunTests</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>RunTests<span class="op">(</span>ctx<span class="op">,</span> userflow<span class="op">.</span>TestTarget<span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span>   <span class="st">&quot;unit-tests&quot;</span><span class="op">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    Task<span class="op">:</span>   <span class="st">&quot;testDebugUnitTest&quot;</span><span class="op">,</span> <span class="co">// Defaults to &quot;testDebugUnitTest&quot; if empty</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    Filter<span class="op">:</span> <span class="st">&quot;com.example.LoginViewModelTest&quot;</span><span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p>Executes the Gradle test task with optional <code>--tests</code>
+filter. After execution, searches for JUnit XML results and parses them
+into structured <code>TestResult</code> data.</p>
+<p>The <code>TestResult</code> includes:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> TestResult <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    Suites       <span class="op">[]</span>TestSuite   <span class="co">// Parsed from JUnit XML</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    TotalTests   <span class="dt">int</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    TotalFailed  <span class="dt">int</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    TotalErrors  <span class="dt">int</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    TotalSkipped <span class="dt">int</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    Duration     time<span class="op">.</span>Duration</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    Output       <span class="dt">string</span>        <span class="co">// Raw Gradle output</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="lint">Lint</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>Lint<span class="op">(</span>ctx<span class="op">,</span> userflow<span class="op">.</span>LintTarget<span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span> <span class="st">&quot;android-lint&quot;</span><span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    Task<span class="op">:</span> <span class="st">&quot;lintDebug&quot;</span><span class="op">,</span>          <span class="co">// Defaults to &quot;lintDebug&quot; if empty</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p>Executes the Gradle lint task and returns a <code>LintResult</code>
+with the tool name, success status, duration, and output.</p>
+<h3 id="available">Available</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ok <span class="op">:=</span> adapter<span class="op">.</span>Available<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Returns true when all three conditions are met:</p>
+<ol type="1">
+<li>The Gradle wrapper file exists at the configured path</li>
+<li><code>java</code> is found in PATH</li>
+<li><code>./gradlew --version</code> executes successfully</li>
+</ol>
+<h2 id="gradle-integration">Gradle Integration</h2>
+<h3 id="multi-module-projects">Multi-Module Projects</h3>
+<p>For multi-module Android projects, the adapter prepends the module
+prefix to all task names:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewRobolectricAdapter<span class="op">(</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/project&quot;</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricModule<span class="op">(</span><span class="st">&quot;:app&quot;</span><span class="op">),</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Tasks become: :app:assembleDebug, :app:testDebugUnitTest, :app:lintDebug</span></span></code></pre></div>
+<h3 id="jvm-arguments">JVM Arguments</h3>
+<p>JVM arguments are passed via the <code>-Dorg.gradle.jvmargs</code>
+system property:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewRobolectricAdapter<span class="op">(</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/project&quot;</span><span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricJVMArgs<span class="op">([]</span><span class="dt">string</span><span class="op">{</span><span class="st">&quot;-Xmx4g&quot;</span><span class="op">}),</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Gradle receives: -Dorg.gradle.jvmargs=-Xmx4g</span></span></code></pre></div>
+<h3 id="resource-limits">Resource Limits</h3>
+<p>All Gradle commands are wrapped with resource limiters:</p>
+<pre><code>nice -n 19 ionice -c 3 ./gradlew &lt;task&gt; [args...]</code></pre>
+<p>This ensures tests do not consume excessive CPU or I/O, adhering to
+the project's 30-40% resource limit requirement.</p>
+<h2 id="junit-xml-parsing-1">JUnit XML Parsing</h2>
+<p>The adapter uses the shared <code>ParseJUnitXML</code> function to
+parse JUnit XML output. It supports both wrapped
+<code>&lt;testsuites&gt;</code> format and single
+<code>&lt;testsuite&gt;</code> format. Parsed results include test case
+names, class names, durations, failure messages, and stack traces.</p>
+<p>Search directories for results (checked in order):</p>
+<ol type="1">
+<li><code>build/test-results/testDebugUnitTest/</code></li>
+<li><code>app/build/test-results/testDebugUnitTest/</code></li>
+<li><code>&lt;module&gt;/build/test-results/testDebugUnitTest/</code>
+(when module is configured)</li>
+</ol>
+<p>Each directory is searched for <code>*.xml</code> files, with a
+fallback to one level of subdirectory nesting.</p>
+<h2 id="limitations">Limitations</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Test scope</td>
+<td>JVM-only tests. Cannot test hardware features (camera, GPS,
+sensors)</td>
+</tr>
+<tr>
+<td>Android APIs</td>
+<td>Robolectric shadows cover most but not all Android APIs</td>
+</tr>
+<tr>
+<td>UI testing</td>
+<td>Limited UI testing via Robolectric shadows. For full UI tests, use
+Espresso</td>
+</tr>
+<tr>
+<td>Accuracy</td>
+<td>Robolectric simulates Android; behavior may differ from real
+devices</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Faster than on-device tests but slower than pure JUnit (JVM +
+shadows overhead)</td>
+</tr>
+<tr>
+<td>No device</td>
+<td>Cannot install APKs, take screenshots, or interact with real
+devices</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-to-use">When to Use</h2>
+<ul>
+<li>Fast feedback during development -- no emulator boot required</li>
+<li>CI/CD pipelines where emulators are impractical</li>
+<li>ViewModel, Repository, and business logic tests</li>
+<li>Robolectric-annotated tests that need Android framework classes</li>
+</ul>
+<p>For UI testing or tests requiring a real device, use
+<code>EspressoAdapter</code> or <code>AppiumAdapter</code>.</p>
+<h2 id="integration-with-challenge-templates">Integration with Challenge
+Templates</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewRobolectricAdapter<span class="op">(</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/app/android&quot;</span><span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithRobolectricModule<span class="op">(</span><span class="st">&quot;:app&quot;</span><span class="op">),</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>testChallenge <span class="op">:=</span> userflow<span class="op">.</span>NewTestRunnerChallenge<span class="op">(</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-ROBO-001&quot;</span><span class="op">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Robolectric Unit Tests&quot;</span><span class="op">,</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Run Android unit tests via Robolectric&quot;</span><span class="op">,</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>TestTarget<span class="op">{</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        Name<span class="op">:</span>   <span class="st">&quot;all-unit-tests&quot;</span><span class="op">,</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        Task<span class="op">:</span>   <span class="st">&quot;testDebugUnitTest&quot;</span><span class="op">,</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="fl">90.0</span><span class="op">,</span> <span class="co">// minimum pass rate percentage</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="source-files">Source Files</h2>
+<ul>
+<li>Interface: <code>pkg/userflow/adapter_build.go</code></li>
+<li>Implementation:
+<code>pkg/userflow/robolectric_adapter.go</code></li>
+<li>JUnit XML types: <code>pkg/userflow/types.go</code></li>
+</ul>
+</body>
+</html>

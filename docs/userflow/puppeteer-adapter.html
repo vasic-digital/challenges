@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>puppeteer-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">puppeteer-adapter</h1>
+</header>
+<h1 id="puppeteer-adapter">Puppeteer Adapter</h1>
+<p>The Puppeteer adapter implements <code>BrowserAdapter</code> by
+executing Puppeteer via Node.js scripts. Each browser action generates a
+Node.js script, writes it to a temporary file, and runs it via
+<code>node</code>. If local execution fails, the adapter falls back to
+container execution via <code>podman exec</code>.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>Go Challenge  --&gt;  PuppeteerAdapter  --&gt;  Write .js script to temp file
+                                               |
+                                    +----------+----------+
+                                    |                     |
+                              node &lt;script&gt;         podman exec &lt;container&gt;
+                              (local)               node &lt;script&gt;
+                                    |                     |
+                              Puppeteer (Node.js)   Puppeteer (Node.js)
+                                    |                     |
+                              CDP WebSocket         CDP WebSocket
+                                    |                     |
+                                  Browser              Browser</code></pre>
+<h3 id="two-phase-execution">Two-Phase Execution</h3>
+<ol type="1">
+<li><strong>Launch phase</strong> (<code>Initialize</code>): Calls
+<code>puppeteer.launch()</code> to start a browser instance, captures
+the WebSocket endpoint, then disconnects</li>
+<li><strong>Operation phase</strong> (all other methods): Calls
+<code>puppeteer.connect({ browserWSEndpoint })</code> to reattach to the
+running browser, performs the action, then disconnects</li>
+</ol>
+<p>This means the browser runs as a long-lived process, while each Go
+method creates a short-lived Node.js process that connects to it. The
+WebSocket endpoint is the coordination point.</p>
+<h3 id="container-fallback">Container Fallback</h3>
+<p>When local <code>node</code> execution fails (e.g., Node.js not
+installed, Puppeteer not available), the adapter falls back to
+<code>podman exec</code>:</p>
+<ol type="1">
+<li>Copies the script file into the container via
+<code>podman cp</code></li>
+<li>Executes it via
+<code>podman exec &lt;container&gt; node &lt;script&gt;</code></li>
+<li>If <code>podman cp</code> fails, falls back to inline execution:
+<code>podman exec &lt;container&gt; node -e "&lt;script&gt;"</code></li>
+</ol>
+<h2 id="puppeteeroption-reference">PuppeteerOption Reference</h2>
+<p>The adapter uses functional options for configuration:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> PuppeteerOption <span class="kw">func</span><span class="op">(*</span>PuppeteerAdapter<span class="op">)</span></span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WithHeadless(bool)</code></td>
+<td>Run browser in headless mode</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>WithBrowserPath(string)</code></td>
+<td>Path to browser executable</td>
+<td>(Puppeteer default)</td>
+</tr>
+<tr>
+<td><code>WithContainerName(string)</code></td>
+<td>Container name for fallback execution</td>
+<td><code>"puppeteer"</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="constructor">Constructor</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Minimal: headless with container fallback</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewPuppeteerAdapter<span class="op">()</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Fully configured</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewPuppeteerAdapter<span class="op">(</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithHeadless<span class="op">(</span><span class="ot">true</span><span class="op">),</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithBrowserPath<span class="op">(</span><span class="st">&quot;/usr/bin/chromium&quot;</span><span class="op">),</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithContainerName<span class="op">(</span><span class="st">&quot;my-puppeteer-container&quot;</span><span class="op">),</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<p>Default state: headless=true, containerName="puppeteer", width=1920,
+height=1080.</p>
+<h2 id="configuration">Configuration</h2>
+<h3 id="initialize">Initialize</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Initialize<span class="op">(</span>ctx<span class="op">,</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    BrowserType<span class="op">:</span> <span class="st">&quot;chrome&quot;</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    Headless<span class="op">:</span>    <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    WindowSize<span class="op">:</span>  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p>Launches a Chromium browser via <code>puppeteer.launch()</code> with
+<code>--no-sandbox</code> and <code>--disable-setuid-sandbox</code>
+flags (required for container environments). Captures and stores the
+WebSocket endpoint.</p>
+<h2 id="api-reference">API Reference</h2>
+<h3 id="navigate">Navigate</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Navigate<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;https://example.com&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>Connects to the browser, gets the first page (or creates one), sets
+viewport dimensions, and navigates to the URL.</p>
+<h3 id="click-fill-selectoption">Click, Fill, SelectOption</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Click<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#submit-button&quot;</span><span class="op">)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>Fill<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#email&quot;</span><span class="op">,</span> <span class="st">&quot;user@example.com&quot;</span><span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>err <span class="op">=</span> adapter<span class="op">.</span>SelectOption<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;#country&quot;</span><span class="op">,</span> <span class="st">&quot;US&quot;</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li><code>Fill</code> triple-clicks the element first to select all
+existing text, then types the new value</li>
+<li><code>SelectOption</code> uses
+<code>page.select(selector, value)</code> (native Puppeteer select
+support)</li>
+</ul>
+<h3 id="isvisible">IsVisible</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>visible<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>IsVisible<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;.alert-success&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>Finds the element via <code>page.$()</code> and checks if
+<code>boundingBox()</code> returns non-null. An element with no bounding
+box is considered invisible.</p>
+<h3 id="waitforselector">WaitForSelector</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>WaitForSelector<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;.dashboard&quot;</span><span class="op">,</span> <span class="dv">10</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">)</span></span></code></pre></div>
+<p>Uses
+<code>page.waitForSelector(selector, { timeout: ms })</code>.</p>
+<h3 id="gettext-getattribute">GetText, GetAttribute</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>text<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>GetText<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;h1.title&quot;</span><span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>href<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>GetAttribute<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;a.link&quot;</span><span class="op">,</span> <span class="st">&quot;href&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>Both use <code>page.evaluate()</code> to extract the value from the
+DOM. Results are output as JSON to stdout and parsed by the adapter.</p>
+<h3 id="screenshot">Screenshot</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>png<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>Screenshot<span class="op">(</span>ctx<span class="op">)</span></span></code></pre></div>
+<p>Uses <code>page.screenshot({ encoding: 'base64' })</code>. The base64
+string is output to stdout and decoded by the adapter.</p>
+<h3 id="evaluatejs">EvaluateJS</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>result<span class="op">,</span> err <span class="op">:=</span> adapter<span class="op">.</span>EvaluateJS<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;return document.title&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>The script is base64-encoded, decoded in the generated Node.js script
+via <code>Buffer.from(encoded, 'base64')</code>, and passed to
+<code>page.evaluate()</code>. Results are JSON-stringified and
+returned.</p>
+<h3 id="networkintercept">NetworkIntercept</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>NetworkIntercept<span class="op">(</span>ctx<span class="op">,</span> <span class="st">&quot;**/api/*&quot;</span><span class="op">,</span> handler<span class="op">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns nil; handler will NOT fire.</span></span></code></pre></div>
+<p>Not supported because each method runs in a separate Node.js process.
+Puppeteer's <code>page.setRequestInterception()</code> requires a
+persistent process. Returns nil without error.</p>
+<h3 id="close-available">Close, Available</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>err <span class="op">:=</span> adapter<span class="op">.</span>Close<span class="op">(</span>ctx<span class="op">)</span>        <span class="co">// Connects and calls browser.close()</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ok <span class="op">:=</span> adapter<span class="op">.</span>Available<span class="op">(</span>ctx<span class="op">)</span>     <span class="co">// Runs: node -e &quot;require(&#39;puppeteer&#39;)&quot;</span></span></code></pre></div>
+<h2 id="cdp-endpoint-vs-launch-mode">CDP Endpoint vs Launch Mode</h2>
+<p>The adapter always uses <strong>launch mode</strong> during
+<code>Initialize</code>:</p>
+<ul>
+<li><strong>Launch mode</strong>: <code>puppeteer.launch()</code> starts
+a new browser process. The adapter stores the WebSocket endpoint. Best
+for testing where you want a fresh browser.</li>
+<li><strong>Connect mode</strong>: If you have an existing browser
+running with <code>--remote-debugging-port=9222</code>, you could extend
+the adapter to use
+<code>puppeteer.connect({ browserWSEndpoint: 'ws://...' })</code>
+directly.</li>
+</ul>
+<p>The current implementation launches a new browser and then uses
+connect mode for all subsequent operations, combining the benefits of
+both approaches.</p>
+<h2 id="container-execution-mode">Container Execution Mode</h2>
+<p>When running in environments without a local Node.js
+installation:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewPuppeteerAdapter<span class="op">(</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithContainerName<span class="op">(</span><span class="st">&quot;my-puppeteer&quot;</span><span class="op">),</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<p>The container must have:</p>
+<ul>
+<li>Node.js installed</li>
+<li><code>puppeteer</code> npm package installed</li>
+<li>A browser binary (Chromium is bundled with Puppeteer by
+default)</li>
+</ul>
+<p>Example Dockerfile:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode dockerfile"><code class="sourceCode dockerfile"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> node:20-slim</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">npx</span> puppeteer browsers install chrome</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WORKDIR</span> /app</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">RUN</span> <span class="ex">npm</span> init <span class="at">-y</span> <span class="kw">&amp;&amp;</span> <span class="ex">npm</span> install puppeteer</span></code></pre></div>
+<h2 id="limitations">Limitations</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Performance</td>
+<td>Each method spawns a node process. Faster than Cypress (no full
+Cypress runner) but slower than persistent connection approaches</td>
+</tr>
+<tr>
+<td>Browser support</td>
+<td>Chromium only. Firefox support is experimental in Puppeteer</td>
+</tr>
+<tr>
+<td>Network interception</td>
+<td>Not available due to process-per-call architecture</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Browser state persists across calls (same browser instance). Page
+state is maintained</td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td>Container fallback adds latency. Inline <code>-e</code> fallback has
+shell escaping limitations</td>
+</tr>
+</tbody>
+</table>
+<h2 id="integration-with-challenge-templates">Integration with Challenge
+Templates</h2>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewPuppeteerAdapter<span class="op">(</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithHeadless<span class="op">(</span><span class="ot">true</span><span class="op">),</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithContainerName<span class="op">(</span><span class="st">&quot;puppeteer&quot;</span><span class="op">),</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewBrowserFlowChallenge<span class="op">(</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-PUPPET-001&quot;</span><span class="op">,</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Puppeteer Checkout Flow&quot;</span><span class="op">,</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify checkout flow via Puppeteer&quot;</span><span class="op">,</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>BrowserFlow<span class="op">{</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        Name<span class="op">:</span>     <span class="st">&quot;puppeteer-checkout&quot;</span><span class="op">,</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        StartURL<span class="op">:</span> <span class="st">&quot;http://localhost:3000/shop&quot;</span><span class="op">,</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        Config<span class="op">:</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>            BrowserType<span class="op">:</span> <span class="st">&quot;chrome&quot;</span><span class="op">,</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>            Headless<span class="op">:</span>    <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>            WindowSize<span class="op">:</span>  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>BrowserStep<span class="op">{</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;add-item&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;click&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;.add-to-cart&quot;</span><span class="op">},</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;go-cart&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;click&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;.cart-icon&quot;</span><span class="op">},</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;checkout&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;click&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;#checkout-btn&quot;</span><span class="op">},</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;verify&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;assert_visible&quot;</span><span class="op">,</span> Selector<span class="op">:</span> <span class="st">&quot;.order-confirmation&quot;</span><span class="op">},</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="source-files">Source Files</h2>
+<ul>
+<li>Interface: <code>pkg/userflow/adapter_browser.go</code></li>
+<li>Implementation: <code>pkg/userflow/puppeteer_adapter.go</code></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>challenge-templates</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">challenge-templates</h1>
+</header>
+<h1 id="challenge-templates">Challenge Templates</h1>
+<p>The <code>pkg/userflow</code> package provides 13 challenge template
+types. Each embeds <code>challenge.BaseChallenge</code> and implements
+the <code>challenge.Challenge</code> interface, with a platform-specific
+<code>Execute()</code> method.</p>
+<p>All templates share these patterns:</p>
+<ul>
+<li>Constructor accepts an ID string, name, description, dependency
+slice, an adapter, and platform-specific configuration.</li>
+<li><code>Execute()</code> reports progress via
+<code>BaseChallenge.ReportProgress()</code>.</li>
+<li><code>Execute()</code> returns a <code>*challenge.Result</code> with
+assertions, metrics, and outputs.</li>
+<li>Metrics are recorded in seconds (durations) or counts.</li>
+</ul>
+<h2 id="environment-challenges">Environment Challenges</h2>
+<h3 id="environmentsetupchallenge">EnvironmentSetupChallenge</h3>
+<p>Executes a user-provided setup function to prepare the test
+environment (start containers, seed data, configure services). Typically
+the first challenge in a pipeline with no dependencies.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewEnvironmentSetupChallenge<span class="op">(</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    id <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    setupFunc <span class="kw">func</span><span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span><span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    timeout time<span class="op">.</span>Duration<span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>EnvironmentSetupChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"environment"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Applies timeout to context if non-zero.</li>
+<li>Calls <code>setupFunc(ctx)</code>.</li>
+<li>Produces one assertion: <code>environment_setup</code> /
+<code>setup_succeeds</code>.</li>
+<li>Records metric: <code>setup_duration</code>.</li>
+</ol>
+<h3 id="environmentteardownchallenge">EnvironmentTeardownChallenge</h3>
+<p>Executes a user-provided teardown function to clean up after testing.
+Typically the last challenge in a pipeline.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewEnvironmentTeardownChallenge<span class="op">(</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    id <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    teardownFunc <span class="kw">func</span><span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span><span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>EnvironmentTeardownChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"environment"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>teardownFunc(ctx)</code>.</li>
+<li>Produces one assertion: <code>environment_teardown</code> /
+<code>teardown_succeeds</code>.</li>
+<li>Records metric: <code>teardown_duration</code>.</li>
+</ol>
+<h2 id="api-challenges">API Challenges</h2>
+<h3 id="apihealthchallenge">APIHealthChallenge</h3>
+<p>Performs a simple health endpoint check by GETting a path and
+asserting the HTTP status code.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewAPIHealthChallenge<span class="op">(</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    id <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    adapter APIAdapter<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    healthPath <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    expectedCode <span class="dt">int</span><span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>APIHealthChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"api"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>adapter.GetRaw(ctx, healthPath)</code>.</li>
+<li>Produces one assertion: <code>status_code</code> comparing actual vs
+expected.</li>
+<li>Records metric: <code>response_time</code>.</li>
+</ol>
+<h3 id="apiflowchallenge">APIFlowChallenge</h3>
+<p>Executes a multi-step API flow with optional login, variable
+extraction, and per-step assertions.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewAPIFlowChallenge<span class="op">(</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    adapter APIAdapter<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    flow APIFlow<span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>APIFlowChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"api"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>If credentials are set, calls <code>adapter.Login()</code> and
+stores the token.</li>
+<li>For each step: a. Substitutes <code>{{variable}}</code> placeholders
+in path and body. b. Dispatches the HTTP method (GET, POST, PUT,
+DELETE). c. Checks expected status code if configured. d. Extracts
+variables from the JSON response (<code>ExtractTo</code>). e. Evaluates
+per-step assertions (<code>status_code</code>,
+<code>response_contains</code>, <code>not_empty</code>).</li>
+<li>Records per-step duration metrics and total duration.</li>
+<li>Stores response bodies in outputs.</li>
+</ol>
+<h2 id="browser-challenges">Browser Challenges</h2>
+<h3 id="browserflowchallenge">BrowserFlowChallenge</h3>
+<p>Executes a browser flow: initializes the browser, navigates to a
+start URL, and performs each step in sequence.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewBrowserFlowChallenge<span class="op">(</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    adapter BrowserAdapter<span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    flow BrowserFlow<span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>BrowserFlowChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"browser"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>adapter.Initialize(ctx, flow.Config)</code>.</li>
+<li>Calls <code>adapter.Navigate(ctx, flow.StartURL)</code>.</li>
+<li>For each step, dispatches the action (navigate, click, fill, select,
+wait, assert_visible, assert_text, assert_url, screenshot,
+evaluate_js).</li>
+<li>Takes screenshots after steps if <code>step.Screenshot</code> is
+true.</li>
+<li>Ensures <code>adapter.Close()</code> is called on exit.</li>
+<li>Records per-step duration metrics, total duration, steps executed,
+and screenshot count.</li>
+</ol>
+<h2 id="build-challenges">Build Challenges</h2>
+<h3 id="buildchallenge">BuildChallenge</h3>
+<p>Builds one or more targets via a BuildAdapter.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewBuildChallenge<span class="op">(</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    adapter BuildAdapter<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    targets <span class="op">[]</span>BuildTarget<span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>BuildChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"build"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each target, calls <code>adapter.Build(ctx, target)</code>.</li>
+<li>Produces one <code>build_succeeds</code> assertion per target.</li>
+<li>Records per-target build duration metrics.</li>
+</ol>
+<h3 id="unittestchallenge">UnitTestChallenge</h3>
+<p>Runs test suites via a BuildAdapter and aggregates results.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewUnitTestChallenge<span class="op">(</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    adapter BuildAdapter<span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    targets <span class="op">[]</span>TestTarget<span class="op">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>UnitTestChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"test"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each target, calls
+<code>adapter.RunTests(ctx, target)</code>.</li>
+<li>Produces one <code>all_tests_pass</code> assertion per suite.</li>
+<li>Records <code>total_tests</code> and <code>total_failures</code>
+metrics.</li>
+</ol>
+<h3 id="lintchallenge">LintChallenge</h3>
+<p>Runs linters via a BuildAdapter and reports per-tool results.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewLintChallenge<span class="op">(</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    adapter BuildAdapter<span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    targets <span class="op">[]</span>LintTarget<span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>LintChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"lint"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each target, calls <code>adapter.Lint(ctx, target)</code>.</li>
+<li>Produces one <code>lint_passes</code> assertion per tool.</li>
+<li>Records per-tool warning and error count metrics.</li>
+</ol>
+<h2 id="mobile-challenges">Mobile Challenges</h2>
+<h3 id="mobilelaunchchallenge">MobileLaunchChallenge</h3>
+<p>Installs, launches, and verifies stability of a mobile
+application.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewMobileLaunchChallenge<span class="op">(</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    adapter MobileAdapter<span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    appPath <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    stabilityWait time<span class="op">.</span>Duration<span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>MobileLaunchChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"mobile"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>adapter.InstallApp(ctx, appPath)</code> -- assertion:
+<code>install</code>.</li>
+<li>Calls <code>adapter.LaunchApp(ctx)</code> -- assertion:
+<code>launch</code>.</li>
+<li>Waits for <code>stabilityWait</code> duration.</li>
+<li>Calls <code>adapter.IsAppRunning(ctx)</code> -- assertion:
+<code>stability</code>.</li>
+<li>Takes a screenshot.</li>
+<li>Calls <code>adapter.StopApp(ctx)</code>.</li>
+<li>Records <code>launch_duration</code> metric.</li>
+</ol>
+<h3 id="mobileflowchallenge">MobileFlowChallenge</h3>
+<p>Executes a sequence of mobile steps (tap, send keys, press key,
+etc.).</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewMobileFlowChallenge<span class="op">(</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    adapter MobileAdapter<span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    flow MobileFlow<span class="op">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>MobileFlowChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"mobile"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each step, dispatches the action (launch, tap, send_keys,
+press_key, wait, screenshot, assert_running, stop).</li>
+<li>Evaluates per-step assertions.</li>
+<li>Records per-step duration metrics and steps executed count.</li>
+</ol>
+<h3 id="instrumentedtestchallenge">InstrumentedTestChallenge</h3>
+<p>Runs on-device instrumented tests via a MobileAdapter.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewInstrumentedTestChallenge<span class="op">(</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    adapter MobileAdapter<span class="op">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    testClasses <span class="op">[]</span><span class="dt">string</span><span class="op">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>InstrumentedTestChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"mobile"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each test class, calls
+<code>adapter.RunInstrumentedTests(ctx, cls)</code>.</li>
+<li>Produces one <code>instrumented_tests</code> assertion per
+class.</li>
+<li>Records <code>total_tests</code> and <code>total_failures</code>
+metrics.</li>
+</ol>
+<h2 id="desktop-challenges">Desktop Challenges</h2>
+<h3 id="desktoplaunchchallenge">DesktopLaunchChallenge</h3>
+<p>Launches a desktop application, waits for its window, verifies
+stability.</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewDesktopLaunchChallenge<span class="op">(</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    adapter DesktopAdapter<span class="op">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    appConfig DesktopAppConfig<span class="op">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    stabilityWait time<span class="op">.</span>Duration<span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>DesktopLaunchChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"desktop"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>adapter.LaunchApp(ctx, config)</code> -- assertion:
+<code>launch</code>.</li>
+<li>Calls <code>adapter.WaitForWindow(ctx, 10s)</code> -- assertion:
+<code>window</code>.</li>
+<li>Waits for <code>stabilityWait</code> duration.</li>
+<li>Calls <code>adapter.IsAppRunning(ctx)</code> -- assertion:
+<code>stability</code>.</li>
+<li>Takes a screenshot.</li>
+<li>Ensures <code>adapter.Close()</code> is called on exit.</li>
+<li>Records <code>launch_duration</code> metric.</li>
+</ol>
+<h3 id="desktopflowchallenge">DesktopFlowChallenge</h3>
+<p>Executes a BrowserFlow in the context of a desktop application's
+WebView.</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewDesktopFlowChallenge<span class="op">(</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    adapter DesktopAdapter<span class="op">,</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    flow BrowserFlow<span class="op">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>DesktopFlowChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"desktop"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>Calls <code>adapter.Navigate(ctx, flow.StartURL)</code>.</li>
+<li>For each step, dispatches the action (navigate, click, fill, wait,
+assert_visible, screenshot).</li>
+<li>Evaluates per-step assertions.</li>
+<li>Records per-step duration, total duration, steps executed,
+screenshot count.</li>
+</ol>
+<h3 id="desktopipcchallenge">DesktopIPCChallenge</h3>
+<p>Tests IPC commands sent to the desktop application's backend.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> NewDesktopIPCChallenge<span class="op">(</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    id<span class="op">,</span> name<span class="op">,</span> description <span class="dt">string</span><span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    deps <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    adapter DesktopAdapter<span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    commands <span class="op">[]</span>IPCCommand<span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">*</span>DesktopIPCChallenge</span></code></pre></div>
+<p><strong>Category</strong>: <code>"desktop"</code></p>
+<p><strong>Execution flow</strong>:</p>
+<ol type="1">
+<li>For each command, calls
+<code>adapter.InvokeCommand(ctx, cmd.Command, cmd.Args...)</code>.</li>
+<li>If <code>ExpectedResult</code> is set, checks if the response
+contains the expected string.</li>
+<li>If no expected result, checks for no error.</li>
+<li>Evaluates per-command assertions (<code>response_contains</code>,
+<code>not_empty</code>).</li>
+<li>Records per-command duration and <code>commands_executed</code>
+metric.</li>
+<li>Stores command responses in outputs.</li>
+</ol>
+</body>
+</html>

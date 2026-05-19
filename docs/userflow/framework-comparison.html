@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>framework-comparison</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">framework-comparison</h1>
+</header>
+<h1 id="framework-comparison">Framework Comparison</h1>
+<p>Comprehensive comparison of all testing framework adapters in the
+<code>pkg/userflow</code> package. Use this guide to select the right
+adapter for your testing requirements.</p>
+<h2 id="adapter-summary">Adapter Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Adapter</th>
+<th>Interface</th>
+<th>Platform</th>
+<th>Tool</th>
+<th>Source File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PlaywrightCLIAdapter</td>
+<td>BrowserAdapter</td>
+<td>Web</td>
+<td>Playwright + CDP</td>
+<td><code>playwright_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>SeleniumAdapter</td>
+<td>BrowserAdapter</td>
+<td>Web</td>
+<td>Selenium WebDriver</td>
+<td><code>selenium_adapter.go</code></td>
+</tr>
+<tr>
+<td>CypressCLIAdapter</td>
+<td>BrowserAdapter</td>
+<td>Web</td>
+<td>Cypress CLI</td>
+<td><code>cypress_adapter.go</code></td>
+</tr>
+<tr>
+<td>PuppeteerAdapter</td>
+<td>BrowserAdapter</td>
+<td>Web</td>
+<td>Puppeteer + Node.js</td>
+<td><code>puppeteer_adapter.go</code></td>
+</tr>
+<tr>
+<td>ADBCLIAdapter</td>
+<td>MobileAdapter</td>
+<td>Android</td>
+<td>ADB</td>
+<td><code>adb_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>AppiumAdapter</td>
+<td>MobileAdapter</td>
+<td>Android, iOS</td>
+<td>Appium 2.0</td>
+<td><code>appium_adapter.go</code></td>
+</tr>
+<tr>
+<td>MaestroCLIAdapter</td>
+<td>MobileAdapter</td>
+<td>Android, iOS</td>
+<td>Maestro CLI</td>
+<td><code>maestro_adapter.go</code></td>
+</tr>
+<tr>
+<td>EspressoAdapter</td>
+<td>MobileAdapter</td>
+<td>Android</td>
+<td>Gradle + ADB</td>
+<td><code>espresso_adapter.go</code></td>
+</tr>
+<tr>
+<td>RobolectricAdapter</td>
+<td>BuildAdapter</td>
+<td>Android (JVM)</td>
+<td>Gradle</td>
+<td><code>robolectric_adapter.go</code></td>
+</tr>
+<tr>
+<td>GRPCCLIAdapter</td>
+<td>GRPCAdapter</td>
+<td>API</td>
+<td>grpcurl</td>
+<td><code>adapter_grpc.go</code></td>
+</tr>
+<tr>
+<td>GorillaWebSocketAdapter</td>
+<td>WebSocketFlowAdapter</td>
+<td>API</td>
+<td>gorilla/websocket</td>
+<td><code>adapter_websocket_flow.go</code></td>
+</tr>
+<tr>
+<td>HTTPAPIAdapter</td>
+<td>APIAdapter</td>
+<td>API</td>
+<td>pkg/httpclient</td>
+<td><code>http_api_adapter.go</code></td>
+</tr>
+<tr>
+<td>TauriCLIAdapter</td>
+<td>DesktopAdapter</td>
+<td>Desktop</td>
+<td>Tauri WebDriver</td>
+<td><code>tauri_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>GoCLIAdapter</td>
+<td>BuildAdapter</td>
+<td>Build</td>
+<td>go build/test</td>
+<td><code>go_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>GradleCLIAdapter</td>
+<td>BuildAdapter</td>
+<td>Build</td>
+<td>Gradle</td>
+<td><code>gradle_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>NPMCLIAdapter</td>
+<td>BuildAdapter</td>
+<td>Build</td>
+<td>npm/npx</td>
+<td><code>npm_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>CargoCLIAdapter</td>
+<td>BuildAdapter</td>
+<td>Build</td>
+<td>Cargo</td>
+<td><code>cargo_cli_adapter.go</code></td>
+</tr>
+<tr>
+<td>ProcessCLIAdapter</td>
+<td>ProcessAdapter</td>
+<td>System</td>
+<td>subprocess</td>
+<td><code>process_cli_adapter.go</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="feature-matrix-browser-adapters">Feature Matrix: Browser
+Adapters</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Playwright</th>
+<th>Selenium</th>
+<th>Cypress</th>
+<th>Puppeteer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Chrome</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>Firefox</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Experimental</td>
+</tr>
+<tr>
+<td><strong>Safari/WebKit</strong></td>
+<td>Yes (WebKit)</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Edge</strong></td>
+<td>Yes (Chromium)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Headless mode</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>Network intercept</strong></td>
+<td>Via CDP (not CLI)</td>
+<td>No (use proxy)</td>
+<td>No (CLI)</td>
+<td>No (CLI)</td>
+</tr>
+<tr>
+<td><strong>Screenshots</strong></td>
+<td>Yes</td>
+<td>Yes (base64)</td>
+<td>Yes (file)</td>
+<td>Yes (base64)</td>
+</tr>
+<tr>
+<td><strong>JavaScript eval</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes (base64)</td>
+<td>Yes (base64)</td>
+</tr>
+<tr>
+<td><strong>Session model</strong></td>
+<td>CDP WebSocket</td>
+<td>HTTP session</td>
+<td>Per-spec process</td>
+<td>WS endpoint</td>
+</tr>
+<tr>
+<td><strong>Speed</strong></td>
+<td>Fast</td>
+<td>Medium</td>
+<td>Slow</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>Container exec</strong></td>
+<td>podman exec</td>
+<td>HTTP server</td>
+<td>npx (local)</td>
+<td>podman exec fallback</td>
+</tr>
+<tr>
+<td><strong>Setup complexity</strong></td>
+<td>Low</td>
+<td>Medium (Grid)</td>
+<td>Medium (npm)</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>State persistence</strong></td>
+<td>Per-CDP connection</td>
+<td>Per-session</td>
+<td>None</td>
+<td>Per-browser</td>
+</tr>
+</tbody>
+</table>
+<h2 id="feature-matrix-mobile-adapters">Feature Matrix: Mobile
+Adapters</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>ADB CLI</th>
+<th>Appium</th>
+<th>Maestro</th>
+<th>Espresso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Android</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>iOS</strong></td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Device required</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>Emulator support</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>No device (JVM)</strong></td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Instrumented tests</strong></td>
+<td>No</td>
+<td>Via shell</td>
+<td>No</td>
+<td>Yes (native)</td>
+</tr>
+<tr>
+<td><strong>Element selectors</strong></td>
+<td>No</td>
+<td>W3C WebDriver</td>
+<td>Text/accessibility</td>
+<td>Espresso matchers</td>
+</tr>
+<tr>
+<td><strong>Screenshots</strong></td>
+<td>Yes (exec-out)</td>
+<td>Yes (base64)</td>
+<td>Yes (file)</td>
+<td>Yes (exec-out)</td>
+</tr>
+<tr>
+<td><strong>Cross-platform</strong></td>
+<td>Android only</td>
+<td>Android + iOS</td>
+<td>Android + iOS</td>
+<td>Android only</td>
+</tr>
+<tr>
+<td><strong>Setup complexity</strong></td>
+<td>Low (ADB only)</td>
+<td>High (server)</td>
+<td>Low (CLI)</td>
+<td>Medium (Gradle)</td>
+</tr>
+<tr>
+<td><strong>Protocol</strong></td>
+<td>ADB shell</td>
+<td>W3C WebDriver</td>
+<td>CLI/YAML</td>
+<td>ADB + Gradle</td>
+</tr>
+<tr>
+<td><strong>Speed</strong></td>
+<td>Fast</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+</tbody>
+</table>
+<h2 id="feature-matrix-api-and-protocol-adapters">Feature Matrix: API
+and Protocol Adapters</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>HTTP API</th>
+<th>gRPC CLI</th>
+<th>WebSocket</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Protocol</strong></td>
+<td>HTTP/HTTPS</td>
+<td>gRPC (HTTP/2)</td>
+<td>WebSocket</td>
+</tr>
+<tr>
+<td><strong>Request type</strong></td>
+<td>REST JSON</td>
+<td>Protobuf (JSON wire)</td>
+<td>Binary/Text frames</td>
+</tr>
+<tr>
+<td><strong>Streaming</strong></td>
+<td>SSE (read only)</td>
+<td>Server streaming</td>
+<td>Bidirectional</td>
+</tr>
+<tr>
+<td><strong>Auth support</strong></td>
+<td>JWT, API key</td>
+<td>Headers, TLS certs</td>
+<td>Headers on connect</td>
+</tr>
+<tr>
+<td><strong>Connection</strong></td>
+<td>Per-request</td>
+<td>Per-command</td>
+<td>Persistent</td>
+</tr>
+<tr>
+<td><strong>Thread-safe</strong></td>
+<td>Yes (http.Client)</td>
+<td>N/A (CLI)</td>
+<td>Yes (mutexes)</td>
+</tr>
+<tr>
+<td><strong>Health check</strong></td>
+<td>HTTP status</td>
+<td>grpc.health.v1</td>
+<td>Connection check</td>
+</tr>
+<tr>
+<td><strong>Tool required</strong></td>
+<td>None (stdlib)</td>
+<td>grpcurl</td>
+<td>gorilla/websocket</td>
+</tr>
+</tbody>
+</table>
+<h2 id="architecture-diagrams">Architecture Diagrams</h2>
+<h3 id="browser-adapter-architecture">Browser Adapter Architecture</h3>
+<pre><code>                    +-------------------+
+                    |  BrowserAdapter   |
+                    |    (interface)    |
+                    +--------+----------+
+                             |
+          +----------+-------+-------+-----------+
+          |          |               |            |
+  +-------+--+ +----+-----+ +------+----+ +-----+-------+
+  |Playwright | | Selenium | |  Cypress  | | Puppeteer   |
+  |CLI Adapter| | Adapter  | |CLI Adapter| | Adapter     |
+  +-----+-----+ +----+----+ +-----+-----+ +------+------+
+        |             |            |              |
+  podman exec    HTTP/JSON    npx cypress      node &lt;script&gt;
+  node -e        /session     run --spec       -&gt; puppeteer
+        |             |            |              |
+     CDP WS      WebDriver     Cypress         CDP WS
+        |          Server       Runner            |
+     Browser      Browser      Browser         Browser</code></pre>
+<h3 id="mobile-adapter-architecture">Mobile Adapter Architecture</h3>
+<pre><code>                    +-------------------+
+                    |  MobileAdapter    |
+                    |    (interface)    |
+                    +--------+----------+
+                             |
+          +----------+-------+-------+-----------+
+          |          |               |            |
+  +-------+--+ +----+-----+ +------+----+ +-----+-------+
+  |  ADB CLI | |  Appium  | |  Maestro  | |  Espresso   |
+  |  Adapter | | Adapter  | |CLI Adapter| |  Adapter    |
+  +-----+----+ +----+-----+ +-----+----+ +------+------+
+        |             |            |         |        |
+    adb shell    HTTP/JSON    maestro     adb     gradlew
+        |             |        test       shell   connected
+     Device      Appium         |           |    AndroidTest
+                 Server      Device      Device     |
+                    |                            Device
+               UiAutomator2
+               or XCUITest</code></pre>
+<h3 id="protocol-adapter-architecture">Protocol Adapter
+Architecture</h3>
+<pre><code>  +------------------+    +------------------+    +------------------+
+  |   HTTPAPIAdapter |    |  GRPCCLIAdapter  |    |GorillaWebSocket  |
+  |   (APIAdapter)   |    |  (GRPCAdapter)   |    |  Adapter         |
+  +--------+---------+    +--------+---------+    +--------+---------+
+           |                       |                       |
+    net/http.Client          grpcurl CLI            gorilla/websocket
+           |                       |                       |
+    HTTP/HTTPS REST         gRPC (HTTP/2)          WebSocket (ws/wss)
+           |                       |                       |
+       API Server            gRPC Server           WS Server</code></pre>
+<h2 id="when-to-use-each-framework">When to Use Each Framework</h2>
+<h3 id="browser-testing">Browser Testing</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommended Adapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General web testing with container infrastructure</td>
+<td><strong>Playwright</strong></td>
+</tr>
+<tr>
+<td>Multi-browser testing (including Safari)</td>
+<td><strong>Selenium</strong></td>
+</tr>
+<tr>
+<td>Project already uses Cypress</td>
+<td><strong>Cypress</strong></td>
+</tr>
+<tr>
+<td>Simple scripting with Node.js</td>
+<td><strong>Puppeteer</strong></td>
+</tr>
+<tr>
+<td>CI/CD with minimal dependencies</td>
+<td><strong>Selenium</strong> (standalone Docker)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mobile-testing">Mobile Testing</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommended Adapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android-only, fast device interaction</td>
+<td><strong>ADB CLI</strong></td>
+</tr>
+<tr>
+<td>Cross-platform (Android + iOS)</td>
+<td><strong>Appium</strong></td>
+</tr>
+<tr>
+<td>Quick UI flow verification</td>
+<td><strong>Maestro</strong></td>
+</tr>
+<tr>
+<td>Instrumented test execution</td>
+<td><strong>Espresso</strong></td>
+</tr>
+<tr>
+<td>JVM unit tests, no device</td>
+<td><strong>Robolectric</strong></td>
+</tr>
+<tr>
+<td>Full E2E with element queries</td>
+<td><strong>Appium</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="protocol-testing">Protocol Testing</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommended Adapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST API testing</td>
+<td><strong>HTTP API</strong></td>
+</tr>
+<tr>
+<td>gRPC service testing</td>
+<td><strong>gRPC CLI</strong></td>
+</tr>
+<tr>
+<td>Real-time WebSocket flows</td>
+<td><strong>WebSocket</strong></td>
+</tr>
+<tr>
+<td>SSE event streams</td>
+<td><strong>HTTP API</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cost-and-licensing">Cost and Licensing</h2>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>License</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Playwright</td>
+<td>Apache 2.0</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Selenium</td>
+<td>Apache 2.0</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Cypress</td>
+<td>MIT</td>
+<td>Free (open source), paid dashboard</td>
+</tr>
+<tr>
+<td>Puppeteer</td>
+<td>Apache 2.0</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Appium</td>
+<td>Apache 2.0</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Maestro</td>
+<td>Apache 2.0</td>
+<td>Free (CLI), paid cloud</td>
+</tr>
+<tr>
+<td>Espresso</td>
+<td>Apache 2.0</td>
+<td>Free (part of AndroidX)</td>
+</tr>
+<tr>
+<td>Robolectric</td>
+<td>MIT</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>grpcurl</td>
+<td>MIT</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>gorilla/websocket</td>
+<td>BSD-2-Clause</td>
+<td>Free</td>
+</tr>
+</tbody>
+</table>
+<p>All adapters in this package use open-source tools with permissive
+licenses. No adapter requires a paid service for local execution.</p>
+<h2 id="cicd-considerations">CI/CD Considerations</h2>
+<table>
+<thead>
+<tr>
+<th>Adapter</th>
+<th>Docker Available</th>
+<th>Emulator Needed</th>
+<th>Typical CI Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Playwright</td>
+<td>Yes (mcr.microsoft.com/playwright)</td>
+<td>No</td>
+<td>Fast (~seconds/test)</td>
+</tr>
+<tr>
+<td>Selenium</td>
+<td>Yes (selenium/standalone-chrome)</td>
+<td>No</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Cypress</td>
+<td>Yes (cypress/included)</td>
+<td>No</td>
+<td>Slow (~seconds/spec)</td>
+</tr>
+<tr>
+<td>Puppeteer</td>
+<td>Yes (custom Node.js)</td>
+<td>No</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Appium</td>
+<td>Yes (appium/appium)</td>
+<td>Yes (Android)</td>
+<td>Slow</td>
+</tr>
+<tr>
+<td>Maestro</td>
+<td>Partial</td>
+<td>Yes</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Espresso</td>
+<td>Partial</td>
+<td>Yes</td>
+<td>Slow</td>
+</tr>
+<tr>
+<td>Robolectric</td>
+<td>Yes (any JDK image)</td>
+<td>No</td>
+<td>Fast</td>
+</tr>
+<tr>
+<td>gRPC CLI</td>
+<td>Yes (fullstorydev/grpcurl)</td>
+<td>No</td>
+<td>Fast</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>Yes (any Go image)</td>
+<td>No</td>
+<td>Fast</td>
+</tr>
+</tbody>
+</table>
+<h2 id="documentation-index">Documentation Index</h2>
+<table>
+<thead>
+<tr>
+<th>Adapter</th>
+<th>Documentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Playwright</td>
+<td><a href="browser-adapter.md">browser-adapter.md</a></td>
+</tr>
+<tr>
+<td>Selenium</td>
+<td><a href="selenium-adapter.md">selenium-adapter.md</a></td>
+</tr>
+<tr>
+<td>Cypress</td>
+<td><a href="cypress-adapter.md">cypress-adapter.md</a></td>
+</tr>
+<tr>
+<td>Puppeteer</td>
+<td><a href="puppeteer-adapter.md">puppeteer-adapter.md</a></td>
+</tr>
+<tr>
+<td>ADB CLI</td>
+<td><a href="mobile-adapter.md">mobile-adapter.md</a></td>
+</tr>
+<tr>
+<td>Appium</td>
+<td><a href="appium-adapter.md">appium-adapter.md</a></td>
+</tr>
+<tr>
+<td>Maestro</td>
+<td><a href="maestro-adapter.md">maestro-adapter.md</a></td>
+</tr>
+<tr>
+<td>Espresso</td>
+<td><a href="espresso-adapter.md">espresso-adapter.md</a></td>
+</tr>
+<tr>
+<td>Robolectric</td>
+<td><a href="robolectric-adapter.md">robolectric-adapter.md</a></td>
+</tr>
+<tr>
+<td>gRPC CLI</td>
+<td><a href="grpc-adapter.md">grpc-adapter.md</a></td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td><a href="websocket-adapter.md">websocket-adapter.md</a></td>
+</tr>
+<tr>
+<td>HTTP API</td>
+<td><a href="api-adapter.md">api-adapter.md</a></td>
+</tr>
+<tr>
+<td>Desktop (Tauri)</td>
+<td><a href="desktop-adapter.md">desktop-adapter.md</a></td>
+</tr>
+<tr>
+<td>Build (Go/npm/Gradle/Cargo)</td>
+<td><a href="build-adapter.md">build-adapter.md</a></td>
+</tr>
+<tr>
+<td>Process</td>
+<td><a href="process-adapter.md">process-adapter.md</a></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ARCHITECTURE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ARCHITECTURE</h1>
+</header>
+<h1 id="architecture----challenges">Architecture -- Challenges</h1>
+<h2 id="purpose">Purpose</h2>
+<p>Generic, reusable Go module for defining, registering, executing, and
+reporting on challenges (structured test scenarios). Features a
+plugin-based architecture with 16 built-in assertion evaluators,
+multi-format reporting (Markdown/JSON/HTML), live WebSocket monitoring,
+progress-based liveness detection, and a multi-platform user flow
+automation framework.</p>
+<h2 id="structure">Structure</h2>
+<pre><code>pkg/
+  challenge/     Core types: Challenge interface, Config, Result, BaseChallenge, ProgressReporter
+  registry/      Challenge registration, dependency ordering (Kahn&#39;s topological sort)
+  runner/        Execution engine (sequential, parallel, pipeline), liveness monitoring
+  assertion/     Assertion engine with 16 built-in evaluators + custom evaluator support
+  report/        Report generation: Markdown, JSON, HTML
+  logging/       Structured logging: JSON, Console, Multi, Redacting
+  env/           Environment variable handling with redaction
+  httpclient/    Generic REST API client with JWT auth and functional options
+  bank/          Challenge bank (load definitions from JSON/YAML)
+  monitor/       Live monitoring with WebSocket dashboard
+  metrics/       Prometheus-compatible challenge metrics
+  plugin/        Plugin system for custom challenge types and assertions
+  infra/         Infrastructure bridge to digital.vasic.containers module
+  userflow/      Multi-platform user flow automation: 8 adapter interfaces, 21 implementations, 19 challenge templates, 12 evaluators
+cmd/
+  userflow-runner/  CLI runner for user flow challenges</code></pre>
+<h2 id="key-components">Key Components</h2>
+<ul>
+<li><strong><code>challenge.Challenge</code></strong> -- Interface: ID,
+Configure, Validate, Execute, Cleanup</li>
+<li><strong><code>challenge.BaseChallenge</code></strong> -- Template
+method base with ProgressReporter for liveness detection</li>
+<li><strong><code>registry.Registry</code></strong> -- Challenge
+registration with dependency ordering via topological sort</li>
+<li><strong><code>runner.Runner</code></strong> -- Execution engine with
+configurable timeout, stale threshold, and progress monitoring</li>
+<li><strong><code>assertion.Engine</code></strong> -- 16 built-in
+evaluators (not_empty, contains, min_count, max_latency, etc.)</li>
+<li><strong><code>userflow.*Adapter</code></strong> -- Platform
+adapters: Playwright, ADB, Tauri, HTTP, gRPC, WebSocket, Gradle, Cargo,
+npm</li>
+<li><strong><code>userflow.*Challenge</code></strong> -- 19 challenge
+templates including recorded variants with video verification</li>
+</ul>
+<h2 id="data-flow">Data Flow</h2>
+<pre><code>Registry.Register(challenges) -&gt; Runner.RunAll(ctx, config)
+    |
+    topological sort by dependencies
+    |
+    for each challenge:
+        challenge.Configure() -&gt; challenge.Validate() -&gt; challenge.Execute(ctx)
+            |                                                    |
+            ProgressReporter -&gt; Liveness Monitor          Result + Assertions
+            (kill if stale &gt; threshold)                          |
+                                                          assertion.Engine.Evaluate()
+                                                                 |
+                                                          report.Reporter.Generate()</code></pre>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li><code>digital.vasic.containers</code> -- Container orchestration
+bridge for test infrastructure</li>
+<li><code>github.com/stretchr/testify</code> -- Test assertions</li>
+<li><code>github.com/gorilla/websocket</code> -- WebSocket for live
+monitoring and WebSocket flow testing</li>
+</ul>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<p>209+ tests across pkg/userflow alone. Table-driven tests with
+<code>testify</code> and race detection. Tests cover challenge
+lifecycle, dependency ordering, assertion evaluation, report generation,
+adapter availability detection, and challenge template execution with
+mock adapters.</p>
+</body>
+</html>

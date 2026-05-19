@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>behavior-anchors</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">behavior-anchors</h1>
+</header>
+<h1 id="behavior-anchor-manifest--challenges">Behavior Anchor Manifest —
+Challenges</h1>
+<p>Every row is a user-facing capability and the single anchor test that
+proves it works end-to-end. See CONST-035 in
+<code>CONSTITUTION.md</code>.</p>
+<h2 id="status-legend">Status legend</h2>
+<ul>
+<li><code>active</code> — anchor exists and is callable; capability is
+verified.</li>
+<li><code>pending-anchor</code> — capability declared, anchor test does
+not yet exist. Listed in
+<code>challenges/baselines/bluff-baseline.txt</code> Section 3. Reducing
+this state is the work of campaign sub-project 4.</li>
+<li><code>retired</code> — capability removed; row kept for
+history.</li>
+</ul>
+<h2 id="path-format">Path format</h2>
+<p>For Go tests: <code>&lt;path&gt;.go::&lt;TestFuncName&gt;</code>. The
+challenge verifier greps for <code>func &lt;TestFuncName&gt;\b</code> in
+the file.</p>
+<h2 id="capabilities">Capabilities</h2>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>layer</th>
+<th>capability</th>
+<th>anchor_test_path</th>
+<th>verifies</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CAP-001</td>
+<td>submodule:Challenges</td>
+<td>Run a registered challenge end-to-end via DefaultRunner</td>
+<td>pkg/runner/runner_test.go::TestDefaultRunner_Run_Success</td>
+<td>Runner.Run() executes a registered challenge and returns a Result
+with status=passed</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-002</td>
+<td>submodule:Challenges</td>
+<td>Register a challenge in DefaultRegistry without collisions</td>
+<td>pkg/registry/registry_test.go::TestDefaultRegistry_Register_Success</td>
+<td>Registry.Register() accepts a fresh challenge ID and returns no
+error</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-003</td>
+<td>submodule:Challenges</td>
+<td>Evaluate built-in not_empty assertion</td>
+<td>pkg/assertion/builtin_test.go::TestEvaluateNotEmpty</td>
+<td>NotEmpty evaluator returns pass when given non-empty value, fail
+when empty</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-004</td>
+<td>submodule:Challenges</td>
+<td>Generate Markdown report from challenge results</td>
+<td>pkg/report/markdown_test.go::TestMarkdownReporter_GenerateReport_Content</td>
+<td>MarkdownReporter.GenerateReport() produces valid Markdown with all
+results</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-005</td>
+<td>submodule:Challenges</td>
+<td>Load challenge bank from JSON or YAML file</td>
+<td>pkg/bank/bank_test.go::TestBank_LoadFile</td>
+<td>Bank.LoadFile() parses challenge definitions and registers them</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-006</td>
+<td>submodule:Challenges</td>
+<td>Construct ShellChallenge that wraps a bash script</td>
+<td>pkg/challenge/shell_test.go::TestShellChallenge_NewShellChallenge</td>
+<td>ShellChallenge constructor returns a configured Challenge with the
+script bound</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-007</td>
+<td>submodule:Challenges</td>
+<td>Liveness monitor handles nil progress reporter without
+panicking</td>
+<td>pkg/runner/liveness_test.go::TestLivenessMonitor_NilProgress_NoOp</td>
+<td>LivenessMonitor with nil progress channel is a safe no-op</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-008</td>
+<td>submodule:Challenges</td>
+<td>Construct API HTTP client with default config</td>
+<td>pkg/httpclient/client_test.go::TestNewAPIClient_Defaults</td>
+<td>NewAPIClient() returns a usable client with sensible defaults</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-009</td>
+<td>submodule:Challenges</td>
+<td>Validate challenge result requires positive evidence (anti-bluff
+metatest)</td>
+<td>pkg/challenge/antibluff_test.go::TestValidate_PassWithEvidence</td>
+<td>Validate() accepts pass results with non-empty evidence; rejects
+metadata-only passes</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-010</td>
+<td>submodule:Challenges</td>
+<td>userflow-runner CLI resolves "all" platform target to every
+registered platform key</td>
+<td>cmd/userflow-runner/main_test.go::TestResolveGroups_AllPlatformExpandsEveryKey</td>
+<td>CLI flag parsing produces the full platform set when
+--platform=all</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-011</td>
+<td>submodule:Challenges</td>
+<td>Run challenges in parallel via DefaultRunner</td>
+<td>pkg/runner/parallel_test.go::TestRunParallel_Success</td>
+<td>Runner.RunParallel() executes multiple challenges concurrently and
+returns aggregated results</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-012</td>
+<td>submodule:Challenges</td>
+<td>Execute challenge pipeline with stages</td>
+<td>pkg/runner/pipeline_test.go::TestPipeline_Execute_Success</td>
+<td>Pipeline.Execute() runs ordered stages and produces a successful
+end-to-end result</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-013</td>
+<td>submodule:Challenges</td>
+<td>Anti-bluff runner downgrades a bluff PASS to FAIL in strict
+mode</td>
+<td>pkg/runner/antibluff_runner_test.go::TestAntiBluff_BluffPassDowngraded</td>
+<td>Bluff results in strict mode are downgraded — the meta-test that
+proves the meta-test works</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-014</td>
+<td>submodule:Challenges</td>
+<td>Resolve dependency-free challenge ordering</td>
+<td>pkg/registry/dependency_test.go::TestGetDependencyOrder_NoDeps</td>
+<td>Topological-sort returns the input order when no challenges declare
+dependencies</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-015</td>
+<td>submodule:Challenges</td>
+<td>Register a challenge plugin</td>
+<td>pkg/plugin/plugin_test.go::TestRegistry_Register</td>
+<td>Plugin.Registry.Register() accepts a fresh plugin and exposes it for
+lookup</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-016</td>
+<td>submodule:Challenges</td>
+<td>Update monitor dashboard data from a lifecycle event</td>
+<td>pkg/monitor/dashboard_test.go::TestDashboardData_UpdateFromEvent</td>
+<td>DashboardData.UpdateFromEvent() reflects challenge state
+transitions</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-017</td>
+<td>submodule:Challenges</td>
+<td>InfraProvider interface contract is satisfied by adapters</td>
+<td>pkg/infra/provider_test.go::TestInfraProvider_Interface</td>
+<td>InfraProvider interface methods compile against
+ContainersAdapter</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-018</td>
+<td>submodule:Challenges</td>
+<td>ADB CLI adapter constructor accepts ADB binary path</td>
+<td>pkg/userflow/adb_cli_adapter_test.go::TestADBCLIAdapter_Constructor</td>
+<td>NewADBCLIAdapter returns a configured adapter with the supplied adb
+path</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-019</td>
+<td>submodule:Challenges</td>
+<td>ProgressReporter constructor exposes a buffered channel</td>
+<td>pkg/challenge/progress_test.go::TestProgressReporter_New</td>
+<td>NewProgressReporter() returns a ProgressReporter with non-nil
+progress channel</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-020</td>
+<td>submodule:Challenges</td>
+<td>Environment-variable redaction masks API-key values in log
+output</td>
+<td>pkg/env/redact_test.go::TestRedactAPIKey</td>
+<td>RedactAPIKey() replaces API key tokens with the redaction
+sentinel</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-021</td>
+<td>submodule:Challenges</td>
+<td>JSON logger constructor binds to stdout</td>
+<td>pkg/logging/json_logger_test.go::TestJSONLogger_NewJSONLogger_Stdout</td>
+<td>NewJSONLogger(stdout) returns a logger that writes JSON to
+stdout</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-022</td>
+<td>submodule:Challenges</td>
+<td>Prometheus metrics record challenge execution timing</td>
+<td>pkg/metrics/metrics_test.go::TestPrometheusMetrics_RecordExecution</td>
+<td>RecordExecution() increments the per-challenge counter and observes
+duration</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-023</td>
+<td>submodule:Challenges</td>
+<td>Browser flow challenge constructor binds adapter and steps</td>
+<td>pkg/userflow/challenge_browser_test.go::TestNewBrowserFlowChallenge</td>
+<td>NewBrowserFlowChallenge() returns a Challenge configured with the
+supplied adapter</td>
+<td>active</td>
+</tr>
+<tr>
+<td>CAP-024</td>
+<td>submodule:Challenges</td>
+<td>Mobile launch challenge constructor accepts mobile adapter and
+package</td>
+<td>pkg/userflow/challenge_mobile_test.go::TestNewMobileLaunchChallenge</td>
+<td>NewMobileLaunchChallenge() returns a Challenge bound to mobile
+adapter and target package</td>
+<td>active</td>
+</tr>
+</tbody>
+</table>
+<p>(Manifest now covers core
+runner+registry+plugin+monitor+infra+userflow capabilities — 24 active
+rows. Long-tail: per-protocol httpclient, adapter-by-adapter userflow
+tests, recorder integrity checks.)</p>
+</body>
+</html>

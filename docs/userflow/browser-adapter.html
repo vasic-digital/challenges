@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>browser-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">browser-adapter</h1>
+</header>
+<h1 id="browser-adapter">Browser Adapter</h1>
+<p>The browser adapter provides an interface for browser-based UI
+testing. It abstracts browser automation tools behind a common contract,
+enabling challenge templates to interact with web applications without
+coupling to a specific browser driver.</p>
+<h2 id="browseradapter-interface">BrowserAdapter Interface</h2>
+<p>Defined in <code>adapter_browser.go</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BrowserAdapter <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    Initialize<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> config BrowserConfig<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    Navigate<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> url <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    Click<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    Fill<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector<span class="op">,</span> value <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    SelectOption<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector<span class="op">,</span> value <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    IsVisible<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">bool</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    WaitForSelector<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector <span class="dt">string</span><span class="op">,</span> timeout time<span class="op">.</span>Duration<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    GetText<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    GetAttribute<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> selector<span class="op">,</span> attr <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    Screenshot<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">([]</span><span class="dt">byte</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    EvaluateJS<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> script <span class="dt">string</span><span class="op">)</span> <span class="op">(</span><span class="dt">string</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    NetworkIntercept<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> pattern <span class="dt">string</span><span class="op">,</span> handler <span class="kw">func</span><span class="op">(</span>req <span class="op">*</span>InterceptedRequest<span class="op">))</span> <span class="dt">error</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    Close<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    Available<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">bool</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="method-summary">Method Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Initialize</code></td>
+<td>Set up the browser with viewport size, headless mode, and extra
+arguments</td>
+</tr>
+<tr>
+<td><code>Navigate</code></td>
+<td>Load a URL in the browser tab</td>
+</tr>
+<tr>
+<td><code>Click</code></td>
+<td>Click the element matching a CSS selector</td>
+</tr>
+<tr>
+<td><code>Fill</code></td>
+<td>Type a value into an input matching a CSS selector</td>
+</tr>
+<tr>
+<td><code>SelectOption</code></td>
+<td>Select a dropdown option by value</td>
+</tr>
+<tr>
+<td><code>IsVisible</code></td>
+<td>Check if an element is visible</td>
+</tr>
+<tr>
+<td><code>WaitForSelector</code></td>
+<td>Block until an element appears or timeout expires</td>
+</tr>
+<tr>
+<td><code>GetText</code></td>
+<td>Read the text content of an element</td>
+</tr>
+<tr>
+<td><code>GetAttribute</code></td>
+<td>Read a named attribute from an element</td>
+</tr>
+<tr>
+<td><code>Screenshot</code></td>
+<td>Capture the viewport as a PNG byte slice</td>
+</tr>
+<tr>
+<td><code>EvaluateJS</code></td>
+<td>Execute arbitrary JavaScript and return the result</td>
+</tr>
+<tr>
+<td><code>NetworkIntercept</code></td>
+<td>Register a handler for matching network requests</td>
+</tr>
+<tr>
+<td><code>Close</code></td>
+<td>Shut down the browser and release resources</td>
+</tr>
+<tr>
+<td><code>Available</code></td>
+<td>Check if the automation tool is installed and reachable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration-types">Configuration Types</h2>
+<h3 id="browserconfig">BrowserConfig</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> BrowserConfig <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    BrowserType <span class="dt">string</span>   <span class="st">`json:&quot;browser_type&quot;`</span>  <span class="co">// e.g., &quot;chromium&quot;, &quot;firefox&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Headless    <span class="dt">bool</span>     <span class="st">`json:&quot;headless&quot;`</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    WindowSize  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span>   <span class="st">`json:&quot;window_size&quot;`</span>   <span class="co">// [width, height]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ExtraArgs   <span class="op">[]</span><span class="dt">string</span> <span class="st">`json:&quot;extra_args&quot;`</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="interceptedrequest">InterceptedRequest</h3>
+<p>Represents a captured network request:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> InterceptedRequest <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    URL     <span class="dt">string</span>            <span class="st">`json:&quot;url&quot;`</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Method  <span class="dt">string</span>            <span class="st">`json:&quot;method&quot;`</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    Headers <span class="kw">map</span><span class="op">[</span><span class="dt">string</span><span class="op">]</span><span class="dt">string</span> <span class="st">`json:&quot;headers&quot;`</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    Body    <span class="op">[]</span><span class="dt">byte</span>            <span class="st">`json:&quot;body&quot;`</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="playwrightcliadapter">PlaywrightCLIAdapter</h2>
+<p>The built-in implementation connects to a Chrome DevTools Protocol
+(CDP) endpoint and executes Playwright commands via Node.js scripts run
+inside a container.</p>
+<h3 id="architecture">Architecture</h3>
+<pre><code>Go Challenge  --&gt;  PlaywrightCLIAdapter  --&gt;  podman exec &lt;container&gt; node -e &lt;script&gt;
+                                                    |
+                                              Playwright (Node.js)
+                                                    |
+                                              CDP WebSocket --&gt; Browser</code></pre>
+<p>Each adapter method generates a self-contained Node.js script
+that:</p>
+<ol type="1">
+<li>Connects to the browser via
+<code>chromium.connectOverCDP(endpoint)</code>.</li>
+<li>Accesses the existing browser context and page.</li>
+<li>Performs the requested action.</li>
+<li>Outputs JSON to stdout for Go to parse.</li>
+</ol>
+<h3 id="constructor">Constructor</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewPlaywrightCLIAdapter<span class="op">(</span><span class="st">&quot;ws://localhost:9222&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>The single argument is the CDP WebSocket URL. The adapter defaults to
+running scripts inside a container named <code>"playwright"</code> via
+<code>podman exec</code>.</p>
+<h3 id="availability-check">Availability Check</h3>
+<p><code>Available()</code> converts the WebSocket URL to HTTP and
+performs a health check request. Returns true if the endpoint responds
+with a status code below 500.</p>
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li><strong>Network interception</strong>: The CLI-based approach does
+not support persistent network interception.
+<code>NetworkIntercept()</code> returns nil without error, but the
+handler will not fire. For full network interception, a
+persistent-connection implementation would be needed.</li>
+<li><strong>State management</strong>: Each method call creates a new
+Node.js process. Browser context and page are retrieved from the
+existing CDP connection on each call. This means the browser must be
+kept running externally (e.g., in a container).</li>
+<li><strong>Script injection safety</strong>: Selectors and values are
+escaped via a helper that handles backslashes and single quotes, but
+complex selectors should be tested carefully.</li>
+</ul>
+<h3 id="example-browser-flow">Example: Browser Flow</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flow <span class="op">:=</span> userflow<span class="op">.</span>BrowserFlow<span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span>     <span class="st">&quot;login-flow&quot;</span><span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    StartURL<span class="op">:</span> <span class="st">&quot;http://localhost:3000&quot;</span><span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    Config<span class="op">:</span> userflow<span class="op">.</span>BrowserConfig<span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        BrowserType<span class="op">:</span> <span class="st">&quot;chromium&quot;</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        Headless<span class="op">:</span>    <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        WindowSize<span class="op">:</span>  <span class="op">[</span><span class="dv">2</span><span class="op">]</span><span class="dt">int</span><span class="op">{</span><span class="dv">1920</span><span class="op">,</span> <span class="dv">1080</span><span class="op">},</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>BrowserStep<span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>     <span class="st">&quot;fill-username&quot;</span><span class="op">,</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            Action<span class="op">:</span>   <span class="st">&quot;fill&quot;</span><span class="op">,</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            Selector<span class="op">:</span> <span class="st">&quot;#username&quot;</span><span class="op">,</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            Value<span class="op">:</span>    <span class="st">&quot;admin&quot;</span><span class="op">,</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>     <span class="st">&quot;fill-password&quot;</span><span class="op">,</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>            Action<span class="op">:</span>   <span class="st">&quot;fill&quot;</span><span class="op">,</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            Selector<span class="op">:</span> <span class="st">&quot;#password&quot;</span><span class="op">,</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            Value<span class="op">:</span>    <span class="st">&quot;secret&quot;</span><span class="op">,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>     <span class="st">&quot;click-login&quot;</span><span class="op">,</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>            Action<span class="op">:</span>   <span class="st">&quot;click&quot;</span><span class="op">,</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            Selector<span class="op">:</span> <span class="st">&quot;button[type=submit]&quot;</span><span class="op">,</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>            Name<span class="op">:</span>       <span class="st">&quot;verify-dashboard&quot;</span><span class="op">,</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>            Action<span class="op">:</span>     <span class="st">&quot;assert_visible&quot;</span><span class="op">,</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>            Selector<span class="op">:</span>   <span class="st">&quot;.dashboard&quot;</span><span class="op">,</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>            Screenshot<span class="op">:</span> <span class="ot">true</span><span class="op">,</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">},</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewBrowserFlowChallenge<span class="op">(</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-BROWSER-001&quot;</span><span class="op">,</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Login Flow&quot;</span><span class="op">,</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Verify the login form works end-to-end&quot;</span><span class="op">,</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    flow<span class="op">,</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h3 id="supported-browser-actions">Supported Browser Actions</h3>
+<p>The <code>BrowserFlowChallenge</code> dispatches the following
+actions:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Fields Used</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>navigate</code></td>
+<td><code>Value</code> (URL)</td>
+<td>Loads the URL</td>
+</tr>
+<tr>
+<td><code>click</code></td>
+<td><code>Selector</code></td>
+<td>Clicks the element</td>
+</tr>
+<tr>
+<td><code>fill</code></td>
+<td><code>Selector</code>, <code>Value</code></td>
+<td>Types value into input</td>
+</tr>
+<tr>
+<td><code>select</code></td>
+<td><code>Selector</code>, <code>Value</code></td>
+<td>Selects dropdown option</td>
+</tr>
+<tr>
+<td><code>wait</code></td>
+<td><code>Selector</code>, <code>Timeout</code></td>
+<td>Waits for element (default 5s)</td>
+</tr>
+<tr>
+<td><code>assert_visible</code></td>
+<td><code>Selector</code></td>
+<td>Fails if element is not visible</td>
+</tr>
+<tr>
+<td><code>assert_text</code></td>
+<td><code>Selector</code>, <code>Value</code></td>
+<td>Fails if element text does not contain value</td>
+</tr>
+<tr>
+<td><code>assert_url</code></td>
+<td><code>Value</code></td>
+<td>Fails if current URL does not contain value</td>
+</tr>
+<tr>
+<td><code>screenshot</code></td>
+<td>--</td>
+<td>Captures viewport as PNG</td>
+</tr>
+<tr>
+<td><code>evaluate_js</code></td>
+<td><code>Value</code> or <code>Script</code></td>
+<td>Evaluates JavaScript in browser context</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

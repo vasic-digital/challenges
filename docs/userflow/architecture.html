@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>architecture</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">architecture</h1>
+</header>
+<h1 id="architecture">Architecture</h1>
+<p>This document describes the high-level architecture of
+<code>pkg/userflow</code>, covering its core design patterns, component
+layers, and how they integrate with the broader challenge framework.</p>
+<h2 id="layered-design">Layered Design</h2>
+<p>The package is organized into four layers:</p>
+<pre><code>+-----------------------------------------------------+
+|                   Challenge Templates                |
+|  (BrowserFlowChallenge, APIFlowChallenge, etc.)      |
++-----------------------------------------------------+
+|                   Flow Definitions                   |
+|  (BrowserFlow, APIFlow, MobileFlow, IPCCommand)      |
++-----------------------------------------------------+
+|                   Platform Adapters                  |
+|  Interfaces: BrowserAdapter, APIAdapter, etc.        |
+|  Implementations: PlaywrightCLI, ADBCLI, etc.       |
++-----------------------------------------------------+
+|                   Infrastructure                     |
+|  TestEnvironment, Plugin, Evaluators, ResultParsers  |
++-----------------------------------------------------+</code></pre>
+<h3 id="layer-1-infrastructure">Layer 1: Infrastructure</h3>
+<p>The bottom layer provides supporting services:</p>
+<ul>
+<li><strong>UserFlowPlugin</strong> -- Registers 12 assertion evaluators
+with the challenge framework's assertion engine. It implements the
+<code>plugin.Plugin</code> interface and is initialized during
+application bootstrap.</li>
+<li><strong>TestEnvironment</strong> -- Manages containerized test
+infrastructure using the Containers module (runtime detection, compose
+orchestration, health checking, service registry, event bus).</li>
+<li><strong>Result parsers</strong> -- Convert <code>TestResult</code>
+and <code>BuildResult</code> into maps of values and metrics suitable
+for assertion evaluation (<code>ParseTestResultToValues</code>,
+<code>ParseBuildResultToMetrics</code>, etc.).</li>
+<li><strong>Functional options</strong> -- <code>ChallengeOption</code>
+values configure challenges with settings like
+<code>WithContainerized</code>, <code>WithProjectRoot</code>, and
+<code>WithRuntimeName</code>.</li>
+</ul>
+<h3 id="layer-2-platform-adapters">Layer 2: Platform Adapters</h3>
+<p>Six adapter interfaces abstract platform-specific operations:</p>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Purpose</th>
+<th>Built-in Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BrowserAdapter</code></td>
+<td>Browser UI automation</td>
+<td><code>PlaywrightCLIAdapter</code></td>
+</tr>
+<tr>
+<td><code>MobileAdapter</code></td>
+<td>Mobile device testing</td>
+<td><code>ADBCLIAdapter</code></td>
+</tr>
+<tr>
+<td><code>DesktopAdapter</code></td>
+<td>Desktop app testing</td>
+<td><code>TauriCLIAdapter</code></td>
+</tr>
+<tr>
+<td><code>APIAdapter</code></td>
+<td>REST API and WebSocket</td>
+<td><code>HTTPAPIAdapter</code></td>
+</tr>
+<tr>
+<td><code>BuildAdapter</code></td>
+<td>Build, test, lint</td>
+<td><code>GradleCLIAdapter</code>, <code>NPMCLIAdapter</code>,
+<code>GoCLIAdapter</code>, <code>CargoCLIAdapter</code></td>
+</tr>
+<tr>
+<td><code>ProcessAdapter</code></td>
+<td>Process lifecycle</td>
+<td><code>ProcessCLIAdapter</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each interface follows the same conventions:</p>
+<ul>
+<li>Every method takes <code>context.Context</code> as its first
+parameter.</li>
+<li>An <code>Available(ctx) bool</code> method checks whether the
+underlying tool is installed and usable.</li>
+<li>A <code>Close(ctx) error</code> method (where applicable) releases
+resources.</li>
+</ul>
+<h3 id="layer-3-flow-definitions">Layer 3: Flow Definitions</h3>
+<p>Flow types define declarative step sequences that challenge templates
+execute:</p>
+<ul>
+<li><strong>BrowserFlow</strong> -- Named sequence of
+<code>BrowserStep</code> values (navigate, click, fill, select, wait,
+assert_visible, assert_text, assert_url, screenshot, evaluate_js). Each
+step may carry <code>StepAssertion</code> values.</li>
+<li><strong>APIFlow</strong> -- Named sequence of <code>APIStep</code>
+values (GET, POST, PUT, DELETE) with optional credentials, variable
+extraction (<code>ExtractTo</code>), and per-step assertions.</li>
+<li><strong>MobileFlow</strong> -- Named sequence of
+<code>MobileStep</code> values (launch, tap, send_keys, press_key,
+screenshot, wait, stop, assert_running).</li>
+<li><strong>IPCCommand</strong> -- Single IPC command definition for
+desktop backend invocation, with expected result and assertions.</li>
+</ul>
+<p>All flow types are JSON-serializable, enabling definition in
+configuration files.</p>
+<h3 id="layer-4-challenge-templates">Layer 4: Challenge Templates</h3>
+<p>Challenge templates are concrete <code>challenge.Challenge</code>
+implementations that compose an adapter with a flow definition. They
+embed <code>challenge.BaseChallenge</code> to inherit the challenge
+lifecycle (ID, dependencies, progress reporting, result creation).</p>
+<p>There are 13 challenge template types organized by platform:</p>
+<ul>
+<li><strong>Environment</strong>:
+<code>EnvironmentSetupChallenge</code>,
+<code>EnvironmentTeardownChallenge</code></li>
+<li><strong>API</strong>: <code>APIHealthChallenge</code>,
+<code>APIFlowChallenge</code></li>
+<li><strong>Browser</strong>: <code>BrowserFlowChallenge</code></li>
+<li><strong>Build</strong>: <code>BuildChallenge</code>,
+<code>UnitTestChallenge</code>, <code>LintChallenge</code></li>
+<li><strong>Mobile</strong>: <code>MobileLaunchChallenge</code>,
+<code>MobileFlowChallenge</code>,
+<code>InstrumentedTestChallenge</code></li>
+<li><strong>Desktop</strong>: <code>DesktopLaunchChallenge</code>,
+<code>DesktopFlowChallenge</code>, <code>DesktopIPCChallenge</code></li>
+</ul>
+<h2 id="design-patterns">Design Patterns</h2>
+<h3 id="adapter-pattern">Adapter Pattern</h3>
+<p>The central pattern. Each platform adapter interface defines a
+contract that can be implemented by different toolchains. This allows
+challenges to be written against the interface while the concrete
+tooling (Playwright, ADB, Gradle, etc.) can be swapped out.</p>
+<pre><code>BrowserFlowChallenge --uses--&gt; BrowserAdapter (interface)
+                                    |
+                         PlaywrightCLIAdapter (concrete)</code></pre>
+<h3 id="template-method">Template Method</h3>
+<p>Challenge templates use the Template Method pattern via
+<code>challenge.BaseChallenge</code>. The base provides the lifecycle
+(<code>Configure</code>, <code>Validate</code>, <code>Cleanup</code>)
+and utility methods (<code>ReportProgress</code>,
+<code>CreateResult</code>). Each template overrides
+<code>Execute()</code> with its platform-specific logic.</p>
+<h3 id="strategy-pattern">Strategy Pattern</h3>
+<p>The evaluator registry uses the Strategy pattern. Each evaluator
+function implements the <code>assertion.Evaluator</code> signature and
+is registered by name. The assertion engine selects the correct
+evaluator at runtime based on the assertion type string.</p>
+<h3 id="functional-options">Functional Options</h3>
+<p>Configuration uses the functional options pattern via
+<code>ChallengeOption</code> and <code>TestEnvironmentOption</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>env<span class="op">,</span> err <span class="op">:=</span> userflow<span class="op">.</span>NewTestEnvironment<span class="op">(</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithComposeFile<span class="op">(</span><span class="st">&quot;compose.test.yml&quot;</span><span class="op">),</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithProjectName<span class="op">(</span><span class="st">&quot;my-test&quot;</span><span class="op">),</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    userflow<span class="op">.</span>WithPlatformGroups<span class="op">(</span>groups<span class="op">),</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h3 id="observer-event-bus">Observer (Event Bus)</h3>
+<p>The <code>TestEnvironment</code> integrates the Containers module's
+<code>EventBus</code> for container lifecycle events. This enables
+reactive monitoring of container state changes during test
+execution.</p>
+<h2 id="data-flow">Data Flow</h2>
+<p>A typical challenge execution follows this path:</p>
+<pre><code>1. Runner calls challenge.Execute(ctx)
+2. Challenge template initializes its adapter
+3. Challenge iterates over flow steps
+4. Each step:
+   a. Reports progress via BaseChallenge.ReportProgress()
+   b. Dispatches to the adapter method
+   c. Creates an AssertionResult (passed/failed)
+   d. Records a MetricValue (duration, counts)
+5. Challenge aggregates results
+6. Returns challenge.Result with assertions, metrics, outputs</code></pre>
+<h2 id="integration-points">Integration Points</h2>
+<h3 id="challenge-framework">Challenge Framework</h3>
+<ul>
+<li>Challenge templates embed <code>challenge.BaseChallenge</code> and
+implement <code>challenge.Challenge</code>.</li>
+<li>Results use <code>challenge.Result</code>,
+<code>challenge.AssertionResult</code>,
+<code>challenge.MetricValue</code>.</li>
+<li>Dependencies between challenges are expressed via
+<code>challenge.ID</code> slices passed to constructors.</li>
+</ul>
+<h3 id="assertion-engine">Assertion Engine</h3>
+<ul>
+<li><code>UserFlowPlugin</code> registers evaluators with
+<code>assertion.DefaultEngine</code>.</li>
+<li>Evaluators follow the <code>assertion.Evaluator</code> function
+signature:
+<code>func(def assertion.Definition, value any) (bool, string)</code>.</li>
+</ul>
+<h3 id="containers-module">Containers Module</h3>
+<ul>
+<li><code>TestEnvironment</code> uses
+<code>containers/pkg/runtime</code>,
+<code>containers/pkg/compose</code>, <code>containers/pkg/health</code>,
+<code>containers/pkg/serviceregistry</code>,
+<code>containers/pkg/event</code>, and
+<code>containers/pkg/logging</code>.</li>
+<li>Auto-detects the container runtime (Podman-first).</li>
+<li>Health checking supports TCP, HTTP, and gRPC probes.</li>
+</ul>
+<h3 id="http-client">HTTP Client</h3>
+<ul>
+<li><code>HTTPAPIAdapter</code> wraps
+<code>pkg/httpclient.APIClient</code> for REST operations.</li>
+<li>Inherits JWT authentication, retry logic, and functional options
+from the httpclient package.</li>
+<li>Adds WebSocket support via <code>gorilla/websocket</code>.</li>
+</ul>
+</body>
+</html>

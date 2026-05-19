@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>mobile-adapter</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">mobile-adapter</h1>
+</header>
+<h1 id="mobile-adapter">Mobile Adapter</h1>
+<p>The mobile adapter provides an interface for testing applications on
+mobile devices. It abstracts device interaction (installation,
+launching, input, screenshots) behind a common contract.</p>
+<h2 id="mobileadapter-interface">MobileAdapter Interface</h2>
+<p>Defined in <code>adapter_mobile.go</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> MobileAdapter <span class="kw">interface</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    IsDeviceAvailable<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">(</span><span class="dt">bool</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    InstallApp<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> appPath <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    LaunchApp<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    StopApp<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    IsAppRunning<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">(</span><span class="dt">bool</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    TakeScreenshot<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="op">([]</span><span class="dt">byte</span><span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    Tap<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> x<span class="op">,</span> y <span class="dt">int</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    SendKeys<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> text <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    PressKey<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> keycode <span class="dt">string</span><span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    WaitForApp<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> timeout time<span class="op">.</span>Duration<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    RunInstrumentedTests<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">,</span> testClass <span class="dt">string</span><span class="op">)</span> <span class="op">(*</span>TestResult<span class="op">,</span> <span class="dt">error</span><span class="op">)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    Close<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">error</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    Available<span class="op">(</span>ctx context<span class="op">.</span>Context<span class="op">)</span> <span class="dt">bool</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="method-summary">Method Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IsDeviceAvailable</code></td>
+<td>Check if the target device is connected and ready</td>
+</tr>
+<tr>
+<td><code>InstallApp</code></td>
+<td>Install an application binary (APK, AAB, or IPA) onto the
+device</td>
+</tr>
+<tr>
+<td><code>LaunchApp</code></td>
+<td>Start the configured application</td>
+</tr>
+<tr>
+<td><code>StopApp</code></td>
+<td>Force-stop the running application</td>
+</tr>
+<tr>
+<td><code>IsAppRunning</code></td>
+<td>Check if the application process is active</td>
+</tr>
+<tr>
+<td><code>TakeScreenshot</code></td>
+<td>Capture the device screen as a PNG byte slice</td>
+</tr>
+<tr>
+<td><code>Tap</code></td>
+<td>Perform a tap gesture at screen coordinates</td>
+</tr>
+<tr>
+<td><code>SendKeys</code></td>
+<td>Type text into the currently focused input</td>
+</tr>
+<tr>
+<td><code>PressKey</code></td>
+<td>Send a key event (e.g., <code>KEYCODE_BACK</code>,
+<code>KEYCODE_HOME</code>)</td>
+</tr>
+<tr>
+<td><code>WaitForApp</code></td>
+<td>Block until the app is running or timeout expires</td>
+</tr>
+<tr>
+<td><code>RunInstrumentedTests</code></td>
+<td>Run on-device instrumented tests, optionally filtered by class</td>
+</tr>
+<tr>
+<td><code>Close</code></td>
+<td>Disconnect from the device and release resources</td>
+</tr>
+<tr>
+<td><code>Available</code></td>
+<td>Check if the automation tool is installed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration-type">Configuration Type</h2>
+<h3 id="mobileconfig">MobileConfig</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> MobileConfig <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    PackageName  <span class="dt">string</span> <span class="st">`json:&quot;package_name&quot;`</span>   <span class="co">// e.g., &quot;com.example.app&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    ActivityName <span class="dt">string</span> <span class="st">`json:&quot;activity_name&quot;`</span>  <span class="co">// e.g., &quot;.MainActivity&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    DeviceSerial <span class="dt">string</span> <span class="st">`json:&quot;device_serial&quot;`</span>  <span class="co">// optional; targets specific device</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li><code>PackageName</code> is required for launching, stopping, and
+checking if the app is running.</li>
+<li><code>ActivityName</code> is used with <code>PackageName</code> to
+form the component name for <code>am start</code>.</li>
+<li><code>DeviceSerial</code> is optional. When set, all ADB commands
+include <code>-s &lt;serial&gt;</code> to target a specific device. When
+empty, ADB uses the default connected device.</li>
+</ul>
+<h2 id="adbcliadapter">ADBCLIAdapter</h2>
+<p>The built-in implementation shells out to the <code>adb</code>
+(Android Debug Bridge) command-line tool for all device
+interactions.</p>
+<h3 id="constructor">Constructor</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>config <span class="op">:=</span> userflow<span class="op">.</span>MobileConfig<span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    PackageName<span class="op">:</span>  <span class="st">&quot;com.example.myapp&quot;</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    ActivityName<span class="op">:</span> <span class="st">&quot;.MainActivity&quot;</span><span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    DeviceSerial<span class="op">:</span> <span class="st">&quot;emulator-5554&quot;</span><span class="op">,</span> <span class="co">// optional</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewADBCLIAdapter<span class="op">(</span>config<span class="op">)</span></span></code></pre></div>
+<h3 id="how-it-works">How It Works</h3>
+<p>Each method constructs an <code>adb</code> command with the
+appropriate arguments. If <code>DeviceSerial</code> is configured,
+<code>-s &lt;serial&gt;</code> is prepended to every command.</p>
+<p><strong>Device detection</strong>: Parses <code>adb devices</code>
+output, looking for lines where the second field is
+<code>"device"</code>.</p>
+<p><strong>App launch</strong>: Executes
+<code>adb shell am start -n &lt;package&gt;/&lt;activity&gt;</code>.</p>
+<p><strong>App stop</strong>: Executes
+<code>adb shell am force-stop &lt;package&gt;</code>.</p>
+<p><strong>App running check</strong>: Executes
+<code>adb shell pidof &lt;package&gt;</code>. Returns true if the output
+is non-empty.</p>
+<p><strong>Screenshots</strong>: Three-step process:</p>
+<ol type="1">
+<li><code>adb shell screencap -p /sdcard/screenshot.png</code> --
+capture on device.</li>
+<li><code>adb pull /sdcard/screenshot.png /tmp/adb-screenshot-&lt;timestamp&gt;.png</code>
+-- pull to host.</li>
+<li>Read the local file, then clean up both the device and host
+copies.</li>
+</ol>
+<p><strong>Input</strong>: Uses
+<code>adb shell input tap &lt;x&gt; &lt;y&gt;</code>,
+<code>adb shell input text &lt;text&gt;</code>, and
+<code>adb shell input keyevent &lt;keycode&gt;</code>.</p>
+<p><strong>WaitForApp</strong>: Polls <code>IsAppRunning</code> every
+500ms until the app is detected or the timeout expires.</p>
+<p><strong>Instrumented tests</strong>: Runs
+<code>adb shell am instrument -w</code> with the AndroidJUnitRunner.
+Optionally filters by test class with
+<code>-e class &lt;name&gt;</code>. Parses the output to extract test
+counts.</p>
+<h3 id="availability">Availability</h3>
+<p><code>Available()</code> checks if the <code>adb</code> binary exists
+in PATH via <code>exec.LookPath("adb")</code>.</p>
+<h3 id="cleanup">Cleanup</h3>
+<p><code>Close()</code> is a no-op for ADB since the device connection
+does not require explicit cleanup.</p>
+<h2 id="example-mobile-launch-challenge">Example: Mobile Launch
+Challenge</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adapter <span class="op">:=</span> userflow<span class="op">.</span>NewADBCLIAdapter<span class="op">(</span>userflow<span class="op">.</span>MobileConfig<span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    PackageName<span class="op">:</span>  <span class="st">&quot;com.example.myapp&quot;</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    ActivityName<span class="op">:</span> <span class="st">&quot;.MainActivity&quot;</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewMobileLaunchChallenge<span class="op">(</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-MOBILE-001&quot;</span><span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;App Launch and Stability&quot;</span><span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Install, launch, and verify the app remains stable for 10 seconds&quot;</span><span class="op">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">nil</span><span class="op">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/path/to/app-debug.apk&quot;</span><span class="op">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">10</span><span class="op">*</span>time<span class="op">.</span>Second<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h2 id="example-mobile-flow">Example: Mobile Flow</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>flow <span class="op">:=</span> userflow<span class="op">.</span>MobileFlow<span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    Name<span class="op">:</span> <span class="st">&quot;onboarding-flow&quot;</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    Config<span class="op">:</span> userflow<span class="op">.</span>MobileConfig<span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        PackageName<span class="op">:</span>  <span class="st">&quot;com.example.myapp&quot;</span><span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ActivityName<span class="op">:</span> <span class="st">&quot;.MainActivity&quot;</span><span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    Steps<span class="op">:</span> <span class="op">[]</span>userflow<span class="op">.</span>MobileStep<span class="op">{</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;launch&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;launch&quot;</span><span class="op">},</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;tap-next&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;tap&quot;</span><span class="op">,</span> X<span class="op">:</span> <span class="dv">540</span><span class="op">,</span> Y<span class="op">:</span> <span class="dv">1800</span><span class="op">},</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;type-name&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;send_keys&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;John&quot;</span><span class="op">},</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;press-enter&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;press_key&quot;</span><span class="op">,</span> Value<span class="op">:</span> <span class="st">&quot;KEYCODE_ENTER&quot;</span><span class="op">},</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;capture&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;screenshot&quot;</span><span class="op">},</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>Name<span class="op">:</span> <span class="st">&quot;verify-running&quot;</span><span class="op">,</span> Action<span class="op">:</span> <span class="st">&quot;assert_running&quot;</span><span class="op">},</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>challenge <span class="op">:=</span> userflow<span class="op">.</span>NewMobileFlowChallenge<span class="op">(</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;CH-MOBILE-002&quot;</span><span class="op">,</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Onboarding Flow&quot;</span><span class="op">,</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Walk through the onboarding screens&quot;</span><span class="op">,</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">[]</span>challenge<span class="op">.</span>ID<span class="op">{</span><span class="st">&quot;CH-MOBILE-001&quot;</span><span class="op">},</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    adapter<span class="op">,</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    flow<span class="op">,</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div>
+<h3 id="supported-mobile-actions">Supported Mobile Actions</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Fields Used</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>launch</code></td>
+<td>--</td>
+<td>Launches the configured app</td>
+</tr>
+<tr>
+<td><code>stop</code></td>
+<td>--</td>
+<td>Force-stops the app</td>
+</tr>
+<tr>
+<td><code>tap</code></td>
+<td><code>X</code>, <code>Y</code></td>
+<td>Taps at screen coordinates</td>
+</tr>
+<tr>
+<td><code>send_keys</code></td>
+<td><code>Value</code></td>
+<td>Types text into focused input</td>
+</tr>
+<tr>
+<td><code>press_key</code></td>
+<td><code>Value</code></td>
+<td>Sends a key event</td>
+</tr>
+<tr>
+<td><code>wait</code></td>
+<td>--</td>
+<td>Waits for app (5-second timeout)</td>
+</tr>
+<tr>
+<td><code>screenshot</code></td>
+<td>--</td>
+<td>Captures device screen</td>
+</tr>
+<tr>
+<td><code>assert_running</code></td>
+<td>--</td>
+<td>Fails if app is not running</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
