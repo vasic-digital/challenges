@@ -169,6 +169,57 @@ infra.InfraProvider
 | `no_mock_responses` | No mocked responses in array |
 | `min_score` | Numeric minimum score |
 
+## Anti-bluff guarantees (round-304 — meta Challenge-of-Challenges)
+
+This repository is the cross-cutting **Challenge bank** consumed by every
+HelixCode-family consumer (Panoptic, security, helix_qa, helix_llm, the
+core HelixCode app). Because it is itself a test-infrastructure submodule,
+its own anti-bluff posture must be **meta** — the bank validates the
+banks. Round-304 (2026-05-19) landed a describe-Challenge meta-runner +
+inventory ledger that close the recursion.
+
+**Verified surfaces (per `docs/test-coverage.md`):**
+
+- **Bank inventories** — `banks/examples/` (28 generic example banks),
+  `banks/yole/` (7 feature-coverage YAML banks + fixtures), `challenges/`
+  (16 baseline shell-script challenges in `challenges/scripts/`, 1
+  baseline reference text). Every bank is asserted present + readable +
+  parseable by the describe-runner.
+- **Runner-per-bank** — every shell-script bank under
+  `challenges/scripts/` is asserted executable (`+x` bit set) and
+  responds to `--help` or returns a recognisable signature. Missing
+  exec-bit or missing runner = describe-runner FAIL.
+- **Paired-mutation per bank** — the describe-runner itself is paired
+  (per CONST-035 / §1.1): `--anti-bluff-mutate` plants a deliberate
+  inventory mismatch (renames a tracked bank file in a tmp tree) and
+  asserts the gate FAILS with exit 99. A meta-runner that PASSes its
+  own mutation is itself a bluff.
+- **5-locale fixture** — `challenges/fixtures/payloads.json` exercises
+  the JSON/YAML bank-loader (`pkg/bank`) and assertion engine through
+  every locale (en, de, es, ja, sr — Latin + German + Spanish + CJK +
+  Cyrillic) so non-ASCII bytes survive the load → execute → report
+  pipeline.
+
+**How to invoke:**
+
+```bash
+bash challenges_describe_challenge.sh                    # clean PASS (exit 0)
+bash challenges_describe_challenge.sh --anti-bluff-mutate # planted-mutation FAIL (exit 99)
+```
+
+A clean tree MUST yield exit 0; the mutation MUST yield exit 99. Any
+other outcome is a release blocker per CONST-035 / Article XI §11.9.
+
+**Verbatim 2026-05-19 operator mandate (cascaded per CONST-049 §11.4.17):**
+
+> "all existing tests and Challenges do work in anti-bluff manner —
+> they MUST confirm that all tested codebase really works as expected!
+> We had been in position that all tests do execute with success and
+> all Challenges as well, but in reality the most of the features does
+> not work and can't be used! This MUST NOT be the case and execution
+> of tests and Challenges MUST guarantee the quality, the completition
+> and full usability by end users of the product!"
+
 ## License
 
 MIT

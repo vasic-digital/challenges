@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Round-304 cross-locale fixture for digital.vasic.challenges bank loader + assertion engine. Mandated by CONST-046 (no hardcoded user-facing strings) and round-304 parity with rounds 220 / 295 / 298 / 300. Every locale exercises the JSON → bank.Load → registry.Register → runner.Run → report pipeline through the assertion engine with non-ASCII bytes preserved end-to-end.",
+  "payloads": [
+    {
+      "locale": "en",
+      "challenge_id": "health_check_en",
+      "challenge_name": "Health Check",
+      "description": "Verify all services are healthy and reachable.",
+      "category": "core",
+      "assertion_target": "service response is non-empty"
+    },
+    {
+      "locale": "de",
+      "challenge_id": "health_check_de",
+      "challenge_name": "Gesundheitsprüfung",
+      "description": "Stelle sicher, dass alle Dienste gesund und erreichbar sind. (Umlaute: ä ö ü ß)",
+      "category": "core",
+      "assertion_target": "Dienstantwort ist nicht leer"
+    },
+    {
+      "locale": "es",
+      "challenge_id": "health_check_es",
+      "challenge_name": "Comprobación de salud",
+      "description": "Verifica que todos los servicios estén sanos y accesibles. (Diacríticos: á é í ó ú ñ)",
+      "category": "core",
+      "assertion_target": "la respuesta del servicio no está vacía"
+    },
+    {
+      "locale": "ja",
+      "challenge_id": "health_check_ja",
+      "challenge_name": "ヘルスチェック",
+      "description": "すべてのサービスが正常で到達可能であることを確認します。漢字とひらがなとカタカナの混在。",
+      "category": "core",
+      "assertion_target": "サービス応答が空でないこと"
+    },
+    {
+      "locale": "sr",
+      "challenge_id": "health_check_sr",
+      "challenge_name": "Провера здравља",
+      "description": "Провери да ли су сви сервиси здрави и доступни. (Ћирилица + латиница)",
+      "category": "core",
+      "assertion_target": "одговор сервиса није празан"
+    }
+  ]
+}
