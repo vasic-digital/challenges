@@ -185,13 +185,16 @@ func (a *CLIAdapter) scanArtifacts(
 	dir string,
 	result *PanopticRunResult,
 ) {
-	_ = filepath.Walk(dir, func(
-		path string, info os.FileInfo, err error,
+	// WalkDir reuses the fs.DirEntry produced by the directory read
+	// instead of issuing a per-entry os.Lstat; the callback only needs
+	// IsDir + Name, both available without a stat.
+	_ = filepath.WalkDir(dir, func(
+		path string, d os.DirEntry, err error,
 	) error {
-		if err != nil || info.IsDir() {
+		if err != nil || d.IsDir() {
 			return nil
 		}
-		name := info.Name()
+		name := d.Name()
 		ext := strings.ToLower(filepath.Ext(name))
 
 		switch {
