@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>sql-definitions</title>
+  <title>QWEN</title>
   <style>
 
 html {
@@ -170,41 +170,52 @@ vertical-align: middle;
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">sql-definitions</h1>
+<h1 class="title">QWEN</h1>
 </header>
-<h1 id="sql-definitions">SQL Definitions</h1>
-<h2 id="module-overview">Module Overview</h2>
-<p>This module does not directly use SQL databases for its core
-functionality.</p>
-<h2 id="database-usage">Database Usage</h2>
-<h3 id="primary-storage">Primary Storage</h3>
-<ul>
-<li><strong>Technology</strong>: In-memory challenge registry,
-filesystem storage for scripts</li>
-<li><strong>Purpose</strong>: Challenge execution, assertion validation,
-reporting, monitoring, metrics</li>
-<li><strong>Schema</strong>: No SQL schema is required</li>
-</ul>
-<h3 id="optional-sql-integration">Optional SQL Integration</h3>
-<ul>
-<li>Challenge results and metrics can be stored in SQL databases for
-long-term analysis</li>
-<li>User flow test results may be persisted to SQL for trend
-analysis</li>
-<li>Assertion engine evaluations can be logged to SQL audit tables</li>
-<li>Plugin system v2.0.0 metadata may be stored in SQL</li>
-</ul>
-<h2 id="related-modules">Related Modules</h2>
-<p>For SQL database functionality, see the <a href="../Database/README.md">Database module</a>.</p>
-<h2 id="migration-notes">Migration Notes</h2>
-<p>If SQL support is added in the future:</p>
-<ol type="1">
-<li>Create migration scripts in <code>migrations/</code> directory</li>
-<li>Follow versioned migration pattern (<code>001_initial.sql</code>,
-<code>002_add_feature.sql</code>)</li>
-<li>Use the <code>digital.vasic.database</code> module for database
-operations</li>
-<li>Update this document with schema definitions</li>
-</ol>
+<h1 id="qwenmd--qwen-code-context-for-this-module">QWEN.md — Qwen Code
+context for this module</h1>
+<p>This file is read by Qwen Code as its module-context file. It is the
+Qwen Code counterpart of CLAUDE.md and AGENTS.md for this module, and it
+is a pointer: there is one canonical agent-instruction file per
+scope.</p>
+<h2 id="read-claudemd--it-is-mandatory">Read CLAUDE.md — it is
+mandatory</h2>
+<p>This module&#39;s canonical agent-instruction file is CLAUDE.md in this
+directory. Before doing any work in this module, open and read CLAUDE.md
+and this module&#39;s CONSTITUTION.md in full. Every rule there binds Qwen
+Code exactly as it binds Claude Code.</p>
+<p>This file is a plain-text pointer and deliberately uses no
+auto-import directive. Qwen Code&#39;s memory-import processor resolves
+import-prefixed tokens recursively, and the instruction files reference
+tokens that are not files. To stay compatible with Qwen Code this file
+contains no such tokens — read CLAUDE.md directly.</p>
+<h2 id="inherited-from-constitutionclaudemd">INHERITED FROM
+constitution/CLAUDE.md</h2>
+<p>This module&#39;s CLAUDE.md inherits, unconditionally, every rule in
+constitution/CLAUDE.md and the constitution/Constitution.md it
+references — the HelixConstitution submodule mounted at the parent
+project&#39;s constitution/ directory (resolve the path with
+constitution/find_constitution.sh from the parent project root). Qwen
+Code MUST NOT weaken any inherited rule.</p>
+<h2 id="anti-bluff--read-first">Anti-Bluff — read first</h2>
+<p>Tests and Challenges exist for exactly one purpose: to confirm a
+feature genuinely works for a real end user, end-to-end. A test that
+passes while the feature is broken is a bluff test and is forbidden. CI
+green is necessary, never sufficient. See this module&#39;s CLAUDE.md,
+AGENTS.md, and CONSTITUTION.md for the full Sixth/Seventh Law and
+section 6.J / 6.L mandate.</p>
+<h2 id="11478--codegraph-code-intelligence-mandate">§11.4.78 — CodeGraph
+code-intelligence mandate</h2>
+<p>Inherited by §11.4.78 ID reference from
+<code>constitution/Constitution.md</code> §11.4.78 (this module&#39;s
+<code>CLAUDE.md</code> and <code>CONSTITUTION.md</code> carry the full
+anchor with the package name and install commands). In brief: every
+project worked on by AI coding agents MUST install, initialize, and use
+CodeGraph — a local semantic code-knowledge-graph exposed to agents over
+MCP — wired into every CLI agent the developers use, covered by an
+anti-bluff verification suite. See <code>CLAUDE.md</code> and
+<code>CONSTITUTION.md</code> in this module, and the constitution
+submodule <code>Constitution.md</code> §11.4.78, for the full
+mandate.</p>
 </body>
 </html>

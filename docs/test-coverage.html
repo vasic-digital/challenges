@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>test-coverage</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">test-coverage</h1>
+</header>
+<h1 id="test-coverage-ledger--challenges-submodule-meta-challenge-of-challenges">Test
+coverage ledger — Challenges submodule (meta
+Challenge-of-Challenges)</h1>
+<table>
+<thead>
+<tr>
+<th>Revision</th>
+<th>Created</th>
+<th>Last modified</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2026-05-19</td>
+<td>2026-05-19</td>
+<td>active</td>
+</tr>
+</tbody>
+</table>
+<p>Round-304 deep-doc + Challenge enrichment for the cross-cutting
+Challenge bank. This document is the inventory ledger consumed by
+<code>challenges_describe_challenge.sh</code> (the meta-runner that
+walks each bank and asserts each has a runner + paired-mutation evidence
+path).</p>
+<p>Cascaded mandate (verbatim 2026-05-19, per CONST-049 §11.4.17):</p>
+<blockquote>
+<p>&quot;all existing tests and Challenges do work in anti-bluff manner —
+they MUST confirm that all tested codebase really works as expected! We
+had been in position that all tests do execute with success and all
+Challenges as well, but in reality the most of the features does not
+work and can&#39;t be used! This MUST NOT be the case and execution of tests
+and Challenges MUST guarantee the quality, the completition and full
+usability by end users of the product!&quot;</p>
+</blockquote>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#1-scope-and-role">1. Scope and role</a></li>
+<li><a href="#2-bank-inventory--banksexamples">2. Bank inventory —
+<code>banks/examples/</code></a></li>
+<li><a href="#3-bank-inventory--banksyole">3. Bank inventory —
+<code>banks/yole/</code></a></li>
+<li><a href="#4-shell-script-challenges--challengesscripts">4.
+Shell-script Challenges — <code>challenges/scripts/</code></a></li>
+<li><a href="#5-production-code-primitives-exercised">5. Production-code
+primitives exercised</a></li>
+<li><a href="#6-locale-fixtures">6. Locale fixtures</a></li>
+<li><a href="#7-paired-mutation-invariants">7. Paired-mutation
+invariants</a></li>
+<li><a href="#8-anti-bluff-cross-checks">8. Anti-bluff
+cross-checks</a></li>
+</ul>
+<h2 id="1-scope-and-role">1. Scope and role</h2>
+<p>The <code>challenges/</code> submodule is <strong>the</strong>
+cross-cutting Challenge bank for the HelixCode family. Every consumer
+(Panoptic, security, helix_qa, helix_llm, the core HelixCode app, plus
+any external consumer that imports
+<code>digital.vasic.challenges</code>) loads Challenge definitions from
+the banks shipped here, executes them via <code>pkg/runner</code>, and
+reports via <code>pkg/report</code>. Because this submodule is
+<strong>itself</strong> test infrastructure, its anti-bluff posture must
+be <strong>meta</strong>: a Challenge bank that claims &quot;PASS&quot; on a
+broken-for-end-user feature is the canonical failure mode CONST-035 /
+Article XI §11.9 / round-304 was created to close. The meta-runner
+(<code>challenges_describe_challenge.sh</code>) is the gate.</p>
+<h2 id="2-bank-inventory--banksexamples">2. Bank inventory —
+<code>banks/examples/</code></h2>
+<p>28 generic JSON banks under <code>banks/examples/</code>. Each bank
+ships a set of challenge definitions (id + name + description +
+assertions) consumable by <code>pkg/bank</code>. Banks asserted present
+by the describe-runner:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+<th>Loader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>concurrency.json</code></td>
+<td>Concurrent challenge dispatch</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>concurrency-safety-validation.json</code></td>
+<td>Race / data-race coverage</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>cross-platform-build.json</code></td>
+<td>Per-OS build sweep</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>documentation-completeness-challenges.json</code></td>
+<td>Doc-completeness gates</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>e2e-userflow.json</code></td>
+<td>E2E user-flow bank (userflow runner)</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+<tr>
+<td><code>format-detection.json</code></td>
+<td>Format-sniff coverage</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>format-edge-cases-challenges.json</code></td>
+<td>Format edge-cases</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>format-parsing.json</code></td>
+<td>Format parse correctness</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>lazy-loading.json</code></td>
+<td>Lazy-load behaviour</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>memory.json</code></td>
+<td>Memory-pressure gates</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>monitoring.json</code></td>
+<td>Monitoring exposure</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>monitoring-metrics-challenges.json</code></td>
+<td>Prometheus metrics shape</td>
+<td><code>pkg/metrics</code></td>
+</tr>
+<tr>
+<td><code>network-protocols.json</code></td>
+<td>Network-protocol coverage</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>performance.json</code></td>
+<td>Performance SLO checks</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>performance-optimization-validation.json</code></td>
+<td>Perf-opt verification</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>platform-coverage-challenges.json</code></td>
+<td>Per-platform coverage</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+<tr>
+<td><code>protocol-resilience-challenges.json</code></td>
+<td>Protocol resilience</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>resilience.json</code></td>
+<td>Resilience baseline</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>security-challenges.json</code></td>
+<td>Security challenge bank</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>security.json</code></td>
+<td>Security baseline</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>security-scanning-validation.json</code></td>
+<td>Security-scan gates</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>stress-responsiveness-challenges.json</code></td>
+<td>Stress responsiveness</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>test-coverage.json</code></td>
+<td>Test-coverage gates</td>
+<td><code>pkg/bank</code></td>
+</tr>
+<tr>
+<td><code>timeout-recovery-challenges.json</code></td>
+<td>Timeout / recovery</td>
+<td><code>pkg/runner</code></td>
+</tr>
+<tr>
+<td><code>ui-accessibility.json</code></td>
+<td>UI a11y bank</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+<tr>
+<td><code>ui-automation-android.json</code></td>
+<td>Android UI bank</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+<tr>
+<td><code>ui-automation-desktop.json</code></td>
+<td>Desktop UI bank</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+<tr>
+<td><code>ui-automation-web.json</code></td>
+<td>Web UI bank</td>
+<td><code>pkg/userflow</code></td>
+</tr>
+</tbody>
+</table>
+<p>The describe-runner asserts every file in the table above exists and
+parses (<code>jq</code> or equivalent), with a planted-rename
+paired-mutation proving the inventory check itself is not a bluff.</p>
+<h2 id="3-bank-inventory--banksyole">3. Bank inventory —
+<code>banks/yole/</code></h2>
+<p>YAML feature-coverage banks plus fixtures (consumer-side Yole IDE
+example wiring):</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coverage-matrix.md</code></td>
+<td>Feature × variant × evidence matrix</td>
+</tr>
+<tr>
+<td><code>file-browser-save-functionality.yaml</code></td>
+<td>File-browser save E2E</td>
+</tr>
+<tr>
+<td><code>version-consistency-validation.yaml</code></td>
+<td>Version-consistency check</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-1-syntax-highlighting.yaml</code></td>
+<td>Syntax-highlighting bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-2-source-code-support.yaml</code></td>
+<td>Source-code support bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-3-autocomplete.yaml</code></td>
+<td>Autocomplete bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-4a-lsp-completion.yaml</code></td>
+<td>LSP completion bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-4b-diagnostics-hover-gotodef.yaml</code></td>
+<td>LSP diagnostics / hover / goto-def bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-4c-refactoring.yaml</code></td>
+<td>Refactoring bank</td>
+</tr>
+<tr>
+<td><code>feature-coverage/feature-5-import.yaml</code></td>
+<td>Import bank</td>
+</tr>
+<tr>
+<td><code>fixtures/hello-world.kt</code>, <code>hello-world.rs</code>,
+<code>rename-target.rs</code>, <code>sample-class.py</code>,
+<code>type-error.rs</code>, <code>test-import.docx</code></td>
+<td>Source-language + binary fixtures</td>
+</tr>
+</tbody>
+</table>
+<p>The describe-runner asserts the directory is present and contains at
+least 7 feature-coverage YAML files.</p>
+<h2 id="4-shell-script-challenges--challengesscripts">4. Shell-script
+Challenges — <code>challenges/scripts/</code></h2>
+<p>16 shell-script challenges + 1 baseline reference text. Each script
+must be executable, parseable under <code>sh -n</code> (per CONST
+§11.4.67), and respond to <code>--help</code> or return a recognisable
+signature when invoked.</p>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Anti-bluff role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>anchor_manifest_challenge.sh</code></td>
+<td>Anchor manifest integrity</td>
+</tr>
+<tr>
+<td><code>android_save_challenge.sh</code></td>
+<td>Android file-save Challenge</td>
+</tr>
+<tr>
+<td><code>bluff_scanner_challenge.sh</code></td>
+<td>Static bluff-pattern scanner</td>
+</tr>
+<tr>
+<td><code>challenges_compile_challenge.sh</code></td>
+<td>Go module compile gate</td>
+</tr>
+<tr>
+<td><code>challenges_functionality_challenge.sh</code></td>
+<td>Functional gate</td>
+</tr>
+<tr>
+<td><code>challenges_unit_challenge.sh</code></td>
+<td>Unit-test gate</td>
+</tr>
+<tr>
+<td><code>chaos_failure_injection_challenge.sh</code></td>
+<td>Chaos-injection Challenge</td>
+</tr>
+<tr>
+<td><code>ddos_health_flood_challenge.sh</code></td>
+<td>DDoS / flood resilience</td>
+</tr>
+<tr>
+<td><code>host_no_auto_suspend_challenge.sh</code></td>
+<td>Host power-management ban (CONST-033)</td>
+</tr>
+<tr>
+<td><code>mutation_ratchet_challenge.sh</code></td>
+<td>Mutation-score ratchet</td>
+</tr>
+<tr>
+<td><code>no_suspend_calls_challenge.sh</code></td>
+<td>Source-tree no-suspend scan</td>
+</tr>
+<tr>
+<td><code>recording_pipeline_challenge.sh</code></td>
+<td>Recording-pipeline integrity</td>
+</tr>
+<tr>
+<td><code>scaling_horizontal_challenge.sh</code></td>
+<td>Horizontal-scale resilience</td>
+</tr>
+<tr>
+<td><code>stress_sustained_load_challenge.sh</code></td>
+<td>Sustained-load Challenge</td>
+</tr>
+<tr>
+<td><code>ui_terminal_interaction_challenge.sh</code></td>
+<td>TUI interaction Challenge</td>
+</tr>
+<tr>
+<td><code>ux_end_to_end_flow_challenge.sh</code></td>
+<td>Full UX flow Challenge</td>
+</tr>
+<tr>
+<td><code>baselines/bluff-baseline.txt</code></td>
+<td>Bluff-scanner baseline reference</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-production-code-primitives-exercised">5. Production-code
+primitives exercised</h2>
+<p>The describe-runner cross-references the production-code surface
+listed in <code>ARCHITECTURE.md</code> against the bank inventory
+above:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Public surface exercised by banks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pkg/challenge</code></td>
+<td><code>Challenge</code>, <code>BaseChallenge</code>,
+<code>Config</code>, <code>Result</code>, <code>ProgressReporter</code>,
+<code>StatusStuck</code></td>
+</tr>
+<tr>
+<td><code>pkg/registry</code></td>
+<td><code>Registry</code>, dependency ordering (Kahn)</td>
+</tr>
+<tr>
+<td><code>pkg/runner</code></td>
+<td><code>Runner</code>, <code>RunAll</code>, <code>RunSequence</code>,
+<code>RunParallel</code>, liveness monitor</td>
+</tr>
+<tr>
+<td><code>pkg/assertion</code></td>
+<td><code>Engine</code>, 16 built-in evaluators</td>
+</tr>
+<tr>
+<td><code>pkg/report</code></td>
+<td>Markdown / JSON / HTML reporters</td>
+</tr>
+<tr>
+<td><code>pkg/bank</code></td>
+<td>JSON / YAML bank loader (consumes <code>banks/examples/*</code>,
+<code>banks/yole/*</code>)</td>
+</tr>
+<tr>
+<td><code>pkg/monitor</code></td>
+<td>EventCollector + WebSocket dashboard</td>
+</tr>
+<tr>
+<td><code>pkg/metrics</code></td>
+<td>Prometheus metrics emitter</td>
+</tr>
+<tr>
+<td><code>pkg/plugin</code></td>
+<td>Plugin registry</td>
+</tr>
+<tr>
+<td><code>pkg/infra</code></td>
+<td>Containers bridge</td>
+</tr>
+<tr>
+<td><code>pkg/userflow</code></td>
+<td>8 adapter interfaces × 21 impls × 19 challenge templates × 12
+evaluators</td>
+</tr>
+<tr>
+<td><code>cmd/userflow-runner</code></td>
+<td>CLI runner for userflow Challenges</td>
+</tr>
+<tr>
+<td><code>lib/anti_bluff.sh</code></td>
+<td>Anti-bluff helper library for shell-script Challenges</td>
+</tr>
+</tbody>
+</table>
+<p>A bank that references a primitive missing from the table above OR a
+primitive in the table not exercised by any bank is a CONST-048 coverage
+gap — promoted to an Issues.md entry per §11.4.15 + §11.4.16.</p>
+<h2 id="6-locale-fixtures">6. Locale fixtures</h2>
+<p><code>challenges/fixtures/payloads.json</code> ships 5-locale
+coverage so the bank loader + assertion engine survive non-ASCII bytes
+end-to-end:</p>
+<table>
+<thead>
+<tr>
+<th>Locale</th>
+<th>Code</th>
+<th>Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>English</td>
+<td><code>en</code></td>
+<td>Latin</td>
+</tr>
+<tr>
+<td>German</td>
+<td><code>de</code></td>
+<td>Latin + umlaut (<code>ä ö ü ß</code>)</td>
+</tr>
+<tr>
+<td>Spanish</td>
+<td><code>es</code></td>
+<td>Latin + diacritic (<code>á é í ñ</code>)</td>
+</tr>
+<tr>
+<td>Japanese</td>
+<td><code>ja</code></td>
+<td>CJK (kanji + hiragana + katakana)</td>
+</tr>
+<tr>
+<td>Serbian</td>
+<td><code>sr</code></td>
+<td>Cyrillic</td>
+</tr>
+</tbody>
+</table>
+<p>Mandated by CONST-046 (no hardcoded user-facing strings) + Round-304
+parity with rounds 220 / 295 / 298 / 300.</p>
+<h2 id="7-paired-mutation-invariants">7. Paired-mutation invariants</h2>
+<p>Per CONST-035 / §1.1 / Article XI §11.9 every gate ships with a
+paired mutation. The describe-runner&#39;s <code>--anti-bluff-mutate</code>
+flag plants a deliberate inventory mismatch in a TMP COPY of this ledger
+(renames the <code>NoopTranslator</code>-equivalent
+<code>concurrency.json</code> token, for example) and asserts the gate
+FAILS with exit code 99. The original tree is never mutated. A
+meta-runner that PASSes its own mutation is itself a bluff and a
+CONST-035 violation.</p>
+<p>Mutation matrix:</p>
+<table>
+<thead>
+<tr>
+<th>Mutation</th>
+<th>Target</th>
+<th>Expected outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rename bank file token in ledger</td>
+<td><code>docs/test-coverage.md</code> (tmp copy)</td>
+<td>gate FAIL, exit 99</td>
+</tr>
+<tr>
+<td>Strip operator mandate verbatim</td>
+<td><code>docs/test-coverage.md</code> (tmp copy)</td>
+<td>gate FAIL, exit 99</td>
+</tr>
+<tr>
+<td>Strip <code>round-304</code> marker</td>
+<td><code>README.md</code> (tmp copy)</td>
+<td>gate FAIL, exit 99</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-anti-bluff-cross-checks">8. Anti-bluff cross-checks</h2>
+<p>The describe-runner is intentionally <strong>redundant</strong> with
+the per-bank challenges in <code>challenges/scripts/</code>. Redundancy
+is the point: if any single per-bank Challenge silently regresses to a
+bluff (PASS on broken feature), the meta-runner catches it via inventory
+cross-check. The two-layer guard is the closure of the recursion that
+motivated round-304.</p>
+</body>
+</html>
