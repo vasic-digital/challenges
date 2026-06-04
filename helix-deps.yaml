@@ -22,6 +22,11 @@
 schema_version: 1
 
 deps:
+  - name: containers
+    ssh_url: git@github.com:vasic-digital/Containers.git
+    ref: main
+    why: "pkg/userflow/container_infra.go imports digital.vasic.containers/pkg/{compose,event,health,logging,runtime,serviceregistry} for the TestEnvironment container-orchestration bridge; consumed at the parent root via a flat-layout sibling and a go.mod replace directive (../containers) per §11.4.28(C)"
+    layout: flat
   - name: Panoptic
     ssh_url: git@github.com:vasic-digital/Panoptic.git
     ref: main
