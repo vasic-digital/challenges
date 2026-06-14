@@ -121,10 +121,12 @@ respond to `--help` or return a recognisable signature when invoked.
 | `challenges_functionality_challenge.sh` | Functional gate |
 | `challenges_unit_challenge.sh` | Unit-test gate |
 | `chaos_failure_injection_challenge.sh` | Chaos-injection Challenge |
+| `agentic_subagents_challenge.sh` | HelixAgent agentic subagents-driven flow (live :7061 execute mode: agents_spawned>=2 + 7 stages) |
 | `ddos_health_flood_challenge.sh` | DDoS / flood resilience |
 | `host_no_auto_suspend_challenge.sh` | Host power-management ban (CONST-033) |
 | `mutation_ratchet_challenge.sh` | Mutation-score ratchet |
 | `no_suspend_calls_challenge.sh` | Source-tree no-suspend scan |
+| `persistent_memory_challenge.sh` | HelixCode HelixMemory cross-process persistence (write proc-1 → recall fresh proc-2 from on-disk SQLite) |
 | `recording_pipeline_challenge.sh` | Recording-pipeline integrity |
 | `scaling_horizontal_challenge.sh` | Horizontal-scale resilience |
 | `stress_sustained_load_challenge.sh` | Sustained-load Challenge |

@@ -64,6 +64,19 @@ anti-bluff-mutation-changed:
 
 anti-bluff: anti-bluff-scan anti-bluff-anchors anti-bluff-mutation-changed
 
+# Just-activated-capability Challenges (live-system, anti-bluff, paired mutation).
+# Each PASSes against the working system and the --anti-bluff-mutate run exits 99
+# (mutation correctly detected). Both honour SKIP-OK when the live target / Go
+# toolchain is unavailable (CONST-035 / Article XI §11.9).
+.PHONY: challenge-agentic-subagents challenge-persistent-memory new-capabilities
+challenge-agentic-subagents:
+	@bash challenges/scripts/agentic_subagents_challenge.sh
+
+challenge-persistent-memory:
+	@bash challenges/scripts/persistent_memory_challenge.sh
+
+new-capabilities: challenge-agentic-subagents challenge-persistent-memory
+
 # Aggregate quality gate. Wires existing build/vet/test plus host-power
 # challenges and the CONST-035 anti-bluff gates.
 qa-all: build vet test
