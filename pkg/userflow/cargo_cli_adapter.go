@@ -96,6 +96,13 @@ func parseCargoTestJSON(
 	scanner := bufio.NewScanner(
 		strings.NewReader(output),
 	)
+	// A single line in the cargo test stream can exceed bufio's
+	// default 64KB token limit; without a larger buffer the scanner
+	// stops there and every later event — including `failed` — is
+	// silently dropped, undercounting failures (a PASS-bluff).
+	scanner.Buffer(
+		make([]byte, 0, 1024*1024), 64*1024*1024,
+	)
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -142,6 +149,13 @@ func parseCargoTestJSON(
 				},
 			)
 		}
+	}
+
+	// A scan error means the stream was truncated and the counts
+	// below are an undercount — record it so callers do not treat a
+	// partial parse as a clean pass.
+	if err := scanner.Err(); err != nil {
+		result.TotalErrors++
 	}
 
 	if suite.Tests > 0 {

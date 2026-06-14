@@ -124,6 +124,16 @@ func parseGoTestJSON(
 	scanner := bufio.NewScanner(
 		strings.NewReader(output),
 	)
+	// `go test -json` emits one JSON object per line, and a single
+	// test's output line can exceed bufio's default 64KB token
+	// limit (large diffs/dumps). Without a larger buffer the
+	// scanner stops at the over-long line and every later event —
+	// including `fail` — is silently dropped, undercounting
+	// failures (a PASS-bluff). Grow the buffer and surface any
+	// remaining scan error rather than swallowing it.
+	scanner.Buffer(
+		make([]byte, 0, 1024*1024), 64*1024*1024,
+	)
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -187,6 +197,14 @@ func parseGoTestJSON(
 	result := &TestResult{
 		Duration: elapsed,
 		Output:   output,
+	}
+
+	// A scan error (e.g. a line still exceeding the enlarged
+	// buffer) means the stream was truncated and the counts below
+	// would be an undercount. Record it as an error so callers do
+	// not treat a partial parse as a clean pass.
+	if err := scanner.Err(); err != nil {
+		result.TotalErrors++
 	}
 
 	for name, info := range packages {
