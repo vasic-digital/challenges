@@ -24,7 +24,7 @@ if grep -q "FAILURES" "${RESULTS_FILE}"; then
     exit 1
 fi
 
-EVIDENCE=$(grep -oP 'SAVE_VERIFIED: \d+ bytes' "${RESULTS_FILE}" | head -5)
+EVIDENCE=$(grep -oE 'SAVE_VERIFIED: [0-9]+ bytes' "${RESULTS_FILE}" | head -5)
 if [ -z "${EVIDENCE}" ]; then
     echo "FAIL: No SAVE_VERIFIED evidence (CONST-035 violation) on API ${API}"
     exit 1
