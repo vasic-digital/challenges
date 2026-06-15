@@ -1,7 +1,6 @@
 package bank
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 )
@@ -21,6 +20,14 @@ func (e ValidationError) Error() string {
 }
 
 // ValidateFile validates a bank file structure and returns all errors found.
+//
+// It parses the file through parseBankFile — the SAME format-detecting
+// parser LoadFile uses — so the validator accepts every file LoadFile
+// accepts (JSON, .yaml, .yml) and reads the HelixQA `test_cases` root
+// key (parseBankFile folds it into Challenges). A validator that
+// rejected YAML, or that silently skipped test_cases validation, was a
+// §11.4 / §11.4.1 validation-layer bluff: a malformed bank (duplicate
+// IDs, missing names) would pass unnoticed.
 func ValidateFile(path string) []ValidationError {
 	var errors []ValidationError
 
@@ -29,10 +36,15 @@ func ValidateFile(path string) []ValidationError {
 		return []ValidationError{{Field: "file", Message: err.Error(), Index: -1}}
 	}
 
-	var file BankFile
-	if err := json.Unmarshal(data, &file); err != nil {
+	parsed, err := parseBankFile(path, data)
+	if err != nil {
+		// Field stays "json" for backward compatibility: it is the
+		// stable historical label for a bank-file parse error
+		// (callers may switch on it). The message carries the real
+		// parser detail (JSON or YAML) so the cause is never hidden.
 		return []ValidationError{{Field: "json", Message: err.Error(), Index: -1}}
 	}
+	file := *parsed
 
 	if file.Version == "" {
 		errors = append(errors, ValidationError{
