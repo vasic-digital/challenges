@@ -1,0 +1,5 @@
+TestStressConcurrentBaseChallenge
+Concurrent challenges: 100
+Duration: 33.604459ms
+Failures: 0
+Status: PASS

@@ -1,0 +1,7 @@
+TestStressSustainedResultCreation
+Duration: 30.000093792s (minimum required: 30s)
+Concurrent workers: 10
+Total results created: 56830174
+Anti-bluff validation failures: 0
+Throughput: 1894333 results/sec
+Status: PASS
