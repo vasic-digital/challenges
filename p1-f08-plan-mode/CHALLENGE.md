@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove that HelixCode's plan-mode gating actually blocks unauthorised destructive
+Prove that the project's plan-mode gating actually blocks unauthorised destructive
 tool calls, allows them once a matching plan action is approved, key-arg
 mismatches still block, and ExitPlanMode restores normal execution. Per
 Article XI §11.9, every PASS must carry positive runtime evidence.

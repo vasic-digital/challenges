@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# agentic_subagents_challenge.sh — anti-bluff Challenge for the HelixAgent
+# agentic_subagents_challenge.sh — anti-bluff Challenge for the project's
 # agentic subagents-driven dynamic flow (CONST-035 + CONST-050(B);
 # submodule cascade per CONST-051(A)).
 #
 # WHAT IT PROVES (positive runtime evidence, §11.4.5 / Article XI §11.9):
 #   A real "Decompose into subtasks and execute: ..." request to the LIVE
-#   HelixAgent ensemble endpoint drives the full dynamic agentic EXECUTE
+#   the project's ensemble endpoint drives the full dynamic agentic EXECUTE
 #   flow: the OpenAI-compatible /v1/chat/completions response carries an
 #   `agentic` object whose `mode` is "execute", whose `stages_completed`
 #   contains the 7 canonical stages (understand, plan, assign, execute,
@@ -61,7 +61,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "=== HelixAgent Agentic Subagents-Driven Challenge ==="
+echo "=== Agentic Subagents-Driven Challenge ==="
 echo "  endpoint=${ENDPOINT} model=${MODEL} min_agents=${MIN_AGENTS} attempts=${ATTEMPTS}"
 
 for bin in curl python3; do

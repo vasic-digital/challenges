@@ -242,7 +242,7 @@
 </header>
 <h2 id="inherited-from-helix-constitution">INHERITED FROM Helix
 Constitution</h2>
-<p>This module is a submodule of an ATMOSphere-family project that
+<p>This module is a submodule of a consuming project that
 includes the Helix Constitution submodule at the parent’s
 <code>constitution/</code> path. All rules in
 <code>constitution/CLAUDE.md</code> and the
@@ -267,13 +267,13 @@ constitution/CLAUDE.md</h2>
 <code>constitution/Constitution.md</code> it references) apply
 unconditionally. This file’s rules below extend them — they MUST NOT
 weaken any inherited rule. See parent root <code>CLAUDE.md</code> §6.AD
-for the Lava-specific incorporation context (29th §6.L cycle,
+for the project-specific incorporation context (29th §6.L cycle,
 2026-05-14) and §6.AD-debt for the implementation-gap inventory. Use
 <code>constitution/find_constitution.sh</code> from the parent project
 root to resolve the absolute path of the submodule from any nested
 location.</p>
 <h2 id="definition-of-done">Definition of Done</h2>
-<p>This module inherits HelixAgent’s universal Definition of Done — see
+<p>This module inherits the consuming project’s universal Definition of Done — see
 the root <code>CLAUDE.md</code> and
 <code>docs/development/definition-of-done.md</code>. In one line:
 <strong>no task is done without pasted output from a real run of the
@@ -371,7 +371,7 @@ library API, operator directives) + parent
 <h2
 id="mandatory-anti-bluff-validation-constitution-8.1-11-const-035">MANDATORY
 ANTI-BLUFF VALIDATION (Constitution §8.1 + §11) (CONST-035)</h2>
-<p><strong>This submodule inherits the parent ATMOSphere project’s
+<p><strong>This submodule inherits the parent project’s
 anti-bluff covenant. A test that PASSes while the feature it claims to
 validate is unusable to an end user is the single most damaging failure
 mode in this codebase. It has shipped working-on-paper /
@@ -431,7 +431,7 @@ DEVELOPMENT PRINCIPLES”, parent AGENTS.md “NO BLUFF” section, parent
 Project-Agnostic / 100% Decoupled</h2>
 <p><strong>This module is part of HelixQA’s dependency graph and MUST
 remain 100% decoupled from any consuming project. It is designed for
-generic use with ANY project, not just ATMOSphere.</strong></p>
+generic use with ANY project, not just the consuming project.</strong></p>
 <ul>
 <li><strong>NEVER</strong> hardcode project-specific package names,
 endpoints, device serials, or region-specific data.</li>
@@ -795,8 +795,8 @@ PROHIBITED.</strong></p>
 </tr>
 </tbody>
 </table>
-<p><em>Siblings</em> means other project-owned modules at the HelixAgent
-repo root. The root HelixAgent app and external systems are not listed
+<p><em>Siblings</em> means other project-owned modules at the project
+repo root. The root project app and external systems are not listed
 here — the list above is intentionally scoped to module-to-module seams,
 because drift <em>between</em> sibling modules is where the “tests pass,
 product broken” class of bug most often lives. See root
@@ -1031,15 +1031,14 @@ test-interrupt-on-discovery when the analyzer reports empty input — do
 not silently absorb that as a generic PASS-bluff banner.</p>
 <p>Non-compliance is a release blocker regardless of context.</p>
 <hr />
-<h2 id="lava-sixth-law-inheritance-consumer-side-anchor-2026-04-29">Lava
-Sixth Law inheritance (consumer-side anchor, 2026-04-29)</h2>
-<p>When this submodule is consumed by the <strong>Lava</strong> project
-(<code>vasic-digital/Lava</code>), it inherits Lava’s Sixth Law (“Real
+<h2 id="lava-sixth-law-inheritance-consumer-side-anchor-2026-04-29">Sixth Law inheritance (consumer-side anchor, 2026-04-29)</h2>
+<p>When this submodule is consumed by the consuming project
+(<code>vasic-digital/Lava</code>), it inherits the consuming project’s Sixth Law (“Real
 User Verification — Anti-Pseudo-Test Rule”) from the consumer’s
-<code>CLAUDE.md</code>. Lava’s Sixth Law is functionally equivalent to
+<code>CLAUDE.md</code>. The consuming project’s Sixth Law is functionally equivalent to
 (and strictly stricter than) the anti-bluff rules already present in
 this submodule; the verbatim user mandate recorded 2026-04-28 by the
-operator of the Lava codebase that motivated both is:</p>
+operator of the project’s codebase that motivated both is:</p>
 <blockquote>
 <p>“We had been in position that all tests do execute with success and
 all Challenges as well, but in reality the most of the features does not
@@ -1050,9 +1049,9 @@ of our project, its CLAUDE.MD and AGENTS.MD if it is not there already,
 and to be applied to all Submodules’s Constitution, CLAUDE.MD and
 AGENTS.MD as well (if not there already)!”</p>
 </blockquote>
-<p>The 2026-04-29 lessons-learned addenda recorded in Lava’s
+<p>The 2026-04-29 lessons-learned addenda recorded in the consuming project’s
 <code>CLAUDE.md</code> apply to any code path of this submodule that
-participates in a Lava feature:</p>
+participates in a consuming-project feature:</p>
 <ul>
 <li><strong>6.A — Real-binary contract tests.</strong> Every
 script/compose invocation of a binary we own MUST have a contract test
@@ -1074,19 +1073,18 @@ converge to the same SHA at HEAD”. <code>scripts/tag.sh</code> MUST
 verify post-push tip-SHA convergence across every configured
 mirror.</li>
 </ul>
-<p>Both anti-bluff rule sets — this submodule’s own and Lava’s Sixth Law
-— are binding when this submodule is consumed by Lava; the stricter of
-the two applies. No consumer’s rule may <em>relax</em> Lava’s six
+<p>Both anti-bluff rule sets — this submodule’s own and the consuming project’s Sixth Law
+— are binding when this submodule is consumed by the consuming project; the stricter of
+the two applies. No consumer’s rule may <em>relax</em> the consuming project’s six
 Sixth-Law clauses without changing this submodule’s classification
-(i.e. demoting it from Lava-compatible).</p>
+(i.e. demoting it from consuming-project-compatible).</p>
 <h2
-id="lava-seventh-law-inheritance-anti-bluff-enforcement-2026-04-30">Lava
-Seventh Law inheritance (Anti-Bluff Enforcement, 2026-04-30)</h2>
-<p>When this submodule is consumed by the <strong>Lava</strong> project
-(<code>vasic-digital/Lava</code>), it inherits Lava’s <strong>Seventh
+id="lava-seventh-law-inheritance-anti-bluff-enforcement-2026-04-30">Seventh Law inheritance (Anti-Bluff Enforcement, 2026-04-30)</h2>
+<p>When this submodule is consumed by the consuming project
+(<code>vasic-digital/Lava</code>), it inherits the consuming project’s <strong>Seventh
 Law — Tests MUST Confirm User-Reachable Functionality (Anti-Bluff
 Enforcement)</strong> in addition to the Sixth Law inherited above. The
-Seventh Law was added to Lava’s <code>CLAUDE.md</code> on 2026-04-30 in
+Seventh Law was added to the consuming project’s <code>CLAUDE.md</code> on 2026-04-30 in
 response to the operator’s standing mandate that passing tests MUST
 guarantee user-reachable functionality and MUST NOT recur the historical
 “all-tests-green / most-features-broken” failure mode. The Seventh Law
@@ -1135,11 +1133,11 @@ applies recursively to every submodule, every feature, and every new
 artifact. Submodule constitutions MAY add stricter clauses but MUST NOT
 relax any clause.</li>
 </ol>
-<p>The authoritative verbatim text lives in the parent Lava
+<p>The authoritative verbatim text lives in the parent project’s
 <code>CLAUDE.md</code> “Seventh Law — Tests MUST Confirm User-Reachable
 Functionality (Anti-Bluff Enforcement)” section. Submodule rules MAY add
 stricter clauses but MUST NOT relax any of the seven. Both the Sixth and
-Seventh Laws are binding when this submodule is consumed by Lava; the
+Seventh Laws are binding when this submodule is consumed by the consuming project; the
 stricter of the two applies.</p>
 <h2 id="clauses-6.i-and-6.j-added-2026-05-04-inherited-per-6.f">Clauses
 6.I and 6.J (added 2026-05-04, inherited per 6.F)</h2>
@@ -1680,7 +1678,7 @@ id="s-continuation-document-maintenance-mandate-inherited-2026-05-06-per-6.f">§
 — Continuation Document Maintenance Mandate (inherited 2026-05-06, per
 §6.F)</h2>
 <p>See root <code>/CLAUDE.md</code> §6.S. The file
-<code>docs/CONTINUATION.md</code> (in the parent Lava repo) is the
+<code>docs/CONTINUATION.md</code> (in the parent project’s repo) is the
 single-file source-of-truth handoff document for resuming work across
 any CLI session. Every commit that changes phase status, lands a new
 spec/plan, bumps a submodule pin, ships a release artifact,
@@ -1746,7 +1744,7 @@ process INSIDE a podman/docker container managed by
 Containers-submodule code that runs on the host. The Containers
 submodule’s <code>pkg/runtime/</code> (rootless podman/docker
 auto-detection) brings the container up; <code>pkg/emulator/</code>
-orchestrates the AVD lifecycle inside it. Lava-side
+orchestrates the AVD lifecycle inside it. The consuming project’s
 <code>scripts/run-emulator-tests.sh</code> is thin glue forwarding to
 the Containers CLI. The container-bound path is the gate — host-direct
 emulators are permitted for workstation iteration only. §6.X-debt tracks
@@ -2257,7 +2255,7 @@ executed from the root of the cloned (added) repository - only if in it
 is Upstreams or upstreams directory present with bash script files
 (recipes) for all repository’s upstreams!”</em></p>
 </blockquote>
-<p>Every clone / add of a Git repository under HelixCode MUST be
+<p>Every clone / add of a Git repository under the project MUST be
 followed by <code>install_upstreams</code> invocation from the
 repository’s root IF its tree contains <code>upstreams/</code> (or
 legacy <code>Upstreams/</code> per CONST-052 transition) populated with

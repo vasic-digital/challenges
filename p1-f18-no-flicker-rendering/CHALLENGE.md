@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 18 rendering pipeline actually works
+Prove the project's Phase 1 / Feature 18 rendering pipeline actually works
 end-to-end against real `*bytes.Buffer` sinks (and the live `os.Stdout`
 when it happens to be a TTY). Per Article XI §11.9, every PASS must
 carry positive runtime evidence captured during execution. The harness

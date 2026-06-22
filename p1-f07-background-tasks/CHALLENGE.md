@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove that HelixCode's background task system actually streams mid-execution
+Prove that the project's background task system actually streams mid-execution
 output and successfully cancels long-running shell processes. Per Article XI
 §11.9, every PASS must carry positive runtime evidence.
 

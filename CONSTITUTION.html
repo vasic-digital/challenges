@@ -239,8 +239,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 </header>
 <h2 id="inherited-from-helix-constitution">INHERITED FROM Helix
 Constitution</h2>
-<p>This module is a submodule of a Helix-family project (e.g. HelixCode,
-HelixAgent, ATMOSphere) that includes the Helix Constitution submodule
+<p>This module is a submodule of a Helix-family project that includes the Helix Constitution submodule
 at the parent&#39;s <code>constitution/</code> path. All rules in
 <code>constitution/CLAUDE.md</code> and the
 <code>constitution/Constitution.md</code> it references (universal
@@ -261,7 +260,7 @@ constitution/Constitution.md</h2>
 <code>constitution/Constitution.md</code> it references) apply
 unconditionally. This file&#39;s rules below extend them — they MUST NOT
 weaken any inherited rule. See parent root <code>CLAUDE.md</code> §6.AD
-for the Lava-specific incorporation context (29th §6.L cycle,
+for the project-specific incorporation context (29th §6.L cycle,
 2026-05-14) and §6.AD-debt for the implementation-gap inventory. Use
 <code>constitution/find_constitution.sh</code> from the parent project
 root to resolve the absolute path of the submodule from any nested
@@ -318,7 +317,7 @@ any value other than <code>&#39;nothing&#39;</code> or <code>&#39;blank&#39;</co
 <p><strong>Why:</strong> The host runs mission-critical parallel
 CLI-agent and container workloads. On 2026-04-26 18:23:43 the host was
 auto- suspended by the GDM greeter&#39;s idle policy mid-session, killing
-HelixAgent and 41 dependent services. Recurring memory-pressure SIGKILLs
+the project and 41 dependent services. Recurring memory-pressure SIGKILLs
 of <code>user@1000.service</code> (perceived as &quot;logged out&quot;) have the
 same outcome. Auto-suspend, hibernate, and any power-state transition
 are unsafe for this host.</p>
@@ -481,7 +480,7 @@ evidence; both are subject to the anti-bluff constraint rules and
 captured-evidence requirement.</p>
 <h2 id="mandatory-anti-bluff-validation-constitution-81--11-const-035">MANDATORY
 ANTI-BLUFF VALIDATION (Constitution §8.1 + §11) (CONST-035)</h2>
-<p><strong>This submodule inherits the parent ATMOSphere project&#39;s
+<p><strong>This submodule inherits the parent project&#39;s
 anti-bluff covenant. A test that PASSes while the feature it claims to
 validate is unusable to an end user is the single most damaging failure
 mode in this codebase. It has shipped working-on-paper /
@@ -539,10 +538,10 @@ DEVELOPMENT PRINCIPLES&quot;, parent AGENTS.md &quot;NO BLUFF&quot; section, par
 <code>scripts/testing/meta_test_false_positive_proof.sh</code>.</p>
 <h2 id="seventh-law-inheritance-anti-bluff-enforcement-2026-04-30">Seventh
 Law inheritance (Anti-Bluff Enforcement, 2026-04-30)</h2>
-<p>In addition to the Sixth Law above, this submodule inherits Lava&#39;s
+<p>In addition to the Sixth Law above, this submodule inherits the consuming project&#39;s
 <strong>Seventh Law — Tests MUST Confirm User-Reachable Functionality
-(Anti-Bluff Enforcement)</strong> when consumed by the Lava project
-(<code>vasic-digital/Lava</code>). The Seventh Law was added to Lava&#39;s
+(Anti-Bluff Enforcement)</strong> when consumed by the consuming project
+(<code>vasic-digital/Lava</code>). The Seventh Law was added to the consuming project&#39;s
 <code>CLAUDE.md</code> on 2026-04-30 to mechanically enforce the Sixth
 Law: every test commit MUST carry a Bluff-Audit stamp
 (mutation/observed-failure/reverted protocol); every feature MUST pass a
@@ -551,17 +550,17 @@ real-device attestation; forbidden test patterns (mocking the SUT,
 verification-only assertions, ignored tests without follow-up,
 build-success-as-only-assertion) are pre-push-rejected; a recurring
 bluff hunt and a bluff discovery protocol apply.</p>
-<p>The authoritative verbatim text lives in the parent Lava
+<p>The authoritative verbatim text lives in the parent project&#39;s
 <code>CLAUDE.md</code> under &quot;Seventh Law — Tests MUST Confirm
 User-Reachable Functionality (Anti-Bluff Enforcement)&quot;. This submodule
 MAY add stricter clauses but MUST NOT relax any of the seven Seventh-Law
-clauses. Both the submodule&#39;s own anti-bluff rules and Lava&#39;s Sixth +
-Seventh Laws are binding when consumed by Lava; the stricter of the two
+clauses. Both the submodule&#39;s own anti-bluff rules and the consuming project&#39;s Sixth +
+Seventh Laws are binding when consumed by the consuming project; the stricter of the two
 applies.</p>
 <h2 id="clause-6l--anti-bluff-functional-reality-mandate-operators-standing-order">Clause
 6.L — Anti-Bluff Functional Reality Mandate (Operator&#39;s Standing
 Order)</h2>
-<p>Inherited verbatim from parent Lava <code>/CLAUDE.md</code> §6.L. The
+<p>Inherited verbatim from the parent project&#39;s <code>/CLAUDE.md</code> §6.L. The
 operator has invoked this mandate <strong>TWENTY-THREE TIMES</strong>
 across two working days. The 10th invocation (2026-05-05, after Phase 7
 readiness was reported, when the operator commissioned the full
@@ -731,7 +730,7 @@ process INSIDE a podman/docker container managed by
 Containers-submodule code that runs on the host. The Containers
 submodule&#39;s <code>pkg/runtime/</code> (rootless podman/docker
 auto-detection) brings the container up; <code>pkg/emulator/</code>
-orchestrates the AVD lifecycle inside it. Lava-side
+orchestrates the AVD lifecycle inside it. The consuming project&#39;s
 <code>scripts/run-emulator-tests.sh</code> is thin glue forwarding to
 the Containers CLI. The container-bound path is the gate — host-direct
 emulators are permitted for workstation iteration only. §6.X-debt tracks
@@ -1272,7 +1271,7 @@ executed from the root of the cloned (added) repository - only if in it
 is Upstreams or upstreams directory present with bash script files
 (recipes) for all repository&#39;s upstreams!&quot;</em></p>
 </blockquote>
-<p>Every clone / add of a Git repository under HelixCode MUST be
+<p>Every clone / add of a Git repository under the project MUST be
 followed by <code>install_upstreams</code> invocation from the
 repository&#39;s root IF its tree contains <code>upstreams/</code> (or
 legacy <code>Upstreams/</code> per CONST-052 transition) populated with

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 2 / Feature 21 codex-approval-modes gate actually
+Prove the project's Phase 2 / Feature 21 codex-approval-modes gate actually
 gates real tool execution end-to-end against the real `tools.ToolRegistry`,
 the real `approval.ApprovalManager`, the real `CheckApproval` 4x4 matrix,
 the real `PromptForApproval` delegation seam, the real `SetMode` atomic

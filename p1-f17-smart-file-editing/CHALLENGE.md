@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 17 smart file-editing pipeline
+Prove the project's Phase 1 / Feature 17 smart file-editing pipeline
 actually works end-to-end against real on-disk tempdirs and the real
 F08 `*multiedit.MultiFileEditor` transactional committer. Per Article
 XI §11.9, every PASS must carry positive runtime evidence captured

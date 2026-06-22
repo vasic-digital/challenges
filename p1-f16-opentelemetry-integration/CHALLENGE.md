@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 16 OpenTelemetry integration actually
+Prove the project's Phase 1 / Feature 16 OpenTelemetry integration actually
 works end-to-end against the real OTel SDK exporters: a real stdout
 exporter (Phase A + Phase C), a real OTLP/HTTP exporter pointed at an
 in-process `httptest.Server` receiver (Phase B), the real noop fast path

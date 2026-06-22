@@ -172,8 +172,8 @@ infra.InfraProvider
 ## Anti-bluff guarantees (round-304 — meta Challenge-of-Challenges)
 
 This repository is the cross-cutting **Challenge bank** consumed by every
-HelixCode-family consumer (Panoptic, security, helix_qa, helix_llm, the
-core HelixCode app). Because it is itself a test-infrastructure submodule,
+consuming-project-family consumer (Panoptic, security, helix_qa, helix_llm, the
+core project app). Because it is itself a test-infrastructure submodule,
 its own anti-bluff posture must be **meta** — the bank validates the
 banks. Round-304 (2026-05-19) landed a describe-Challenge meta-runner +
 inventory ledger that close the recursion.

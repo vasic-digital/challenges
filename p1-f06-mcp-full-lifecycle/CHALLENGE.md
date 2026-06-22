@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove that HelixCode's client-side MCP support actually connects to a real
+Prove that the project's client-side MCP support actually connects to a real
 external MCP server, performs the JSON-RPC handshake (initialize →
 notifications/initialized → tools/list), and successfully invokes a tool.
 Per Article XI §11.9, every PASS must carry positive runtime evidence.

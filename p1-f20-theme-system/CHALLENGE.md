@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 20 theme system actually renders the
+Prove the project's Phase 1 / Feature 20 theme system actually renders the
 real spec 3.4 byte tables for built-in themes, honours the zero-color
 invariant for `DepthOff`, resolves `DetectColorDepth` correctly across
 the six canonical env-state branches, and merges a real on-disk YAML

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1.5 foundation-cleanup work packages (WP1–WP10)
+Prove the project's Phase 1.5 foundation-cleanup work packages (WP1–WP10)
 actually landed in the working tree and stay landed. Each phase below is a
 mechanical invariant on the real repo state; together they form the
 "foundation didn't drift" gate that WP12's push order depends on.

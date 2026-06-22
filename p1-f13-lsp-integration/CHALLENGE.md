@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 13 LSP Integration actually works
+Prove the project's Phase 1 / Feature 13 LSP Integration actually works
 end-to-end against a real LSP subprocess and the real ToolRegistry. Per
 Article XI §11.9, every PASS must carry positive runtime evidence.
 

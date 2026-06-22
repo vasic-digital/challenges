@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's session transcript resume actually persists conversation
+Prove the project's session transcript resume actually persists conversation
 messages across a real process boundary, restores them byte-exact in a brand
 new process, and locates the most-recent session globally across multiple
 project paths. Per Article XI §11.9, every PASS must carry positive runtime

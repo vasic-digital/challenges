@@ -33,8 +33,8 @@ Cascaded mandate (verbatim 2026-05-19, per CONST-049 §11.4.17):
 ## 1. Scope and role
 
 The `challenges/` submodule is **the** cross-cutting Challenge bank for
-the HelixCode family. Every consumer (Panoptic, security, helix_qa,
-helix_llm, the core HelixCode app, plus any external consumer that
+the consuming project's family. Every consumer (Panoptic, security, helix_qa,
+helix_llm, the core project app, plus any external consumer that
 imports `digital.vasic.challenges`) loads Challenge definitions from
 the banks shipped here, executes them via `pkg/runner`, and reports via
 `pkg/report`. Because this submodule is **itself** test infrastructure,
@@ -121,12 +121,12 @@ respond to `--help` or return a recognisable signature when invoked.
 | `challenges_functionality_challenge.sh` | Functional gate |
 | `challenges_unit_challenge.sh` | Unit-test gate |
 | `chaos_failure_injection_challenge.sh` | Chaos-injection Challenge |
-| `agentic_subagents_challenge.sh` | HelixAgent agentic subagents-driven flow (live :7061 execute mode: agents_spawned>=2 + 7 stages) |
+| `agentic_subagents_challenge.sh` | the project's agentic subagents-driven flow (live :7061 execute mode: agents_spawned>=2 + 7 stages) |
 | `ddos_health_flood_challenge.sh` | DDoS / flood resilience |
 | `host_no_auto_suspend_challenge.sh` | Host power-management ban (CONST-033) |
 | `mutation_ratchet_challenge.sh` | Mutation-score ratchet |
 | `no_suspend_calls_challenge.sh` | Source-tree no-suspend scan |
-| `persistent_memory_challenge.sh` | HelixCode HelixMemory cross-process persistence (write proc-1 → recall fresh proc-2 from on-disk SQLite) |
+| `persistent_memory_challenge.sh` | the project's HelixMemory cross-process persistence (write proc-1 → recall fresh proc-2 from on-disk SQLite) |
 | `recording_pipeline_challenge.sh` | Recording-pipeline integrity |
 | `scaling_horizontal_challenge.sh` | Horizontal-scale resilience |
 | `stress_sustained_load_challenge.sh` | Sustained-load Challenge |

@@ -2,10 +2,10 @@
 # Per HelixConstitution §11.4.31 (Submodule-Dependency-Manifest Mandate).
 #
 # Challenges provides anti-bluff Compose UI Challenge Test infrastructure
-# (§6.J / §6.AB / §6.AE) consumed by parent Lava + other vasic-digital
+# (§6.J / §6.AB / §6.AE) consumed by the parent project + other vasic-digital
 # projects. It currently nests vasic-digital/Panoptic as a sub-submodule
 # at Submodules/Challenges/Panoptic — the SINGLE §11.4.28 violation
-# tracked in the parent Lava CM-NO-NESTED-OWN-ORG-SUBMODULES gate.
+# tracked in the parent project CM-NO-NESTED-OWN-ORG-SUBMODULES gate.
 #
 # Per §11.4.31 directly composes with §11.4.28: this manifest IS the
 # bridge that allows §11.4.28 enforcement to flatten the chain.

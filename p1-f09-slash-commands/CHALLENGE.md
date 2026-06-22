@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's user-defined Markdown slash commands actually load real `.md`
+Prove the project's user-defined Markdown slash commands actually load real `.md`
 files, perform real variable substitution, hot-reload on file edit, and
 unregister on file deletion. Per Article XI §11.9, every PASS must carry
 positive runtime evidence.

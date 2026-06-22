@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 12 multi-provider backend actually works
+Prove the project's Phase 1 / Feature 12 multi-provider backend actually works
 end-to-end against real disk I/O and the four cloud backends (Anthropic,
 Bedrock, Vertex AI, Azure). Per Article XI §11.9, every PASS must carry
 positive runtime evidence.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 15 Subagent Team actually works
+Prove the project's Phase 1 / Feature 15 Subagent Team actually works
 end-to-end against the real `SubagentManager`, real `InProcessSpawner`
 with a real `FakeLLMProvider`, real fork-exec of the harness binary as a
 subprocess subagent, real F04 git worktree creation (when git is on

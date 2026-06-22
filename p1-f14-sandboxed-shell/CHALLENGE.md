@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 14 Sandboxed Shell Execution actually
+Prove the project's Phase 1 / Feature 14 Sandboxed Shell Execution actually
 works end-to-end against the real Detector, real bubblewrap subprocesses,
 and real on-disk YAML round-trips. Per Article XI §11.9, every PASS must
 carry positive runtime evidence captured during execution.

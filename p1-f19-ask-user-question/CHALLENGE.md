@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's Phase 1 / Feature 19 `ask_user` tool actually works
+Prove the project's Phase 1 / Feature 19 `ask_user` tool actually works
 end-to-end against a real `*bytes.Buffer` reader and writer pair. Per
 Article XI §11.9, every PASS must carry positive runtime evidence
 captured during execution. The harness emits **byte-level captures**

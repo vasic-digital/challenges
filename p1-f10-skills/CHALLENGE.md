@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Prove HelixCode's agent-invoked Skill system actually loads .helix/skills/*.md
+Prove the project's agent-invoked Skill system actually loads .helix/skills/*.md
 files, compiles named-capture regex triggers, matches user input, renders
 bodies with substituted captures, hot-reloads on file edit, and unregisters
 on deletion. Per Article XI §11.9, every PASS must carry positive runtime

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # persistent_memory_challenge.sh — anti-bluff Challenge for the
-# HelixCode HelixMemory persistent local store (CONST-035 + CONST-050(B);
+# the project's HelixMemory persistent local store (CONST-035 + CONST-050(B);
 # submodule cascade per CONST-051(A)).
 #
 # WHAT IT PROVES (positive runtime evidence, §11.4.5 / Article XI §11.9):
@@ -43,7 +43,7 @@ for arg in "$@"; do
     esac
 done
 
-echo "=== HelixCode HelixMemory Persistent-Memory Challenge ==="
+echo "=== HelixMemory Persistent-Memory Challenge ==="
 echo "  probe=${PROBE_DIR}"
 
 if ! command -v go >/dev/null 2>&1; then
