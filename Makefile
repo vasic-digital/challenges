@@ -48,7 +48,7 @@ challenge:
 	../challenges/scripts/challenges_challenge.sh 2>/dev/null || echo "No challenge script"
 
 # === CONST-035 anti-bluff gates ===
-.PHONY: anti-bluff anti-bluff-scan anti-bluff-anchors anti-bluff-mutation anti-bluff-mutation-changed update-baseline qa-all
+.PHONY: anti-bluff anti-bluff-scan anti-bluff-anchors anti-bluff-mutation anti-bluff-mutation-changed update-baseline qa-all control-plane-challenges
 
 anti-bluff-scan:
 	@bash scripts/anti-bluff/bluff-scanner.sh --mode all
@@ -77,11 +77,21 @@ challenge-persistent-memory:
 
 new-capabilities: challenge-agentic-subagents challenge-persistent-memory
 
+# Helix Cluster OS control-plane Challenges (CONST-035 / CLAUDE-1).
+# Real assertions against the LIVE cluster. Endpoints derive from env
+# (HELIX_HOST / ETCD_ENDPOINTS) with localhost defaults; each SKIPs-OK
+# honestly when its target is genuinely unreachable.
+control-plane-challenges:
+	@bash challenges/scripts/helixd_control_plane_challenge.sh
+	@bash challenges/scripts/etcd_quorum_challenge.sh
+	@bash challenges/scripts/node_membership_challenge.sh
+
 # Aggregate quality gate. Wires existing build/vet/test plus host-power
-# challenges and the CONST-035 anti-bluff gates.
+# challenges, the control-plane challenges, and the CONST-035 anti-bluff gates.
 qa-all: build vet test
 	@bash challenges/scripts/no_suspend_calls_challenge.sh
 	@bash challenges/scripts/host_no_auto_suspend_challenge.sh
+	@$(MAKE) control-plane-challenges
 	@$(MAKE) anti-bluff
 
 update-baseline:
