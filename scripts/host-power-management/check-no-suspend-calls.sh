@@ -37,17 +37,38 @@ EXCLUDE_DIRS=(
 
 # File-path substrings allowlisted (the canonical artifacts and
 # governance docs ARE allowed to mention these patterns).
+#
+# Governance docs are allowlisted as .md AND as their mandated .html/.pdf
+# export siblings (§11.4.65 requires every governance .md to ship in-sync
+# .html/.pdf exports containing the same documentation text). Allowlisting
+# only the .md while the exports carry identical text would make the gate
+# fail purely because the docs-export mandate was honoured.
 EXCLUDE_PATHS=(
   "host-power-management/"
   "host_no_auto_suspend_challenge.sh"
   "no_suspend_calls_challenge.sh"
   "HOST_POWER_MANAGEMENT.md"
+  "HOST_POWER_MANAGEMENT.html"
+  "HOST_POWER_MANAGEMENT.pdf"
   "CONSTITUTION.md"
+  "CONSTITUTION.html"
+  "CONSTITUTION.pdf"
   "CONSTITUTION.json"
   "AGENTS.md"
+  "AGENTS.html"
+  "AGENTS.pdf"
   "CLAUDE.md"
+  "CLAUDE.html"
+  "CLAUDE.pdf"
   "QWEN.md"
+  "QWEN.html"
+  "QWEN.pdf"
   "GEMINI.md"
+  "GEMINI.html"
+  "GEMINI.pdf"
+  # Sandboxed-shell challenge spec documents forbidden power-management
+  # commands as example block-list INPUTS, not as invocations.
+  "p1-f14-sandboxed-shell/CHALLENGE.md"
   "/docs/issues/fixed/BUGFIXES.md"
   "/CHANGELOG.md"
   "/docs/superpowers/plans/"
