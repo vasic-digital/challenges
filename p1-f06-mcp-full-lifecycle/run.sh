@@ -25,12 +25,12 @@ servers:
 EOF
 
 echo "==> helixcode mcp list"
-./bin/cli mcp list | tee /tmp/p1f06-list.txt
+./bin/cli mcp list | tee /tmp/p1f06-list.txt  # bluff-scan: ok (grep -q echo/stdio on next lines assert the captured output; set -e active)
 grep -q "echo" /tmp/p1f06-list.txt
 grep -q "stdio" /tmp/p1f06-list.txt
 
 echo "==> helixcode mcp test echo"
-./bin/cli mcp test echo | tee /tmp/p1f06-test.txt
+./bin/cli mcp test echo | tee /tmp/p1f06-test.txt  # bluff-scan: ok (grep -q ready + ! grep -qi simulated on next lines assert the captured output; set -e active)
 grep -q "ready" /tmp/p1f06-test.txt
 ! grep -qi "simulated\|for now" /tmp/p1f06-test.txt
 

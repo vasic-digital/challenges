@@ -115,6 +115,17 @@ echo "  HTTP $HEALTH_RESP"
 case "$HEALTH_RESP" in
     200)
         ab_pass "bridge /v1/health responded HTTP 200 — dev infra up"
+        # §11.4 body assertion: HTTP 200 alone is not proof — the health
+        # body MUST report an affirmative status, not an empty/error 200.
+        if grep -qiE '"(status|state|health)"[[:space:]]*:[[:space:]]*"?(ok|up|healthy|ready|running|true)' /tmp/__rpc_health.body 2>/dev/null \
+           || grep -qiE '\b(ok|healthy|ready|up)\b' /tmp/__rpc_health.body 2>/dev/null; then
+            ab_pass "bridge /v1/health body reports affirmative status"
+        else
+            ab_fail "bridge /v1/health returned HTTP 200 but body lacks an affirmative status field (body: $(cat /tmp/__rpc_health.body 2>/dev/null | head -c 200))"
+            TEST_COMPLETED=1
+            ab_summary
+            exit 1
+        fi
         ;;
     000|503|502|504)
         ab_skip "helixqa-bridge not running at $BRIDGE_URL (HTTP=$HEALTH_RESP), Bug #14 dev infrastructure required — set HELIXQA_BRIDGE_URL or start scripts/dev/helixqa-bridge.sh"
@@ -149,6 +160,19 @@ echo "  body: $(cat /tmp/__rpc_start.body 2>/dev/null | head -c 300)"
 if [ "$START_RESP" = "200" ] || [ "$START_RESP" = "201" ] || [ "$START_RESP" = "202" ]; then
     ab_pass "/v1/recording/start accepted (HTTP $START_RESP)"
     RECORDING_STARTED=1
+    # §11.4 body assertion: a 2xx alone is not proof the recorder actually
+    # started — the body MUST carry a recording/session identifier or an
+    # explicit started/recording state.
+    if grep -qiE '"(recording_id|session_id|id|test_name)"[[:space:]]*:[[:space:]]*"?[^",}[:space:]]' /tmp/__rpc_start.body 2>/dev/null \
+       || grep -qiE '"(status|state)"[[:space:]]*:[[:space:]]*"?(started|recording|active|running)' /tmp/__rpc_start.body 2>/dev/null \
+       || grep -qiE '\b(started|recording)\b' /tmp/__rpc_start.body 2>/dev/null; then
+        ab_pass "/v1/recording/start body confirms a recording id / started state"
+    else
+        ab_fail "/v1/recording/start returned HTTP $START_RESP but body lacks a recording id / started state (body: $(cat /tmp/__rpc_start.body 2>/dev/null | head -c 200))"
+        TEST_COMPLETED=1
+        ab_summary
+        exit 1
+    fi
 else
     ab_fail "/v1/recording/start returned HTTP $START_RESP — recording wrapper rejected the request"
     TEST_COMPLETED=1
@@ -181,6 +205,20 @@ echo "  HTTP $STOP_RESP"
 if [ "$STOP_RESP" = "200" ] || [ "$STOP_RESP" = "204" ]; then
     ab_pass "/v1/recording/stop accepted (HTTP $STOP_RESP)"
     RECORDING_STARTED=0
+    # §11.4 body assertion: a 2xx alone is not proof the recording was
+    # finalised — the body MUST reference the produced recording (a path /
+    # file / duration) or an explicit stopped/finalised state. HTTP 204
+    # (No Content) is the one accepted exception: by definition it carries
+    # no body, so there is nothing to assert.
+    if [ "$STOP_RESP" = "204" ]; then
+        ab_pass "/v1/recording/stop returned 204 No Content — finalised with no body (expected)"
+    elif grep -qiE '"(path|file|recording_path|output|duration|duration_ms|frames|size)"[[:space:]]*:[[:space:]]*"?[^",}[:space:]]' /tmp/__rpc_stop.body 2>/dev/null \
+         || grep -qiE '"(status|state)"[[:space:]]*:[[:space:]]*"?(stopped|finalized|finalised|complete|completed|done)' /tmp/__rpc_stop.body 2>/dev/null \
+         || grep -qiE '\b(stopped|finalized|finalised|/[^[:space:]]+\.(mp4|mkv|webm|cast))\b' /tmp/__rpc_stop.body 2>/dev/null; then
+        ab_pass "/v1/recording/stop body confirms a finalised recording (path / duration / stopped state)"
+    else
+        ab_fail "/v1/recording/stop returned HTTP $STOP_RESP but body lacks a recording path / duration / stopped state (body: $(cat /tmp/__rpc_stop.body 2>/dev/null | head -c 200))"
+    fi
 else
     ab_fail "/v1/recording/stop returned HTTP $STOP_RESP — recording wrapper failed to finalise"
 fi

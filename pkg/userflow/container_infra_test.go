@@ -14,7 +14,7 @@ func TestNewTestEnvironment_Defaults(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
 		t.Skipf(
-			"skipping: no container runtime available: %v",
+			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
 			err,
 		)
 	}
@@ -54,7 +54,7 @@ func TestNewTestEnvironment_WithOptions(t *testing.T) {
 	)
 	if err != nil {
 		t.Skipf(
-			"skipping: no container runtime available: %v",
+			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
 			err,
 		)
 	}
@@ -164,7 +164,7 @@ func TestTestEnvironment_Accessors(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
 		t.Skipf(
-			"skipping: no container runtime available: %v",
+			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
 			err,
 		)
 	}
