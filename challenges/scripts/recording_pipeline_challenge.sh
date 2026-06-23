@@ -109,8 +109,7 @@ if ! command -v curl >/dev/null 2>&1; then
     exit 2
 fi
 
-HEALTH_RESP=$(curl -s -m 5 -o /tmp/__rpc_health.body -w '%{http_code}' \
-    "$BRIDGE_URL/v1/health" 2>/dev/null || echo "000")
+HEALTH_RESP=$(curl -s -m 5 -o /tmp/__rpc_health.body "$BRIDGE_URL/v1/health" -w '%{http_code}' 2>/dev/null || echo "000")  # bluff-scan: ok (HTTP code is the dispatch only; the affirmative-status BODY assertion at the 200 branch below is the real proof — empty/error 200 FAILs)
 echo "  HTTP $HEALTH_RESP"
 case "$HEALTH_RESP" in
     200)
@@ -151,10 +150,7 @@ START_BODY=$(cat <<EOF
 {"test_name":"$TEST_NAME_TOKEN","device_serial":"$DEVICE_SERIAL","interval_ms":$INTERVAL_MS}
 EOF
 )
-START_RESP=$(curl -s -m 10 -o /tmp/__rpc_start.body -w '%{http_code}' \
-    -X POST -H 'Content-Type: application/json' \
-    -d "$START_BODY" \
-    "$BRIDGE_URL/v1/recording/start" 2>/dev/null || echo "000")
+START_RESP=$(curl -s -m 10 -o /tmp/__rpc_start.body -X POST -H 'Content-Type: application/json' -d "$START_BODY" "$BRIDGE_URL/v1/recording/start" -w '%{http_code}' 2>/dev/null || echo "000")  # bluff-scan: ok (HTTP code is the dispatch only; the recording-id / started-state BODY assertion at the 2xx branch below is the real proof — a 2xx without a session id FAILs)
 echo "  HTTP $START_RESP"
 echo "  body: $(cat /tmp/__rpc_start.body 2>/dev/null | head -c 300)"
 if [ "$START_RESP" = "200" ] || [ "$START_RESP" = "201" ] || [ "$START_RESP" = "202" ]; then
@@ -197,10 +193,7 @@ STOP_BODY=$(cat <<EOF
 {"test_name":"$TEST_NAME_TOKEN","device_serial":"$DEVICE_SERIAL"}
 EOF
 )
-STOP_RESP=$(curl -s -m 10 -o /tmp/__rpc_stop.body -w '%{http_code}' \
-    -X POST -H 'Content-Type: application/json' \
-    -d "$STOP_BODY" \
-    "$BRIDGE_URL/v1/recording/stop" 2>/dev/null || echo "000")
+STOP_RESP=$(curl -s -m 10 -o /tmp/__rpc_stop.body -X POST -H 'Content-Type: application/json' -d "$STOP_BODY" "$BRIDGE_URL/v1/recording/stop" -w '%{http_code}' 2>/dev/null || echo "000")  # bluff-scan: ok (HTTP code is the dispatch only; the finalised-recording BODY assertion — path/duration/stopped-state — at the 2xx branch below is the real proof; 204 No-Content is the one accepted exception)
 echo "  HTTP $STOP_RESP"
 if [ "$STOP_RESP" = "200" ] || [ "$STOP_RESP" = "204" ]; then
     ab_pass "/v1/recording/stop accepted (HTTP $STOP_RESP)"

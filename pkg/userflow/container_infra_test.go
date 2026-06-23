@@ -13,10 +13,7 @@ import (
 func TestNewTestEnvironment_Defaults(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
-		t.Skipf(
-			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
-			err,
-		)
+		t.Skipf("SKIP-OK: §11.4.3 container/podman runtime not available — legit topology skip: %v", err)
 	}
 
 	require.NotNil(t, te)
@@ -53,10 +50,7 @@ func TestNewTestEnvironment_WithOptions(t *testing.T) {
 		WithLogger(logger),
 	)
 	if err != nil {
-		t.Skipf(
-			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
-			err,
-		)
+		t.Skipf("SKIP-OK: §11.4.3 container/podman runtime not available — legit topology skip: %v", err)
 	}
 
 	require.NotNil(t, te)
@@ -163,10 +157,7 @@ func TestPlatformGroup_Fields(t *testing.T) {
 func TestTestEnvironment_Accessors(t *testing.T) {
 	te, err := NewTestEnvironment()
 	if err != nil {
-		t.Skipf(
-			"skipping: no container runtime available: %v (SKIP-OK: #topology-no-container)",
-			err,
-		)
+		t.Skipf("SKIP-OK: §11.4.3 container/podman runtime not available — legit topology skip: %v", err)
 	}
 
 	require.NotNil(t, te)
