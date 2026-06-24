@@ -75,7 +75,7 @@ func percentiles(durations []time.Duration) (p50, p95, p99 time.Duration) {
 func TestStressConcurrentBaseChallengeLifecycle(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("stress test skipped in short mode")
+		t.Skip("stress test skipped in short mode") // SKIP-OK: #short-mode-stress
 	}
 
 	const n = 100
@@ -156,7 +156,7 @@ func TestStressConcurrentBaseChallengeLifecycle(t *testing.T) {
 func TestStressConcurrentAntiBluffValidation(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("stress test skipped in short mode")
+		t.Skip("stress test skipped in short mode") // SKIP-OK: #short-mode-stress
 	}
 
 	const n = 200
@@ -222,7 +222,7 @@ func TestStressConcurrentAntiBluffValidation(t *testing.T) {
 func TestStressSustainedAssertionEvaluation(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("stress test skipped in short mode")
+		t.Skip("stress test skipped in short mode") // SKIP-OK: #short-mode-stress
 	}
 
 	const N = 500

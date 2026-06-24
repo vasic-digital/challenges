@@ -67,7 +67,7 @@ type latencyRecord struct {
 // Uses testing.Short() to reduce count to 10 for quick runs.
 func TestStressConcurrentBaseChallenge(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping stress test in short mode")
+		t.Skip("Skipping stress test in short mode") // SKIP-OK: #short-mode-stress
 	}
 	t.Parallel()
 
@@ -136,7 +136,7 @@ func TestStressConcurrentBaseChallenge(t *testing.T) {
 // evaluations using the mock assertion engine via EvaluateAssertions.
 func TestStressConcurrentAssertionEvaluation(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping stress test in short mode")
+		t.Skip("Skipping stress test in short mode") // SKIP-OK: #short-mode-stress
 	}
 	t.Parallel()
 
@@ -213,7 +213,7 @@ func TestStressConcurrentAssertionEvaluation(t *testing.T) {
 // throughput in results/sec.
 func TestStressSustainedResultCreation(t *testing.T) {
 	if testing.Short() {
-		t.Skip("Skipping stress test in short mode")
+		t.Skip("Skipping stress test in short mode") // SKIP-OK: #short-mode-stress
 	}
 	t.Parallel()
 

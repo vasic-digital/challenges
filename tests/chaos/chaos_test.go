@@ -63,7 +63,7 @@ func catchPanic(fn func()) (panicked bool) {
 func TestChaosNilAndEmptyInputs(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("chaos test skipped in short mode")
+		t.Skip("chaos test skipped in short mode") // SKIP-OK: #short-mode-chaos
 	}
 
 	t.Run("nil-config", func(t *testing.T) {
@@ -133,7 +133,7 @@ func TestChaosNilAndEmptyInputs(t *testing.T) {
 func TestChaosConfigEdgeCases(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("chaos test skipped in short mode")
+		t.Skip("chaos test skipped in short mode") // SKIP-OK: #short-mode-chaos
 	}
 
 	t.Run("extreme-long-path", func(t *testing.T) {
@@ -172,7 +172,7 @@ func TestChaosConfigEdgeCases(t *testing.T) {
 func TestChaosResultCorruption(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("chaos test skipped in short mode")
+		t.Skip("chaos test skipped in short mode") // SKIP-OK: #short-mode-chaos
 	}
 
 	t.Run("empty-result", func(t *testing.T) {
@@ -229,7 +229,7 @@ func TestChaosResultCorruption(t *testing.T) {
 func TestChaosProgressReporterBoundaries(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("chaos test skipped in short mode")
+		t.Skip("chaos test skipped in short mode") // SKIP-OK: #short-mode-chaos
 	}
 
 	t.Run("rapid-1000-updates", func(t *testing.T) {
@@ -298,7 +298,7 @@ func TestChaosProgressReporterBoundaries(t *testing.T) {
 func TestChaosAntiBluffCorruption(t *testing.T) {
 	t.Parallel()
 	if testing.Short() {
-		t.Skip("chaos test skipped in short mode")
+		t.Skip("chaos test skipped in short mode") // SKIP-OK: #short-mode-chaos
 	}
 
 	type abCase struct {
