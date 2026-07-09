@@ -1,6 +1,9 @@
 package challenge
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 // Status constants for challenge execution outcomes.
 const (
@@ -61,6 +64,15 @@ type Result struct {
 	// "you must record what the runtime actually did before
 	// claiming PASS" guarantee. Constitution §11.4.
 	RecordedActions []string `json:"recorded_actions,omitempty"`
+
+	// mu guards concurrent (*Result).RecordAction appends to
+	// RecordedActions. Challenges may record actions from multiple
+	// goroutines; without this lock concurrent appends lose updates
+	// (a data race). Unexported, so encoding/json ignores it and
+	// serialized Results are unchanged. Constitution §11.4 (concurrent
+	// callers): action-trace integrity is what the anti-bluff
+	// validator counts, so a lost action can turn a real PASS bluff.
+	mu sync.Mutex
 }
 
 // AssertionResult captures the outcome of a single assertion
