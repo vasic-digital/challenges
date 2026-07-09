@@ -64,7 +64,7 @@ func TestAntiBluff_ValidPassPreserved(t *testing.T) {
 		id:   challenge.ID("valid-1"),
 		name: "valid-1",
 		execResult: &challenge.Result{
-			Status: challenge.StatusPassed,
+			Status:          challenge.StatusPassed,
 			RecordedActions: []string{"action-1"},
 			Assertions: []challenge.AssertionResult{
 				{Passed: true, Message: "ok"},
