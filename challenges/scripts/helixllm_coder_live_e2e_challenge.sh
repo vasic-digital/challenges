@@ -119,24 +119,75 @@ RUN_TOKEN="helixllm$(date -u +%Y%m%dT%H%M%SZ)$$"
 # [1/8] Freshly-randomised 4th test vector — defeats a hardcoded
 # lookup-table "solution" that only special-cases the textbook
 # examples (§11.4.107 not-stale / genuine-execution discipline).
+#
+# UNIQUENESS GUARANTEE (fixes W1 / R41-F false-RED risk, 2026-07-11):
+# earlier revisions filled the two non-answer slots with independent
+# random fillers that were not excluded from also summing to target —
+# a genuinely-correct coder returning that OTHER valid pair could then
+# fail this harness (a false-RED; the harness could never false-PASS
+# bad code, but could spuriously fail correct code returning a
+# different, also-valid pair). It also silently violated the
+# assumption stated to the model in USER_PROMPT below ("assume exactly
+# one valid pair exists"). The construction below retries until an
+# independent brute-force check over ALL C(4,2)=6 index pairs of the
+# generated list confirms EXACTLY ONE valid pair exists, before
+# accepting the vector — so both problems are fixed at once. Verified
+# deterministically across 1000+ generated vectors by
+# verify_two_sum_vector_uniqueness.sh (which extracts and
+# brute-force-checks this exact block at test time — zero drift risk;
+# see its evidence for real generated-vector counts).
 # ---------------------------------------------------------------------
-read -r RAND_A RAND_B RAND_LIST RAND_IDX_A RAND_IDX_B <<<"$(python3 - <<'PYEOF'
+read -r RAND_A RAND_B RAND_LIST RAND_IDX_A RAND_IDX_B <<<"$(python3 - <<'VECGEN_PYEOF'
+import itertools
 import random
+
 random.seed()
-a = random.randint(-500, 500)
-b = random.randint(-500, 500)
-while b == a:
+
+while True:
+    a = random.randint(-500, 500)
     b = random.randint(-500, 500)
-filler = [random.randint(-500, 500) for _ in range(4)]
-pos_a = random.randint(0, 3)
-pos_b = random.randint(0, 3)
-while pos_b == pos_a:
+    if b == a:
+        continue
+    target = a + b
+
+    # Fillers must differ from BOTH answer values (else a filler would
+    # duplicate a/b at another index and pair with the OTHER answer
+    # value to also sum to target), and must not sum to target with
+    # each other.
+    f1 = random.randint(-500, 500)
+    if f1 in (a, b):
+        continue
+    f2 = random.randint(-500, 500)
+    if f2 in (a, b) or f1 + f2 == target:
+        continue
+
+    pos_a = random.randint(0, 3)
     pos_b = random.randint(0, 3)
-lst = filler[:]
-lst[pos_a] = a
-lst[pos_b] = b
+    if pos_b == pos_a:
+        continue
+
+    lst = [None, None, None, None]
+    lst[pos_a] = a
+    lst[pos_b] = b
+    fillers = iter((f1, f2))
+    for i in range(4):
+        if lst[i] is None:
+            lst[i] = next(fillers)
+
+    # Defense-in-depth: never trust the exclusion logic on faith — the
+    # vector is only accepted once brute-force confirms exactly one
+    # valid pair exists among ALL C(4,2) index pairs.
+    valid_pairs = [
+        (i2, j2)
+        for i2, j2 in itertools.combinations(range(4), 2)
+        if lst[i2] + lst[j2] == target
+    ]
+    if len(valid_pairs) != 1:
+        continue
+    break
+
 print(a, b, ",".join(str(x) for x in lst), pos_a, pos_b)
-PYEOF
+VECGEN_PYEOF
 )"
 RAND_TARGET=$((RAND_A + RAND_B))
 echo "[1/8] randomised 4th vector: nums=[${RAND_LIST}] target=${RAND_TARGET} expect_indices=(${RAND_IDX_A},${RAND_IDX_B})"
