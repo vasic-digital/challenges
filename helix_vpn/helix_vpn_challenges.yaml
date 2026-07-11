@@ -1,0 +1,500 @@
+# SPDX-FileCopyrightText: 2026 Milos Vasic
+# SPDX-License-Identifier: Apache-2.0
+#
+# HelixVPN MVP Critical-Path Challenges
+# Anti-bluff challenge bank: every PASS requires captured runtime evidence.
+
+version: "1.0"
+name: "HelixVPN MVP Critical-Path Challenges"
+metadata:
+  project: helix_vpn
+  domain: vpn
+  description: "Anti-bluff challenges for the HelixVPN MVP: auth/tunnel, reconnect/roaming, kill-switch, DNS leak, control-plane HA, client UI visual proof, and explicit GAP-6 DDoS ownership for NFR-413/NFR-414. Each challenge scores PASS only on captured runtime evidence."
+  author: "HelixVPN QA Architecture"
+  phase: MVP
+  maturity: defined
+
+challenges:
+  - id: HVPN-CHAL-AUTH-TUNNEL
+    name: "Auth + tunnel establishment"
+    description: "A real device enrolls anonymously, receives a short-lived mTLS device cert, authenticates the control channel, and establishes a WireGuard tunnel to the gateway. Proves DoD-2 with a pcap showing the handshake and iperf3 goodput through the tunnel."
+    category: e2e
+    priority: critical
+    estimated_duration: "3m"
+    dependencies: []
+    inputs:
+      - name: gateway_endpoint
+        source: env
+        required: true
+      - name: enrollment_token
+        source: env
+        required: true
+      - name: test_lan_host
+        source: config
+        required: true
+    outputs:
+      - name: enroll_ok
+        type: string
+        description: "Device enrolled and mTLS cert issued"
+      - name: handshake_ok
+        type: string
+        description: "WireGuard handshake completed"
+      - name: iperf_bps
+        type: number
+        description: "iperf3 sum_received.bits_per_second"
+      - name: reach_ok
+        type: string
+        description: "curl to authorized LAN host returned HTTP 200"
+      - name: evidence_pcap
+        type: string
+        description: "Path to captured auth+tunnel pcap"
+    assertions:
+      - type: equals
+        target: enroll_ok
+        value: "true"
+        message: "Device must enroll and receive a cert"
+      - type: equals
+        target: handshake_ok
+        value: "true"
+        message: "WireGuard handshake must complete"
+      - type: equals
+        target: reach_ok
+        value: "true"
+        message: "Authorized LAN host must be reachable"
+      - type: greater_than
+        target: iperf_bps
+        value: 0
+        message: "Tunnel must carry non-zero goodput"
+    metrics:
+      - enroll_time_ms
+      - handshake_time_ms
+      - iperf_bps
+      - reach_latency_ms
+    evidence:
+      - path: qa-results/challenges/auth_tunnel/auth_tunnel.pcap
+        class: network_connectivity
+      - path: qa-results/challenges/auth_tunnel/iperf3.json
+        class: network_throughput
+    driver: drivers/auth_tunnel_establish.sh
+    self_validated: true
+    paired_mutation: "Disable mTLS enforcement; expect enrollment refused and handshake absent → FAIL."
+
+  - id: HVPN-CHAL-RECONNECT-ROAMING
+    name: "Reconnect / roaming"
+    description: "Simulate a transient carrier drop or network interface change while the tunnel carries traffic. The client must re-establish the tunnel automatically, preserve the selected transport, and emit no plaintext during the gap."
+    category: chaos
+    priority: critical
+    estimated_duration: "4m"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: client_netns
+        source: env
+        required: true
+      - name: drop_action
+        source: config
+        required: true
+      - name: test_lan_host
+        source: config
+        required: true
+    outputs:
+      - name: tunnel_reestablished
+        type: string
+        description: "Tunnel re-established within budget"
+      - name: transport_preserved
+        type: string
+        description: "Selected transport rung did not regress unexpectedly"
+      - name: zero_leak_in_gap
+        type: string
+        description: "No plaintext egress during the drop window"
+      - name: recover_time_ms
+        type: number
+        description: "Time from drop to Connected"
+      - name: evidence_pcap
+        type: string
+        description: "Path to gap+recovery pcap"
+    assertions:
+      - type: equals
+        target: tunnel_reestablished
+        value: "true"
+        message: "Tunnel must re-establish automatically"
+      - type: equals
+        target: transport_preserved
+        value: "true"
+        message: "Transport rung must be preserved"
+      - type: equals
+        target: zero_leak_in_gap
+        value: "true"
+        message: "No plaintext leak during the gap"
+      - type: less_than
+        target: recover_time_ms
+        value: 3000
+        message: "Recovery must complete within 3 s"
+    metrics:
+      - drop_duration_ms
+      - recover_time_ms
+      - post_recovery_iperf_bps
+    evidence:
+      - path: qa-results/challenges/reconnect_roaming/roaming_reconnect.pcap
+        class: network_connectivity
+      - path: qa-results/challenges/reconnect_roaming/status_log.json
+        class: counter_delta
+    driver: drivers/reconnect_roaming.sh
+    self_validated: true
+    paired_mutation: "Disable roaming trigger in orchestrator; expect no reconnect attempt → FAIL."
+
+  - id: HVPN-CHAL-KILL-SWITCH
+    name: "Kill-switch no plaintext leak"
+    description: "With the tunnel connected and carrying traffic, forcibly kill the edge / gateway path. The OS firewall kill-switch must block all off-tunnel traffic; a host-side pcap proves zero plaintext egress and zero non-loopback packets."
+    category: security
+    priority: critical
+    estimated_duration: "3m"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: client_netns
+        source: env
+        required: true
+      - name: kill_target
+        source: config
+        required: true
+    outputs:
+      - name: kill_switch_active
+        type: string
+        description: "Kill-switch state entered"
+      - name: zero_plaintext
+        type: string
+        description: "No plaintext packets off-tunnel"
+      - name: zero_non_loopback
+        type: string
+        description: "No non-loopback egress"
+      - name: evidence_pcap
+        type: string
+        description: "Path to gap pcap"
+    assertions:
+      - type: equals
+        target: kill_switch_active
+        value: "true"
+        message: "Kill-switch must activate"
+      - type: equals
+        target: zero_plaintext
+        value: "true"
+        message: "No plaintext may leak"
+      - type: equals
+        target: zero_non_loopback
+        value: "true"
+        message: "No non-loopback egress may occur"
+    metrics:
+      - gap_duration_ms
+      - leaked_packets
+      - leaked_dns_queries
+    evidence:
+      - path: qa-results/challenges/killswitch/killswitch_gap.pcap
+        class: wifi_link
+    driver: drivers/kill_switch.sh
+    self_validated: true
+    paired_mutation: "Disable the kill-switch firewall rule; expect leaked SYN/DNS → FAIL."
+
+  - id: HVPN-CHAL-DNS-LEAK
+    name: "DNS leak prevention"
+    description: "While the tunnel is active, perform DNS resolution. All DNS queries must egress through the tunnel; the host-side pcap must show zero plaintext :53 packets off-tunnel. Resolver IPs must match the tunnel DNS."
+    category: security
+    priority: critical
+    estimated_duration: "2m"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: client_netns
+        source: env
+        required: true
+      - name: test_domains
+        source: config
+        required: true
+    outputs:
+      - name: dns_resolved
+        type: string
+        description: "All test domains resolved"
+      - name: zero_plaintext_53
+        type: string
+        description: "No plaintext DNS off-tunnel"
+      - name: tunnel_dns_used
+        type: string
+        description: "Queries used tunnel resolver"
+      - name: evidence_pcap
+        type: string
+        description: "Path to DNS leak pcap"
+    assertions:
+      - type: equals
+        target: dns_resolved
+        value: "true"
+        message: "DNS must resolve"
+      - type: equals
+        target: zero_plaintext_53
+        value: "true"
+        message: "No plaintext :53 off-tunnel"
+      - type: equals
+        target: tunnel_dns_used
+        value: "true"
+        message: "Queries must use tunnel DNS"
+    metrics:
+      - dns_queries_total
+      - dns_leaked_count
+      - resolve_time_ms
+    evidence:
+      - path: qa-results/challenges/dns_leak/dns_leak.pcap
+        class: network_connectivity
+      - path: qa-results/challenges/dns_leak/dns_resolvers.json
+        class: counter_delta
+    driver: drivers/dns_leak.sh
+    self_validated: true
+    paired_mutation: "Allow :53 through the physical interface; expect leaked DNS → FAIL."
+
+  - id: HVPN-CHAL-CONTROL-PLANE-HA
+    name: "Control-plane HA / fail-static"
+    description: "With an established tunnel carrying traffic, stop the control-plane coordinator and Postgres/Redis. The edge must continue forwarding from its cached verdict map; existing tunnels do not drop. When the control plane returns, agents resume deltas from known_version."
+    category: chaos
+    priority: high
+    estimated_duration: "4m"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: coordinator_pid
+        source: env
+        required: true
+      - name: test_lan_host
+        source: config
+        required: true
+    outputs:
+      - name: tunnel_survived
+        type: string
+        description: "Traffic kept flowing while CP was down"
+      - name: zero_tunnel_drop
+        type: string
+        description: "No WG handshake reset required"
+      - name: delta_resumed
+        type: string
+        description: "Agents resumed deltas after CP return"
+      - name: evidence_pcap
+        type: string
+        description: "Path to HA pcap"
+    assertions:
+      - type: equals
+        target: tunnel_survived
+        value: "true"
+        message: "Existing tunnel must survive CP outage"
+      - type: equals
+        target: zero_tunnel_drop
+        value: "true"
+        message: "No tunnel drop during outage"
+      - type: equals
+        target: delta_resumed
+        value: "true"
+        message: "Delta stream must resume"
+    metrics:
+      - cp_down_seconds
+      - traffic_during_outage_bps
+      - resume_latency_ms
+    evidence:
+      - path: qa-results/challenges/control_plane_ha/ha_failstatic.pcap
+        class: network_throughput
+      - path: qa-results/challenges/control_plane_ha/cp_down.log
+        class: counter_delta
+    driver: drivers/control_plane_ha.sh
+    self_validated: true
+    paired_mutation: "Make edge drop verdict map on CP disconnect; expect tunnel break → FAIL."
+
+  - id: HVPN-CHAL-CLIENT-UI-VISUAL
+    name: "Client UI visual proof"
+    description: "Record a window-scoped MP4 of the Access app connect flow: launch → Connect button → Connecting → Connected → authorized reach indicator. The vision_engine OCR/FSM verdict must match the core status stream. Proves §11.4.170 visual proof requirement and DoD-8."
+    category: ui
+    priority: critical
+    estimated_duration: "2m"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: app_flavor
+        source: config
+        required: true
+      - name: platform
+        source: config
+        required: true
+      - name: record_device
+        source: env
+        required: false
+    outputs:
+      - name: recording_path
+        type: string
+        description: "Path to window-scoped MP4"
+      - name: vision_verdict
+        type: string
+        description: "vision_engine verdict: PASS/FAIL"
+      - name: fsm_matches_ui
+        type: string
+        description: "Core FSM state matches rendered UI"
+      - name: no_overlap_overlay
+        type: string
+        description: "No OpenDesign overlap/overlay defects"
+    assertions:
+      - type: equals
+        target: vision_verdict
+        value: PASS
+        message: "Vision engine must PASS the recording"
+      - type: equals
+        target: fsm_matches_ui
+        value: "true"
+        message: "Rendered UI must match core FSM"
+      - type: equals
+        target: no_overlap_overlay
+        value: "true"
+        message: "No overlap or overlay defects"
+    metrics:
+      - connect_time_ms
+      - frames_verified
+      - ocr_confidence
+    evidence:
+      - path: qa-results/challenges/client_ui/ui_connect.mp4
+        class: recorded_evidence
+      - path: qa-results/challenges/client_ui/vision_verdict.json
+        class: vision_verdict
+    driver: drivers/client_ui_visual.sh
+    self_validated: true
+    paired_mutation: "Feed a frozen-frame recording; expect vision engine to detect no state change → FAIL."
+
+  - id: HVPN-CHAL-NFR413-API-Rate-Limit
+    name: "GAP-6: control-plane API rate limiting"
+    description: "Flood the control-plane API login endpoint from one source while a legitimate client sends valid requests from another. The API gateway token-bucket limiter must reject the flood with 429, keep legitimate latency within budget, and expose nonzero ratelimit_rejected counters. Captured evidence: legitimate-latency JSON + limiter counter CSV."
+    category: ddos
+    priority: high
+    estimated_duration: "60s"
+    dependencies: []
+    inputs:
+      - name: gateway_endpoint
+        source: env
+        required: true
+      - name: attack_requests
+        source: config
+        required: false
+      - name: attack_window_s
+        source: config
+        required: false
+    outputs:
+      - name: baseline_p95_ms
+        type: number
+        description: "p95 latency before flood"
+      - name: flood_rejected_ratio
+        type: number
+        description: "Ratio of flood responses that were 429"
+      - name: legit_p95_ms
+        type: number
+        description: "p95 latency for legitimate client during flood"
+      - name: limiter_rejected_count
+        type: number
+        description: "Value of ratelimit_rejected counter during flood"
+      - name: evidence_latency
+        type: string
+        description: "Path to legitimate-latency JSON"
+      - name: evidence_counters
+        type: string
+        description: "Path to limiter counter CSV"
+    assertions:
+      - type: less_than
+        target: baseline_p95_ms
+        value: 100
+        message: "Baseline p95 must be under 100 ms"
+      - type: greater_than
+        target: flood_rejected_ratio
+        value: 0.8
+        message: "Flood must be dominated by 429 rejections"
+      - type: less_than
+        target: legit_p95_ms
+        value: 500
+        message: "Legitimate client p95 must stay under 500 ms"
+      - type: greater_than
+        target: limiter_rejected_count
+        value: 0
+        message: "Rate-limiter rejected counter must be nonzero"
+    metrics:
+      - baseline_p95_ms
+      - flood_rejected_ratio
+      - legit_p95_ms
+      - limiter_rejected_count
+    evidence:
+      - path: qa-results/challenges/ddos_api/legit_latency.json
+        class: network_connectivity
+      - path: qa-results/challenges/ddos_api/limiter_counters.csv
+        class: counter_delta
+    driver: drivers/ddos_api_rate_limit.sh
+    self_validated: true
+    paired_mutation: "Disable token-bucket limiter; expect 5xx or legit latency spike → FAIL."
+
+  - id: HVPN-CHAL-NFR414-Edge-Flood
+    name: "GAP-6: data-plane edge flood resilience"
+    description: "While a legitimate client maintains a WireGuard tunnel and iperf3 flow, flood the edge with spoofed WG Initiation packets. The edge must drop flood statelessly, keep legitimate handshake p99 within SLO, and either stay up or restart within budget without plaintext leak. Captured evidence: legitimate-latency JSON + edge-liveness CSV."
+    category: ddos
+    priority: high
+    estimated_duration: "120s"
+    dependencies:
+      - HVPN-CHAL-AUTH-TUNNEL
+    inputs:
+      - name: gateway_endpoint
+        source: env
+        required: true
+      - name: attack_pps
+        source: config
+        required: false
+      - name: attack_duration_s
+        source: config
+        required: false
+      - name: legit_slo_ms
+        source: config
+        required: false
+    outputs:
+      - name: legit_handshake_p99_ms
+        type: number
+        description: "p99 handshake latency for legitimate client during flood"
+      - name: edge_stays_up
+        type: string
+        description: "Edge process remained alive during flood"
+      - name: restart_within_budget
+        type: string
+        description: "Edge restarted within acceptable budget if it died"
+      - name: zero_plaintext_leak
+        type: string
+        description: "No plaintext packets leaked during flood"
+      - name: evidence_latency
+        type: string
+        description: "Path to legitimate-latency JSON"
+      - name: evidence_liveness
+        type: string
+        description: "Path to edge-liveness CSV"
+    assertions:
+      - type: equals
+        target: zero_plaintext_leak
+        value: "true"
+        message: "No plaintext may leak during flood"
+      - type: equals
+        target: edge_stays_up
+        value: "true"
+        message: "Edge must stay up during flood"
+        optional: true
+      - type: equals
+        target: restart_within_budget
+        value: "true"
+        message: "If edge restarts it must be within budget"
+        optional: true
+      - type: less_than
+        target: legit_handshake_p99_ms
+        value: 1000
+        message: "Legitimate handshake p99 must remain within SLO budget"
+    metrics:
+      - legit_handshake_p99_ms
+      - attack_pps
+      - edge_uptime_s
+    evidence:
+      - path: qa-results/challenges/ddos_edge/legit_latency.json
+        class: network_throughput
+      - path: qa-results/challenges/ddos_edge/edge_liveness.csv
+        class: counter_delta
+    driver: drivers/ddos_edge_flood.sh
+    self_validated: true
+    paired_mutation: "Make edge allocate state per spoofed Initiation; expect memory spike or crash → FAIL."

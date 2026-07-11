@@ -1,10 +1,12 @@
 // memprobe — cross-process HelixMemory persistence prober for the
 // persistent-memory Challenge. Subcommands:
-//   write <db_path> <token>  : open the on-disk localstore, Add a memory
-//                              whose Content embeds <token>, then exit.
-//   read  <db_path> <token>  : open the SAME on-disk file in a FRESH
-//                              process, Search for <token>, print RECALLED:<content>
-//                              on hit (exit 0) or MISS (exit 7).
+//
+//	write <db_path> <token>  : open the on-disk localstore, Add a memory
+//	                           whose Content embeds <token>, then exit.
+//	read  <db_path> <token>  : open the SAME on-disk file in a FRESH
+//	                           process, Search for <token>, print RECALLED:<content>
+//	                           on hit (exit 0) or MISS (exit 7).
+//
 // The two invocations are distinct OS processes sharing only the on-disk
 // SQLite file — proving genuine cross-process persistence (CONST §11.4.5
 // positive runtime evidence), not in-memory state carried in one process.
