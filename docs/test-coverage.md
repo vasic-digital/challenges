@@ -108,7 +108,7 @@ least 7 feature-coverage YAML files.
 
 ## 4. Shell-script Challenges — `challenges/scripts/`
 
-16 shell-script challenges + 1 baseline reference text. Each script
+17 shell-script challenges + 1 baseline reference text. Each script
 must be executable, parseable under `sh -n` (per CONST §11.4.67), and
 respond to `--help` or return a recognisable signature when invoked.
 
@@ -123,6 +123,7 @@ respond to `--help` or return a recognisable signature when invoked.
 | `chaos_failure_injection_challenge.sh` | Chaos-injection Challenge |
 | `agentic_subagents_challenge.sh` | the project's agentic subagents-driven flow (live :7061 execute mode: agents_spawned>=2 + 7 stages) |
 | `ddos_health_flood_challenge.sh` | DDoS / flood resilience |
+| `helixllm_coder_live_e2e_challenge.sh` | HelixLLM live coder end-to-end (§11.4.169): real HTTP request → live llama.cpp/OpenAI-compatible coder model → extracted code statically bluff-scanned → REAL python3 execution against 3 fixed + 1 freshly-randomised assertion vector; paired mutation plants a wrong constant-return stub through the identical pipeline and asserts it is caught |
 | `host_no_auto_suspend_challenge.sh` | Host power-management ban (CONST-033) |
 | `mutation_ratchet_challenge.sh` | Mutation-score ratchet |
 | `no_suspend_calls_challenge.sh` | Source-tree no-suspend scan |

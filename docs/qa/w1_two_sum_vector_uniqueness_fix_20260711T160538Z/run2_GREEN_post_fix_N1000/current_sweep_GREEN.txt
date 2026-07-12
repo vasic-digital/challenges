@@ -1,0 +1,2 @@
+RESULT[CURRENT_LIVE]: total=1000 second_pair_count=0 zero_pair_count=0 malformed_count=0
+MACHINE[CURRENT_LIVE]: 0 0 0 1000
