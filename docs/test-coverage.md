@@ -2,7 +2,7 @@
 
 | Revision | Created | Last modified | Status |
 |----------|---------|---------------|--------|
-| 1 | 2026-05-19 | 2026-05-19 | active |
+| 1 | 2026-05-19 | 2026-07-17 | active |
 
 Round-304 deep-doc + Challenge enrichment for the cross-cutting Challenge
 bank. This document is the inventory ledger consumed by
@@ -45,7 +45,7 @@ meta-runner (`challenges_describe_challenge.sh`) is the gate.
 
 ## 2. Bank inventory — `banks/examples/`
 
-28 generic JSON banks under `banks/examples/`. Each bank ships a set of
+29 generic JSON banks under `banks/examples/`. Each bank ships a set of
 challenge definitions (id + name + description + assertions) consumable
 by `pkg/bank`. Banks asserted present by the describe-runner:
 
@@ -67,6 +67,7 @@ by `pkg/bank`. Banks asserted present by the describe-runner:
 | `performance.json` | Performance SLO checks | `pkg/bank` |
 | `performance-optimization-validation.json` | Perf-opt verification | `pkg/bank` |
 | `platform-coverage-challenges.json` | Per-platform coverage | `pkg/userflow` |
+| `provider-alias-verification.json` | claude_toolkit provider-alias verification honesty (HelixQA `test_cases`) | `pkg/bank` |
 | `protocol-resilience-challenges.json` | Protocol resilience | `pkg/bank` |
 | `resilience.json` | Resilience baseline | `pkg/bank` |
 | `security-challenges.json` | Security challenge bank | `pkg/bank` |
@@ -108,7 +109,7 @@ least 7 feature-coverage YAML files.
 
 ## 4. Shell-script Challenges — `challenges/scripts/`
 
-17 shell-script challenges + 1 baseline reference text. Each script
+24 shell-script challenges + 1 baseline reference text. Each script
 must be executable, parseable under `sh -n` (per CONST §11.4.67), and
 respond to `--help` or return a recognisable signature when invoked.
 
@@ -133,6 +134,7 @@ respond to `--help` or return a recognisable signature when invoked.
 | `stress_sustained_load_challenge.sh` | Sustained-load Challenge |
 | `ui_terminal_interaction_challenge.sh` | TUI interaction Challenge |
 | `ux_end_to_end_flow_challenge.sh` | Full UX flow Challenge |
+| `provider_aliases_challenge.sh` | claude_toolkit provider-alias verification honesty (no verified-on-bare-GET, VERIFY_OK sentinel + tool-call gate static checks, status.json staleness gate) |
 | `baselines/bluff-baseline.txt` | Bluff-scanner baseline reference |
 
 ## 5. Production-code primitives exercised

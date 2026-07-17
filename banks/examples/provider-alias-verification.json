@@ -1,0 +1,222 @@
+{
+  "version": "1.0",
+  "name": "Claude Toolkit Provider-Alias Verification Anti-Bluff Bank",
+  "metadata": {
+    "project": "claude-toolkit",
+    "domain": "provider-alias-verification",
+    "helixqa_compatible": true,
+    "description": "Anti-bluff invariants of the fixed claude_toolkit provider-alias verification pipeline. The pipeline previously reported aliases as verified from a bare GET /v1/models 200, so providers with dead completions (e.g. huggingface with depleted credits) passed verification while being unusable at runtime. Each test case encodes one honesty gate of the fixed pipeline and is executed via challenges/scripts/provider_aliases_challenge.sh, which inspects the toolkit checkout READ-ONLY and FAILs with positive evidence on drift."
+  },
+  "test_cases": [
+    {
+      "id": "cma-pav-no-verified-on-models-get-only",
+      "name": "No verified-on-models-GET-only",
+      "description": "scripts/providers-verify.sh must not map a bare GET /v1/models HTTP 200 to status 'verified'. The models list endpoint answers even when every completion fails (billing, decommissioned model), so a GET 200 proves nothing about runtime usability. Verification must POST to a chat completion endpoint instead.",
+      "category": "anti-bluff",
+      "estimated_duration": "10s",
+      "inputs": [
+        {"name": "toolkit_root", "source": "env", "required": true},
+        {"name": "providers_verify_script", "source": "config", "required": true}
+      ],
+      "outputs": [
+        {"name": "probe_http_method", "type": "string", "description": "HTTP method the verification probe uses (must be POST)"},
+        {"name": "probe_endpoint", "type": "string", "description": "Endpoint path the probe targets (must be a chat completion endpoint)"},
+        {"name": "bare_get_verified_paths", "type": "json", "description": "Code paths mapping a bare GET /v1/models response to 'verified' (must be empty)"}
+      ],
+      "assertions": [
+        {"type": "contains", "target": "probe_http_method", "value": "POST", "message": "verification probe must POST to a chat endpoint; a bare GET /v1/models 200 is the huggingface depleted-credits false-positive class"},
+        {"type": "contains_any", "target": "probe_endpoint", "value": ["/chat/completions", "/v1/messages"], "message": "probe must hit a real chat completion endpoint, not the models list"},
+        {"type": "exact_count", "target": "bare_get_verified_paths", "value": 0, "message": "no code path may map a bare GET /v1/models response to status verified"}
+      ],
+      "metrics": ["static_grep_sites", "anti_pattern_hits"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "providers-verify-no-bare-get-verified"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "target": "scripts/providers-verify.sh"
+        }
+      }
+    },
+    {
+      "id": "cma-pav-sentinel-verify-ok-asserted",
+      "name": "Sentinel VERIFY_OK asserted",
+      "description": "scripts/model_verify.py probes with an exact-token demand ('Reply with exactly: VERIFY_OK') and must ASSERT the sentinel against the response content before a model can score as verified. Defining EXPECTED_CONTENT without a membership assertion lets any 200 — error string, proxy fallback, canned text — pass as verified.",
+      "category": "anti-bluff",
+      "estimated_duration": "10s",
+      "inputs": [
+        {"name": "toolkit_root", "source": "env", "required": true},
+        {"name": "model_verify_script", "source": "config", "required": true}
+      ],
+      "outputs": [
+        {"name": "sentinel_literal", "type": "string", "description": "The exact token the probe demands (VERIFY_OK)"},
+        {"name": "sentinel_assertion_sites", "type": "json", "description": "Locations where the sentinel is asserted against response content"},
+        {"name": "unasserted_verified_paths", "type": "json", "description": "Paths to 'verified' that skip the sentinel assertion (must be empty)"}
+      ],
+      "assertions": [
+        {"type": "contains", "target": "sentinel_literal", "value": "VERIFY_OK", "message": "the probe must demand the exact VERIFY_OK token"},
+        {"type": "min_count", "target": "sentinel_assertion_sites", "value": 1, "message": "the sentinel must be asserted against response content at least once (membership test, not mere definition)"},
+        {"type": "exact_count", "target": "unasserted_verified_paths", "value": 0, "message": "no path to 'verified' may skip the sentinel assertion"}
+      ],
+      "metrics": ["sentinel_sites", "assertion_sites"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "model-verify-sentinel-asserted"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "target": "scripts/model_verify.py"
+        }
+      }
+    },
+    {
+      "id": "cma-pav-tool-calling-required-for-verified",
+      "name": "Tool calling required for verified",
+      "description": "Claude Code is entirely tool-driven, so tool calling is a hard verification gate, not a score component: scripts/model_verify.py must decide 'verified' in conjunction with the tool_call capability probe. A chat-only model that cannot call tools is useless to the aliases and must not verify.",
+      "category": "anti-bluff",
+      "estimated_duration": "10s",
+      "inputs": [
+        {"name": "toolkit_root", "source": "env", "required": true},
+        {"name": "model_verify_script", "source": "config", "required": true}
+      ],
+      "outputs": [
+        {"name": "tool_gate_evidence", "type": "string", "description": "Source evidence that verified decisions reference tool_call"},
+        {"name": "verified_without_tool_call_paths", "type": "json", "description": "Paths to 'verified' that ignore the tool_call outcome (must be empty)"}
+      ],
+      "assertions": [
+        {"type": "contains", "target": "tool_gate_evidence", "value": "tool_call", "message": "verified decisions must reference the tool_call capability"},
+        {"type": "exact_count", "target": "verified_without_tool_call_paths", "value": 0, "message": "no path to 'verified' may bypass the tool-calling gate"}
+      ],
+      "metrics": ["tool_gate_sites"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "model-verify-tool-call-gate"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "target": "scripts/model_verify.py"
+        }
+      }
+    },
+    {
+      "id": "cma-pav-billing-402-is-definitive-failure-not-skip",
+      "name": "Billing / 402 is definitive failure, not skip",
+      "description": "Depleted credits (HTTP 402 or billing error bodies — the huggingface case) must be a DEFINITIVE failure with a recorded failing_layer, never an inconclusive 'unverified' skip and never a verified pass. model_verify.py flags billing signatures in ERROR_PATTERNS and treats HTTP 200 error bodies as bluffs; claude-providers.sh persists failing_layer for every non-verified alias.",
+      "category": "anti-bluff",
+      "estimated_duration": "10s",
+      "inputs": [
+        {"name": "toolkit_root", "source": "env", "required": true},
+        {"name": "model_verify_script", "source": "config", "required": true},
+        {"name": "status_file", "source": "config", "required": false}
+      ],
+      "outputs": [
+        {"name": "billing_failure_signature", "type": "string", "description": "The billing error signature the verifier matches (must mention billing)"},
+        {"name": "billing_verdict", "type": "string", "description": "Verdict recorded for billing-failing aliases (must be a definitive failure)"},
+        {"name": "billing_skip_paths", "type": "json", "description": "Paths where a billing failure degrades to skip/unverified-without-failing_layer (must be empty)"}
+      ],
+      "assertions": [
+        {"type": "contains", "target": "billing_failure_signature", "value": "billing", "message": "the verifier must match billing/credits error signatures explicitly"},
+        {"type": "contains_any", "target": "billing_verdict", "value": ["failed", "definitive"], "message": "billing failure must be a definitive failure verdict with failing_layer recorded"},
+        {"type": "exact_count", "target": "billing_skip_paths", "value": 0, "message": "billing failure may never degrade to a silent skip"}
+      ],
+      "metrics": ["error_patterns_matched", "failing_layer_records"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "status-failing-layer-integrity"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "target": "scripts/model_verify.py",
+          "status_file": "~/.local/share/claude-multi-account/providers/status.json"
+        }
+      }
+    },
+    {
+      "id": "cma-pav-stale-verified-status-detected",
+      "name": "Stale verified status detected",
+      "description": "The persisted status cache (~/.local/share/claude-multi-account/providers/status.json) must not carry 'verified' aliases whose checked_at is older than the staleness budget (7 days) or whose failing_layer is non-empty. Provider credit and model availability drift over time; a stale 'verified' is yesterday's truth presented as today's.",
+      "category": "anti-bluff",
+      "estimated_duration": "5s",
+      "inputs": [
+        {"name": "status_file", "source": "config", "required": true},
+        {"name": "stale_budget_days", "source": "config", "required": true}
+      ],
+      "outputs": [
+        {"name": "stale_verified_aliases", "type": "json", "description": "Verified aliases whose checked_at exceeds the staleness budget (must be empty)"},
+        {"name": "verified_records_checked", "type": "json", "description": "All verified records inspected (must be non-empty for the gate to be meaningful)"},
+        {"name": "checked_at_timestamps", "type": "json", "description": "checked_at values of verified records (all must be present and parseable)"}
+      ],
+      "assertions": [
+        {"type": "exact_count", "target": "stale_verified_aliases", "value": 0, "message": "no alias may stay 'verified' past the staleness budget"},
+        {"type": "min_count", "target": "verified_records_checked", "value": 1, "message": "at least one verified record must be inspected — an empty set would make the gate vacuous"},
+        {"type": "all_valid", "target": "checked_at_timestamps", "message": "every verified record must carry a parseable checked_at timestamp"}
+      ],
+      "metrics": ["verified_records", "stale_records"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "status-staleness-gate"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "status_file": "~/.local/share/claude-multi-account/providers/status.json",
+          "stale_budget_days": 7
+        }
+      }
+    },
+    {
+      "id": "cma-pav-provider-aliases-challenge-e2e",
+      "name": "Provider-aliases Challenge end-to-end honesty",
+      "description": "challenges/scripts/provider_aliases_challenge.sh runs against the toolkit checkout and returns an honest verdict: PASS only on positive evidence (unique per-run token, grep line numbers, jq tallies), SKIP-OK only when the checkout is genuinely absent, FAIL with named evidence otherwise. This case guards the guard.",
+      "category": "anti-bluff",
+      "dependencies": [
+        "cma-pav-no-verified-on-models-get-only",
+        "cma-pav-sentinel-verify-ok-asserted",
+        "cma-pav-tool-calling-required-for-verified"
+      ],
+      "estimated_duration": "30s",
+      "inputs": [
+        {"name": "toolkit_root", "source": "env", "required": true},
+        {"name": "challenge_script", "source": "config", "required": true}
+      ],
+      "outputs": [
+        {"name": "challenge_verdict", "type": "string", "description": "Final verdict of the challenge run (PASS or honest SKIP-OK)"},
+        {"name": "evidence_token", "type": "string", "description": "Unique per-run evidence token embedded in the verdict log"},
+        {"name": "evidence_log", "type": "string", "description": "Full challenge output including evidence lines"}
+      ],
+      "assertions": [
+        {"type": "contains_any", "target": "challenge_verdict", "value": ["PASS", "SKIP-OK"], "message": "challenge verdict must be PASS or an honest SKIP-OK — a FAIL here means the toolkit pipeline regressed"},
+        {"type": "not_empty", "target": "evidence_token", "message": "every run must mint a unique evidence token (defeats stale-cache false-pass)"},
+        {"type": "contains", "target": "evidence_log", "value": "token=", "message": "the evidence log must carry the per-run token"},
+        {"type": "not_mock", "target": "evidence_log", "message": "evidence must be real grep/jq output, never placeholder text"}
+      ],
+      "metrics": ["checks_passed", "checks_failed", "checks_skipped"],
+      "configuration": {
+        "execution": {
+          "vehicle": "shell_challenge",
+          "script": "challenges/scripts/provider_aliases_challenge.sh",
+          "check": "full-run"
+        },
+        "toolkit": {
+          "root_env": "CLAUDE_TOOLKIT_ROOT",
+          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit"
+        }
+      }
+    }
+  ]
+}

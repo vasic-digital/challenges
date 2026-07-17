@@ -30,6 +30,7 @@ vendor/
 
 # Challenge results
 results/
+challenges/evidence/
 
 # Environment files
 .env
