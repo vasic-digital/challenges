@@ -237,7 +237,7 @@ echo
 # model (discovered live), OAuth-first precedence over API keys, launch-time
 # token freshness (the OAuth token lives ~15 min), and the moonshot-flavored
 # schema normalizer (kimi_proxy.py) without which every k3 tool request fails.
-echo "[5/5] Kimi Code OAuth support: multi-model records, OAuth-first, token freshness, schema proxy"
+echo "[5/6] Kimi Code OAuth support: multi-model records, OAuth-first, token freshness, schema proxy"
 ab_send_action "static-grep Kimi OAuth support markers in claude-providers.sh / lib.sh / proxy/kimi_proxy.py"
 PROVIDERS_SH="$TOOLKIT_ROOT/scripts/claude-providers.sh"
 LIB_SH="$TOOLKIT_ROOT/scripts/lib.sh"
@@ -307,6 +307,45 @@ else
         ab_pass "all $kimi_n kimi alias(es) verified in status.json"
       fi
     fi
+  fi
+fi
+echo
+
+# --- Check 6: output-token cap exported for BOTH transports ------------------
+# v1.16.0 root-cause fix: the wrapper exported CLAUDE_CODE_MAX_OUTPUT_TOKENS
+# only on the native path, so every router provider ran with Claude Code's
+# generic default cap (128000 for unknown models) and long responses died
+# with "Claude's response exceeded the 128000 output token maximum".
+echo "[6/6] output-token cap: CLAUDE_CODE_MAX_OUTPUT_TOKENS exported for BOTH transports"
+ab_send_action "static-check _cma_out_guard placement in lib.sh (before the router branch)"
+if [ ! -f "$LIB_SH" ]; then
+  ab_fail "scripts/lib.sh missing in toolkit checkout $TOOLKIT_ROOT"
+else
+  guard_line="$(grep -n '_cma_out_guard' "$LIB_SH" | head -1 | cut -d: -f1)"
+  split_line="$(grep -n 'CMA_PROVIDER_TRANSPORT:-native.*== "router"' "$LIB_SH" | head -1 | cut -d: -f1)"
+  if [ -z "$guard_line" ]; then
+    ab_fail "lib.sh has no _cma_out_guard marker (output cap not exported for both transports)"
+  elif [ -z "$split_line" ]; then
+    ab_fail "cannot locate the router transport branch in lib.sh (structure changed — re-audit this check)"
+  elif [ "$guard_line" -lt "$split_line" ]; then
+    ab_pass "_cma_out_guard (line $guard_line) precedes the router branch (line $split_line) — both transports capped"
+  else
+    ab_fail "_cma_out_guard (line $guard_line) sits AFTER the router branch (line $split_line) — router providers get no output cap"
+  fi
+
+  # 6b. Router-path hardening (live issues, 2026-07-18): bare `mv` prompted
+  #     under interactive `mv -i` aliases, and a foreign ccr (CCS-style
+  #     profile manager) produced "Profile 'code' was not found". The wrapper
+  #     must use `command mv -f` and verify the ccr identity.
+  if grep -q 'command mv -f' "$LIB_SH" && ! grep -qE '^\s+mv "\$tmp" "\$cfg"' "$LIB_SH"; then
+    ab_pass "ccr config upsert uses alias-proof 'command mv -f'"
+  else
+    ab_fail "bare mv remains in the router config upsert (interactive mv -i aliases prompt and hang launches)"
+  fi
+  if grep -q '_ccr_ver' "$LIB_SH" && grep -q '@musistudio/claude-code-router' "$LIB_SH"; then
+    ab_pass "ccr identity guard present (foreign ccr refused before launch)"
+  else
+    ab_fail "no ccr identity guard (a shadowing ccr fails cryptically downstream)"
   fi
 fi
 echo

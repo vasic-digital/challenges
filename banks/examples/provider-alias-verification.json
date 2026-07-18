@@ -611,6 +611,100 @@
         "hermetic_suite": "scripts/tests/test_kimi.sh#section-4",
         "live_proof": "k3 direct 400 vs proxied 200 (2026-07-18)"
       }
+    },
+    {
+      "id": "cma-pav-output-cap-both-transports",
+      "name": "CLAUDE_CODE_MAX_OUTPUT_TOKENS exported for both transports",
+      "description": "Root cause of 'Claude's response exceeded the 128000 output token maximum': the wrapper exported the output cap only on the native path, so router providers ran with Claude Code's generic default. The _cma_out_guard export must precede the router transport branch in lib.sh, the migration marker chain must include it (stale wrappers regenerate), and the cap must equal the provider model's real limit.output. Verified by test_output_tokens.sh (8 assertions) and challenge check 6.",
+      "category": "provider-verification",
+      "estimated_duration": "10s",
+      "inputs": [
+        {
+          "name": "toolkit_root",
+          "source": "config",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "name": "cap_exported",
+          "type": "string",
+          "description": "CLAUDE_CODE_MAX_OUTPUT_TOKENS value seen by both native and router launches"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "_cma_out_guard",
+          "message": "both-transports output-cap marker must exist in lib.sh"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
+          "message": "the documented output-cap env var must be exported"
+        },
+        {
+          "type": "not_mock",
+          "target": "cap_exported",
+          "message": "the cap must come from the provider's real limit.output, not a default"
+        }
+      ],
+      "configuration": {
+        "vehicle": "shell_challenge",
+        "script": "challenges/scripts/provider_aliases_challenge.sh",
+        "check": "6",
+        "hermetic_suite": "scripts/tests/test_output_tokens.sh",
+        "root_cause": "router path never exported CLAUDE_CODE_MAX_OUTPUT_TOKENS (128000 default error)"
+      }
+    },
+    {
+      "id": "cma-pav-router-path-hardening",
+      "name": "Router launch is alias-proof and ccr-identity-guarded",
+      "description": "Two live router-path failures: bare `mv` in the ccr config upsert prompted under interactive `mv -i` shell aliases (launch hung/died), and a foreign `ccr` (CCS-style profile manager) made `ccr code` fail as 'Profile code was not found or is disabled'. lib.sh must use `command mv -f` at every mv site and refuse non-@musistudio ccr binaries before launch. Verified by test_output_tokens.sh section 3 and challenge check 6b.",
+      "category": "provider-verification",
+      "estimated_duration": "10s",
+      "inputs": [
+        {
+          "name": "toolkit_root",
+          "source": "config",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "name": "hardening_verdict",
+          "type": "string",
+          "description": "pass when both hardenings are present in lib.sh"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "command mv -f",
+          "message": "mv sites must be alias-proof"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "_ccr_ver",
+          "message": "ccr identity guard must exist"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "@musistudio/claude-code-router",
+          "message": "the refusal must name the real router"
+        }
+      ],
+      "configuration": {
+        "vehicle": "shell_challenge",
+        "script": "challenges/scripts/provider_aliases_challenge.sh",
+        "check": "6b",
+        "hermetic_suite": "scripts/tests/test_output_tokens.sh#section-3"
+      }
     }
   ]
 }
