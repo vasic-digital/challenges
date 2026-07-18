@@ -316,7 +316,7 @@ echo
 # only on the native path, so every router provider ran with Claude Code's
 # generic default cap (128000 for unknown models) and long responses died
 # with "Claude's response exceeded the 128000 output token maximum".
-echo "[6/6] output-token cap: CLAUDE_CODE_MAX_OUTPUT_TOKENS exported for BOTH transports"
+echo "[6/7] output-token cap: CLAUDE_CODE_MAX_OUTPUT_TOKENS exported for BOTH transports"
 ab_send_action "static-check _cma_out_guard placement in lib.sh (before the router branch)"
 if [ ! -f "$LIB_SH" ]; then
   ab_fail "scripts/lib.sh missing in toolkit checkout $TOOLKIT_ROOT"
@@ -346,6 +346,64 @@ else
     ab_pass "ccr identity guard present (foreign ccr refused before launch)"
   else
     ab_fail "no ccr identity guard (a shadowing ccr fails cryptically downstream)"
+  fi
+fi
+echo
+
+# --- Check 7: cross-alias session continuity (daemon sharing + unified flags) -
+# v1.17.0 root causes: Claude Code's background-agent registry (daemon/) was
+# per-config-dir (agents invisible across aliases), and session resolution
+# applied only to the native branch's bare launches (router aliases and
+# `alias -p …` always started fresh sessions).
+echo "[7/7] cross-alias continuity: daemon/jobs shared, unified session flags, existing-id injection"
+ab_send_action "static+live checks for daemon sharing and unified session flags"
+PROVIDERS_SH="$TOOLKIT_ROOT/scripts/claude-providers.sh"
+if [ ! -f "$LIB_SH" ] || [ ! -f "$PROVIDERS_SH" ]; then
+  ab_fail "claude-providers.sh / lib.sh missing in toolkit checkout"
+else
+  # 7a. daemon + jobs are shared items in BOTH lists (drift-guard pair).
+  if grep -q 'daemon jobs' "$LIB_SH" || (grep -q 'daemon' "$LIB_SH" && grep -q 'jobs' "$LIB_SH"); then
+    ab_pass "CMA_SHARED_ITEMS includes daemon + jobs (background-agent registry shared)"
+  else
+    ab_fail "CMA_SHARED_ITEMS lacks daemon/jobs (background agents stay per-alias)"
+  fi
+  # 7b. roster union exists (last-wins would drop other aliases' workers).
+  if grep -q 'cma_union_rosters' "$LIB_SH"; then
+    ab_pass "roster.json union merge present (cma_union_rosters)"
+  else
+    ab_fail "no roster union merge (per-file last-wins drops other aliases' workers)"
+  fi
+  # 7c. unified session flags: _cma_session_flags placed BEFORE the router branch.
+  sf_line="$(grep -n '_cma_session_flags' "$LIB_SH" | head -1 | cut -d: -f1)"
+  split_line="$(grep -n 'CMA_PROVIDER_TRANSPORT:-native.*== "router"' "$LIB_SH" | head -1 | cut -d: -f1)"
+  if [ -z "$sf_line" ]; then
+    ab_fail "no _cma_session_flags marker (session flags not unified)"
+  elif [ -n "$split_line" ] && [ "$sf_line" -lt "$split_line" ]; then
+    ab_pass "_cma_session_flags (line $sf_line) precedes the router branch (line $split_line) — both transports resume"
+  else
+    ab_fail "_cma_session_flags sits inside/after the native-only branch (router aliases never resume)"
+  fi
+  # 7d. args injection uses existing-id (never the never-created fallback id).
+  if grep -q 'existing-id' "$LIB_SH"; then
+    ab_pass "args injection uses existing-id (no resume of a never-created session)"
+  else
+    ab_fail "args injection uses latest-id (would --resume a nonexistent session: 'No conversation found')"
+  fi
+  # 7e. Live host state: every provider daemon dir is a symlink into shared.
+  pdir_glob="$HOME/.claude-prov-*/daemon"
+  bad=""
+  for d in $pdir_glob; do
+    [ -e "$d" ] || continue
+    [ -L "$d" ] || bad="$bad $d"
+  done
+  any=""
+  for d in $pdir_glob; do [ -e "$d" ] && any=1; done
+  if [ -z "$any" ]; then
+    ab_skip "provider daemon dirs" "none exist on this host yet"
+  elif [ -n "$bad" ]; then
+    ab_fail "provider daemon dirs NOT shared (still real dirs):$bad"
+  else
+    ab_pass "all provider daemon dirs are symlinks into the shared registry"
   fi
 fi
 echo

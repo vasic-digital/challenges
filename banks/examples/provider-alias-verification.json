@@ -705,6 +705,65 @@
         "check": "6b",
         "hermetic_suite": "scripts/tests/test_output_tokens.sh#section-3"
       }
+    },
+    {
+      "id": "cma-pav-cross-alias-session-continuity",
+      "name": "Sessions and background agents are visible from every alias",
+      "description": "Two root causes fixed in v1.17.0: (1) Claude Code's background-agent registry (daemon/roster.json) was per-config-dir, so agents were invisible to other aliases \u2014 daemon/ and jobs/ are now shared with a roster union merge (never last-wins) plus a provider-dir migration; (2) session resolution applied only to native-branch bare launches, so router aliases and `alias -p \u2026` always started fresh \u2014 _cma_session_flags now covers both transports and injects --resume for conversation args via existing-id (never the never-created fallback). Live-proven: xiaomi -> kimi-k3 (router) -> deepseek all resumed the SAME session with shared memory.",
+      "category": "provider-verification",
+      "estimated_duration": "20s",
+      "inputs": [
+        {
+          "name": "toolkit_root",
+          "source": "config",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "name": "continuity_verdict",
+          "type": "string",
+          "description": "pass when daemon is shared, flags unified, injection uses existing-id"
+        }
+      ],
+      "assertions": [
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "daemon jobs",
+          "message": "CMA_SHARED_ITEMS must share daemon + jobs"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "cma_union_rosters",
+          "message": "roster union merge must exist"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "_cma_session_flags",
+          "message": "unified session flags marker must exist"
+        },
+        {
+          "type": "contains",
+          "target": "scripts/lib.sh",
+          "value": "existing-id",
+          "message": "args injection must use existing-id"
+        },
+        {
+          "type": "all_valid",
+          "target": "continuity_verdict",
+          "message": "all continuity checks must hold"
+        }
+      ],
+      "configuration": {
+        "vehicle": "shell_challenge",
+        "script": "challenges/scripts/provider_aliases_challenge.sh",
+        "check": "7",
+        "hermetic_suite": "scripts/tests/test_session_flags.sh + test_unify.sh#daemon",
+        "live_proof": "xiaomi -> kimi-k3 -> deepseek resumed identical session (2026-07-18)"
+      }
     }
   ]
 }
