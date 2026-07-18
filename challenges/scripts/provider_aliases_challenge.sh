@@ -22,6 +22,10 @@
 #      checked_at within the last ${STALE_DAYS} days (jq). A stale or
 #      layered "verified" is a FAIL with the offending aliases as evidence.
 #   4. scripts/tests/verify_aliases_live.sh presence is reported
+#   5. Kimi Code OAuth support: detector discovers served models via /models,
+#      OAuth records win precedence, launch-time token freshness (live cred
+#      file + expiry + CLI refresh), kimi_proxy moonshot #/$defs/ schema
+#      normalization, live kimi alias freshness in status.json.
 #      (observed only — the live sweep is far too heavy to run inside this
 #      Challenge).
 #
@@ -97,7 +101,7 @@ command -v awk  >/dev/null 2>&1 || { echo "FAIL: awk not available"  >&2; exit 2
 command -v grep >/dev/null 2>&1 || { echo "FAIL: grep not available" >&2; exit 2; }
 
 # --- Check 1: providers-verify.sh — no verified-from-bare-GET ---------------
-echo "[1/4] providers-verify.sh: no verified-on-bare-GET; POST + sentinel required"
+echo "[1/5] providers-verify.sh: no verified-on-bare-GET; POST + sentinel required"
 ab_send_action "static-grep scripts/providers-verify.sh (bare-GET anti-pattern + POST/sentinel requirements)"
 if [ ! -f "$PROVIDERS_VERIFY" ]; then
   ab_fail "scripts/providers-verify.sh missing in toolkit checkout $TOOLKIT_ROOT"
@@ -133,7 +137,7 @@ fi
 echo
 
 # --- Check 2: model_verify.py — sentinel asserted + tool-call gate ----------
-echo "[2/4] model_verify.py: VERIFY_OK sentinel asserted; verified gated on tool calling"
+echo "[2/5] model_verify.py: VERIFY_OK sentinel asserted; verified gated on tool calling"
 ab_send_action "static-grep scripts/model_verify.py (sentinel assertion + tool-call gate)"
 if [ ! -f "$MODEL_VERIFY" ]; then
   ab_fail "scripts/model_verify.py missing in toolkit checkout $TOOLKIT_ROOT"
@@ -174,7 +178,7 @@ fi
 echo
 
 # --- Check 3: status.json — verified aliases fresh + failing_layer empty ----
-echo "[3/4] status.json: verified aliases have failing_layer empty + fresh checked_at"
+echo "[3/5] status.json: verified aliases have failing_layer empty + fresh checked_at"
 if [ ! -f "$STATUS_FILE" ]; then
   ab_skip "providers/status.json" \
     "absent at $STATUS_FILE — no persisted verification state on this host"
@@ -219,12 +223,91 @@ fi
 echo
 
 # --- Check 4: live verifier presence (observed only) ------------------------
-echo "[4/4] live alias verifier presence (observed — never executed by this Challenge)"
+echo "[4/5] live alias verifier presence (observed — never executed by this Challenge)"
 if [ -f "$LIVE_VERIFIER" ]; then
   ab_pass "live alias verifier present (observed only — the live sweep is too heavy for this Challenge): scripts/tests/verify_aliases_live.sh"
   stat -c '  evidence: file=%n size=%s mtime=%y' "$LIVE_VERIFIER" | tee -a "$AB_RESULTS_PATH"
 else
   ab_skip "live alias verifier" "scripts/tests/verify_aliases_live.sh absent from this checkout"
+fi
+echo
+
+# --- Check 5: Kimi Code (OAuth subscription) provider support -----------------
+# v1.15.0 added full Kimi variant support: one alias per subscription-served
+# model (discovered live), OAuth-first precedence over API keys, launch-time
+# token freshness (the OAuth token lives ~15 min), and the moonshot-flavored
+# schema normalizer (kimi_proxy.py) without which every k3 tool request fails.
+echo "[5/5] Kimi Code OAuth support: multi-model records, OAuth-first, token freshness, schema proxy"
+ab_send_action "static-grep Kimi OAuth support markers in claude-providers.sh / lib.sh / proxy/kimi_proxy.py"
+PROVIDERS_SH="$TOOLKIT_ROOT/scripts/claude-providers.sh"
+LIB_SH="$TOOLKIT_ROOT/scripts/lib.sh"
+KPROXY="$TOOLKIT_ROOT/scripts/proxy/kimi_proxy.py"
+if [ ! -f "$PROVIDERS_SH" ] || [ ! -f "$LIB_SH" ] || [ ! -f "$KPROXY" ]; then
+  ab_fail "Kimi support files missing (claude-providers.sh / lib.sh / proxy/kimi_proxy.py)"
+else
+  # 5a. The detector must DISCOVER served models via the /models endpoint —
+  #     a hardcoded single-model record is exactly the old partial support.
+  if grep -q '/coding/v1' "$PROVIDERS_SH" && grep -q '"\$base/models"\|/v1/models' "$PROVIDERS_SH"; then
+    ab_pass "kimicode detector discovers subscription models via the /models endpoint"
+  else
+    ab_fail "kimicode detector does not query the /models endpoint (models would be hardcoded)"
+  fi
+
+  # 5b. OAuth records must take precedence over API-key records for
+  #     kimi-for-coding (the subscription is the priority path).
+  if grep -q 'unique_by(.provider_id)' "$PROVIDERS_SH" && grep -q '\$e2 + \$base + \$e1' "$PROVIDERS_SH"; then
+    ab_pass "resolve_records gives the OAuth detector records precedence (unique_by, e2 first)"
+  else
+    ab_fail "resolve_records does not prefer OAuth detector records (API key can shadow the subscription)"
+  fi
+
+  # 5c. Launch-time token freshness: the OAuth token lives ~15 minutes, so a
+  #     sync-time snapshot is always stale. lib.sh must consult the LIVE
+  #     credentials file (with expiry) and refresh via the CLI before falling
+  #     back to the snapshot.
+  if grep -q 'kimi-code/credentials/kimi-code.json' "$LIB_SH" \
+     && grep -q 'expires_at' "$LIB_SH" && grep -q 'kimi -p "hi"' "$LIB_SH"; then
+    ab_pass "launch path reads the live OAuth credentials file with expiry + CLI refresh"
+  else
+    ab_fail "launch path lacks live-token freshness (stale sync-time snapshot would 401 after ~15 min)"
+  fi
+
+  # 5d. kimi_proxy must rewrite foreign $refs to the moonshot flavor
+  #     (#/$defs/) — proven live requirement for k3 tool calls.
+  if grep -q '#/\$defs/' "$KPROXY" && grep -q 'definitions' "$KPROXY"; then
+    ab_pass "kimi_proxy.py normalizes tool schemas to the moonshot #/\$defs/ flavor"
+  else
+    ab_fail "kimi_proxy.py does not normalize \$ref to #/\$defs/ (k3 rejects Claude Code tool schemas)"
+  fi
+
+  # 5e. Live host state (read-only): when an OAuth session exists, kimi
+  #     aliases in status.json must be verified AND fresh (the same
+  #     invariants as Check 3, scoped to kimi-*).
+  CRED="$HOME/.kimi-code/credentials/kimi-code.json"
+  if [ ! -f "$CRED" ]; then
+    ab_skip "Kimi OAuth session" "no $CRED on this host — subscription aliases not installed here"
+  else
+    exp="$(jq -r '.expires_at // 0' "$CRED" 2>/dev/null || echo 0)"
+    if [ "${exp:-0}" -gt "$(date +%s)" ] || command -v kimi >/dev/null 2>&1; then
+      ab_pass "Kimi OAuth session present and token fresh-or-refreshable (expires_at=$exp)"
+    else
+      ab_fail "Kimi OAuth token expired AND no kimi CLI to refresh it (aliases would 401 at launch)"
+    fi
+    if [ -f "$STATUS_FILE" ]; then
+      kimi_bad="$(jq -r '[to_entries[]
+        | select(.key | startswith("kimi"))
+        | select(.value.status != "verified")
+        | "\(.key)(\(.value.status))"] | join(" ")' "$STATUS_FILE")"
+      kimi_n="$(jq -r '[to_entries[] | select(.key | startswith("kimi"))] | length' "$STATUS_FILE")"
+      if [ -n "$kimi_bad" ]; then
+        ab_fail "kimi aliases not verified in status.json: $kimi_bad"
+      elif [ "$kimi_n" -eq 0 ]; then
+        ab_skip "kimi aliases in status.json" "OAuth session exists but no kimi aliases installed — run claude-providers sync"
+      else
+        ab_pass "all $kimi_n kimi alias(es) verified in status.json"
+      fi
+    fi
+  fi
 fi
 echo
 
