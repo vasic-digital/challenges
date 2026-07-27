@@ -1,0 +1,206 @@
+=== BASELINE (fixed code) go test -race -count=3 ===
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.00s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.00s)
+PASS
+ok  	digital.vasic.challenges/pkg/challenge	1.028s
+BASELINE_RC=0
+
+=== MUTATION (§1.1): 5bac429 lock stripped (result.go mu field + antibluff.go Lock/Unlock removed) — go test -race -count=5 ===
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+==================
+WARNING: DATA RACE
+Read at 0x00c00012c2e0 by goroutine 25:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x1b6
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Previous write at 0x00c00012c2e0 by goroutine 10:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Goroutine 25 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+
+Goroutine 10 (finished) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+==================
+==================
+WARNING: DATA RACE
+Read at 0x00c000002300 by goroutine 25:
+  runtime.growslice()
+      /usr/lib/golang/src/runtime/slice.go:178 +0x0
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x1f8
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Previous write at 0x00c000002300 by goroutine 10:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Goroutine 25 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+
+Goroutine 10 (finished) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+==================
+==================
+WARNING: DATA RACE
+Write at 0x00c000182798 by goroutine 13:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Previous write at 0x00c000182798 by goroutine 108:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Goroutine 13 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+
+Goroutine 108 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+==================
+==================
+WARNING: DATA RACE
+Write at 0x00c00012c2e0 by goroutine 13:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Previous write at 0x00c00012c2e0 by goroutine 108:
+  digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+
+Goroutine 13 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+
+Goroutine 108 (running) created at:
+  digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
+      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+  testing.tRunner()
+      /usr/lib/golang/src/testing/testing.go:2036 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/golang/src/testing/testing.go:2101 +0x38
+==================
+    recordaction_race_test.go:80: lost append(s) under concurrent RecordAction: expected exactly 2000 recorded actions, got 1802
+    testing.go:1712: race detected during execution of test
+--- FAIL: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+    recordaction_race_test.go:80: lost append(s) under concurrent RecordAction: expected exactly 2000 recorded actions, got 1938
+--- FAIL: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+    recordaction_race_test.go:80: lost append(s) under concurrent RecordAction: expected exactly 2000 recorded actions, got 1918
+--- FAIL: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+    recordaction_race_test.go:80: lost append(s) under concurrent RecordAction: expected exactly 2000 recorded actions, got 1618
+--- FAIL: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+    recordaction_race_test.go:80: lost append(s) under concurrent RecordAction: expected exactly 2000 recorded actions, got 1931
+--- FAIL: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.01s)
+FAIL
+FAIL	digital.vasic.challenges/pkg/challenge	0.052s
+FAIL
+MUTATION_RC=1
+
+=== RESTORE CONFIRMATION: git diff pkg/challenge/result.go pkg/challenge/antibluff.go (must be empty) ===
+(empty diff confirms clean restore to committed 5bac429 state)
+
+=== POST-RESTORE RE-VERIFICATION: go test -race -count=3 (must be green again) ===
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.00s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.00s)
+=== RUN   TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== PAUSE TestRecordAction_ConcurrentAppend_NoLostUpdates
+=== CONT  TestRecordAction_ConcurrentAppend_NoLostUpdates
+--- PASS: TestRecordAction_ConcurrentAppend_NoLostUpdates (0.00s)
+PASS
+ok  	digital.vasic.challenges/pkg/challenge	1.023s
+POST_RESTORE_RC=0

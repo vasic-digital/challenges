@@ -53,7 +53,9 @@ func (r *Result) RecordAction(description string) {
 	if r == nil {
 		return
 	}
+	r.mu.Lock()
 	r.RecordedActions = append(r.RecordedActions, description)
+	r.mu.Unlock()
 }
 
 // ValidateAntiBluff inspects a completed Result and returns
@@ -64,9 +66,9 @@ func (r *Result) RecordAction(description string) {
 //
 // Required for Status=Passed:
 //
-//   • RecordedActions is non-empty (at least one action ran).
-//   • Assertions is non-empty (at least one expectation was checked).
-//   • At least one assertion has Passed=true (something was
+//   - RecordedActions is non-empty (at least one action ran).
+//   - Assertions is non-empty (at least one expectation was checked).
+//   - At least one assertion has Passed=true (something was
 //     positively confirmed; assertion-list of all failures with
 //     Status=Passed is the canonical bluff pattern this guards).
 //

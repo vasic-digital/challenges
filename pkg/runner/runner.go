@@ -532,12 +532,12 @@ func (r *DefaultRunner) executeChallenge(
 		}
 	}
 
-		// Anti-bluff validation is mandatory per Constitution §1, §6.3,
-		// §11.5.7. A Challenge result claiming Status=Passed MUST carry
-		// positive evidence (RecordedActions non-empty + at least one
-		// passing assertion). This gate is never disabled; the env-var
-		// CHALLENGE_ANTIBLUFF_STRICT has been removed as part of the
-		// v2.0.0 constitutional amendment (2026-05-01).
+	// Anti-bluff validation is mandatory per Constitution §1, §6.3,
+	// §11.5.7. A Challenge result claiming Status=Passed MUST carry
+	// positive evidence (RecordedActions non-empty + at least one
+	// passing assertion). This gate is never disabled; the env-var
+	// CHALLENGE_ANTIBLUFF_STRICT has been removed as part of the
+	// v2.0.0 constitutional amendment (2026-05-01).
 	if result.Status == challenge.StatusPassed {
 		if abErr := challenge.ValidateAntiBluff(result); abErr != nil {
 			result.Status = challenge.StatusFailed

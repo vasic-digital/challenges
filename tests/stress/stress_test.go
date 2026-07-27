@@ -83,9 +83,9 @@ func TestStressConcurrentBaseChallengeLifecycle(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	var (
-		wg       sync.WaitGroup
-		failures int64
-		mutx     sync.Mutex
+		wg        sync.WaitGroup
+		failures  int64
+		mutx      sync.Mutex
 		latencies []time.Duration
 	)
 
@@ -131,12 +131,12 @@ func TestStressConcurrentBaseChallengeLifecycle(t *testing.T) {
 	failCount := atomic.LoadInt64(&failures)
 	p50, p95, p99 := percentiles(latencies)
 	record := map[string]interface{}{
-		"test":      "TestStressConcurrentBaseChallengeLifecycle",
-		"N":         n,
-		"failures":  failCount,
-		"p50_ns":    p50.Nanoseconds(),
-		"p95_ns":    p95.Nanoseconds(),
-		"p99_ns":    p99.Nanoseconds(),
+		"test":     "TestStressConcurrentBaseChallengeLifecycle",
+		"N":        n,
+		"failures": failCount,
+		"p50_ns":   p50.Nanoseconds(),
+		"p95_ns":   p95.Nanoseconds(),
+		"p99_ns":   p99.Nanoseconds(),
 	}
 	writeEvidenceJSON(t, "concurrent_base_challenge", record)
 	t.Logf("Concurrent BaseChallenge N=%d: failures=%d p50=%v p95=%v p99=%v",
@@ -164,8 +164,8 @@ func TestStressConcurrentAntiBluffValidation(t *testing.T) {
 	var misses int64
 
 	validResult := &challenge.Result{
-		ChallengeID: "stress-antibluff-valid",
-		Status:      challenge.StatusPassed,
+		ChallengeID:     "stress-antibluff-valid",
+		Status:          challenge.StatusPassed,
 		RecordedActions: []string{"action1", "action2"},
 		Assertions: []challenge.AssertionResult{
 			{Type: "not_empty", Target: "output", Passed: true, Message: "output present"},
@@ -201,9 +201,9 @@ func TestStressConcurrentAntiBluffValidation(t *testing.T) {
 
 	missCount := atomic.LoadInt64(&misses)
 	record := map[string]interface{}{
-		"test":    "TestStressConcurrentAntiBluffValidation",
-		"N":       n,
-		"misses":  missCount,
+		"test":   "TestStressConcurrentAntiBluffValidation",
+		"N":      n,
+		"misses": missCount,
 	}
 	writeEvidenceJSON(t, "concurrent_antibluff_validation", record)
 	t.Logf("Concurrent anti-bluff N=%d: misses=%d", n, missCount)
@@ -253,12 +253,12 @@ func TestStressSustainedAssertionEvaluation(t *testing.T) {
 
 	p50, p95, p99 := percentiles(durations)
 	record := map[string]interface{}{
-		"test":        "TestStressSustainedAssertionEvaluation",
-		"N":           N,
-		"failures":    fails,
-		"p50_ns":      p50.Nanoseconds(),
-		"p95_ns":      p95.Nanoseconds(),
-		"p99_ns":      p99.Nanoseconds(),
+		"test":     "TestStressSustainedAssertionEvaluation",
+		"N":        N,
+		"failures": fails,
+		"p50_ns":   p50.Nanoseconds(),
+		"p95_ns":   p95.Nanoseconds(),
+		"p99_ns":   p99.Nanoseconds(),
 	}
 	writeEvidenceJSON(t, "sustained_assertion_eval", record)
 	t.Logf("Sustained assertion eval N=%d: failures=%d p50=%v p95=%v p99=%v",

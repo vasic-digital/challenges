@@ -1,0 +1,8 @@
+{
+  "N": 500,
+  "failures": 0,
+  "p50_ns": 120,
+  "p95_ns": 165,
+  "p99_ns": 390,
+  "test": "TestStressSustainedAssertionEvaluation"
+}

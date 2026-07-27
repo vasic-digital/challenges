@@ -99,9 +99,9 @@ func TestRound100_MigratedSitesRouteThroughTranslator(t *testing.T) {
 	withSentinelTranslator(t)
 
 	cases := []struct {
-		name      string
-		call      func() string
-		sentinel  string
+		name     string
+		call     func() string
+		sentinel string
 	}{
 		{
 			name:     "build_succeeds_wrong_type",

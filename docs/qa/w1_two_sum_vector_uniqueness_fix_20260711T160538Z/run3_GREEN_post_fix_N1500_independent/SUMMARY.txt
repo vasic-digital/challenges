@@ -1,0 +1,14 @@
+Two-Sum Vector Uniqueness Verifier — SUMMARY (W1 / R41-F)
+date_utc=2026-07-11T16:06:43Z
+target=/home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/challenges/scripts/helixllm_coder_live_e2e_challenge.sh
+N=1500
+
+HISTORICAL (pre-fix, commit 125f73b) construction:
+  MACHINE[HISTORICAL_PRE_FIX]: 8 0 0 1500
+
+CURRENT (live, extracted) construction:
+  MACHINE[CURRENT_LIVE]: 0 0 0 1500
+
+bash_-n_check=PASS
+
+verdict=PASS (current construction: 0/1500 vectors with a second valid pair; every vector had exactly one valid pair)

@@ -1,5 +1,15 @@
 # digital.vasic.challenges
 
+| Field | Value |
+|---|---|
+| Revision | 1 |
+| Created | 2026-02-03 |
+| Last modified | 2026-07-05 |
+| Status | active |
+| Test coverage | [docs/test-coverage.md](docs/test-coverage.md) |
+| Issues | docs/Issues.md (when present) |
+| Continuation | docs/CONTINUATION.md (when present) |
+
 A generic, reusable Go module for defining, registering, executing, and reporting on challenges (structured test scenarios). Features a plugin-based architecture with built-in assertion evaluation, multi-format reporting, and live monitoring.
 
 ## Installation

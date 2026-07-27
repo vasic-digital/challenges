@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -137,18 +138,46 @@ func TestChaosConfigEdgeCases(t *testing.T) {
 	}
 
 	t.Run("extreme-long-path", func(t *testing.T) {
+		// A genuinely long BUT filesystem-valid path: several nested
+		// components, each within NAME_MAX (255 bytes) and the whole
+		// path within PATH_MAX (4096). Configure must create it.
+		// The prior form used string(make([]byte, 500)) -- 500 NUL
+		// bytes, which is a single component that is BOTH illegal (NUL
+		// is forbidden in Unix path components -> EINVAL) and far over
+		// NAME_MAX, so it could never succeed on any Linux filesystem
+		// -- a test-bug failure, not a product defect.
+		longComponent := strings.Repeat("a", 200)
+		longPath := filepath.Join(
+			t.TempDir(), longComponent, longComponent, longComponent,
+		)
 		b := challenge.NewBaseChallenge("chaos-long-path", "Long Path",
 			"chaos test", "chaos", nil)
-		longPath := filepath.Join(t.TempDir(), string(make([]byte, 500)))
 		cfg := &challenge.Config{
 			ChallengeID: "chaos-long-path",
 			ResultsDir:  longPath,
 			LogsDir:     t.TempDir(),
 			Timeout:     5 * time.Second,
 		}
-		err := b.Configure(cfg)
-		if err != nil {
+		if err := b.Configure(cfg); err != nil {
 			t.Fatalf("extreme-long-path: Configure failed: %v", err)
+		}
+	})
+
+	t.Run("invalid-path-degrades-gracefully", func(t *testing.T) {
+		// Chaos contract (package doc): "must always degrade
+		// gracefully" -- an unusable path must yield an error, never a
+		// panic. A NUL byte is illegal in every Unix path component.
+		b := challenge.NewBaseChallenge("chaos-bad-path", "Bad Path",
+			"chaos test", "chaos", nil)
+		cfg := &challenge.Config{
+			ChallengeID: "chaos-bad-path",
+			ResultsDir:  filepath.Join(t.TempDir(), "bad\x00name"),
+			LogsDir:     t.TempDir(),
+			Timeout:     5 * time.Second,
+		}
+		if err := b.Configure(cfg); err == nil {
+			t.Fatal("invalid-path: expected Configure to return an " +
+				"error for a NUL-containing path, got nil")
 		}
 	})
 
@@ -196,8 +225,8 @@ func TestChaosResultCorruption(t *testing.T) {
 
 	t.Run("concurrent-record-action", func(t *testing.T) {
 		r := &challenge.Result{
-			ChallengeID: "chaos-concur-write",
-			Status:      challenge.StatusPassed,
+			ChallengeID:     "chaos-concur-write",
+			Status:          challenge.StatusPassed,
 			RecordedActions: []string{"init"},
 		}
 
@@ -302,8 +331,8 @@ func TestChaosAntiBluffCorruption(t *testing.T) {
 	}
 
 	type abCase struct {
-		name   string
-		result *challenge.Result
+		name      string
+		result    *challenge.Result
 		expectErr bool
 	}
 	cases := []abCase{

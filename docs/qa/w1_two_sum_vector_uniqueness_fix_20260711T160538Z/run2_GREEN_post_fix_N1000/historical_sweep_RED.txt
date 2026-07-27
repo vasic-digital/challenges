@@ -1,0 +1,6 @@
+RESULT[HISTORICAL_PRE_FIX]: total=1000 second_pair_count=4 zero_pair_count=0 malformed_count=0
+  example: SECOND_PAIR nums=[216, -420, 230, 216] target=446 pairs=[(0, 2), (2, 3)]
+  example: SECOND_PAIR nums=[201, -324, 339, 339] target=15 pairs=[(1, 2), (1, 3)]
+  example: SECOND_PAIR nums=[268, 241, 268, -231] target=509 pairs=[(0, 1), (1, 2)]
+  example: SECOND_PAIR nums=[-115, -278, 126, -37] target=-152 pairs=[(0, 3), (1, 2)]
+MACHINE[HISTORICAL_PRE_FIX]: 4 0 0 1000

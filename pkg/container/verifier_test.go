@@ -181,7 +181,7 @@ func TestServiceConfig(t *testing.T) {
 func TestIntegration_VerifyRunningContainers(t *testing.T) {
 	// bluff-scan: no-assert-ok (integration/interface-compliance smoke — wiring must not panic)
 	if testing.Short() {
-		t.Skip("Skipping integration test in short mode")  // SKIP-OK: #short-mode
+		t.Skip("Skipping integration test in short mode") // SKIP-OK: #short-mode
 	}
 
 	logger := &mockLogger{}

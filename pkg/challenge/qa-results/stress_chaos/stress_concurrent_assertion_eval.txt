@@ -2,7 +2,7 @@ TestStressConcurrentAssertionEvaluation
 Concurrent evals: 100
 Assertions per eval: 16
 Total assertions: 1600
-Duration: 24.30025ms
+Duration: 221.765µs
 Assertion failures: 0
-Throughput: 65843 assertions/sec
+Throughput: 7214845 assertions/sec
 Status: PASS
