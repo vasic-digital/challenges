@@ -1,0 +1,8 @@
+{
+  "N": 100,
+  "failures": 0,
+  "p50_ns": 28964,
+  "p95_ns": 41693,
+  "p99_ns": 52950,
+  "test": "TestStressConcurrentBaseChallengeLifecycle"
+}
