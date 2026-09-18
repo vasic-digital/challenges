@@ -14,6 +14,15 @@ fully decoupled and project-agnostic per §11.4.28).
 
 Canonical reference: https://github.com/HelixDevelopment/HelixConstitution
 
+## Acceptance demo for this module
+
+```bash
+# Full challenge execution engine: Configure → Execute → Validate → Cleanup + report
+cd Challenges && GOMAXPROCS=2 nice -n 19 go test -count=1 -race -v \
+  -run 'TestRunner_Execute' ./...
+```
+Expect: PASS; a sample challenge runs to completion, assertion engine evaluates, and JSON/Markdown reports are emitted. The `cmd/userflow-runner` CLI (see `Challenges/README.md`) drives the same pipeline end-to-end.
+
 ## Module Overview
 
 `digital.vasic.challenges` is a generic, reusable Go module for defining, registering, executing, and reporting on challenges (structured test scenarios). It provides a comprehensive framework for validation testing with built-in assertion evaluation, multiple reporting formats, live monitoring, and plugin extensibility.
@@ -38,6 +47,7 @@ Canonical reference: https://github.com/HelixDevelopment/HelixConstitution
 | `metrics` | `pkg/metrics/` | Prometheus-compatible metrics: Challenge execution counters. Duration histograms. Success/failure rates. Custom metric registration. |
 | `plugin` | `pkg/plugin/` | Plugin system: Plugin interface for custom challenge types. Dynamic plugin loading. Lifecycle management (Init, Shutdown). Plugin registry and versioning. |
 | `infra` | `pkg/infra/` | Infrastructure bridge: Adapter to `digital.vasic.containers` module. Service startup/shutdown coordination. Health check integration. Resource cleanup. |
+| `userflow` | `pkg/userflow/` | Multi-platform user flow automation: adapters, templates, evaluators, container infra bridge (see "User Flow Automation" below). |
 
 ## Dependency Graph
 
@@ -60,8 +70,10 @@ bank  --->  challenge, env
 |------|---------|
 | `pkg/challenge/challenge.go` | Challenge interface, BaseChallenge, Config, Result types |
 | `pkg/challenge/shell.go` | ShellChallenge for executing bash scripts |
+| `pkg/challenge/progress.go` | ProgressReporter for progress-based liveness detection |
 | `pkg/registry/registry.go` | Registry implementation with dependency ordering |
 | `pkg/runner/runner.go` | Runner implementation with execution modes |
+| `pkg/runner/liveness.go` | Liveness monitor (stuck-vs-timed-out detection) |
 | `pkg/assertion/engine.go` | Assertion engine with built-in evaluators |
 | `pkg/assertion/evaluators.go` | All 16 built-in evaluator implementations |
 | `pkg/report/markdown.go` | Markdown report generator |
@@ -74,9 +86,79 @@ bank  --->  challenge, env
 | `pkg/metrics/metrics.go` | Prometheus metrics collector |
 | `pkg/plugin/plugin.go` | Plugin interface and registry |
 | `pkg/infra/adapter.go` | Containers module adapter |
+| `pkg/userflow/` | User flow automation adapters, templates, evaluators |
+| `cmd/userflow-runner` | CLI driving the userflow pipeline end-to-end |
 | `go.mod` | Module definition and dependencies |
-| `CLAUDE.md` | AI coding assistant instructions |
+| `AGENTS.md` | AI coding assistant instructions (this file) |
 | `README.md` | User-facing documentation with quick start |
+
+## Design Patterns
+
+- **Template Method**: BaseChallenge provides lifecycle; concrete challenges override Execute()
+- **Strategy**: Reporter (MD/JSON/HTML), assertion evaluators
+- **Registry**: Challenge registry, Plugin registry, Assertion evaluator registry
+- **Adapter**: ShellChallenge wraps bash scripts; containers_adapter bridges to Containers module
+- **Decorator**: RedactingLogger wraps Logger
+- **Observer**: Monitor EventCollector for live challenge monitoring
+- **Functional Options**: RunnerOption, etc.
+
+## Progress-Based Liveness Detection
+
+Challenges may run for hours (e.g., scanning a 10TB NAS over SMB). Hard timeouts are **wrong** for long-running challenges. Instead, the framework uses progress-based liveness detection:
+
+- **ProgressReporter** (`pkg/challenge/progress.go`): Buffered channel (64) for challenges to signal forward progress. Call `ReportProgress(msg, data)` periodically.
+- **Liveness Monitor** (`pkg/runner/liveness.go`): Goroutine that watches the progress channel. If no progress is reported within `StaleThreshold`, the challenge is declared **stuck** and cancelled.
+- **StatusStuck** (`"stuck"`): New terminal status distinct from `"timed_out"`. Stuck = no progress; timed out = hard timeout exceeded.
+
+### Usage
+
+```go
+// In your challenge's Execute():
+func (c *MyChallenge) Execute(ctx context.Context) (*Result, error) {
+    for i := range files {
+        c.ReportProgress("scanning", map[string]any{
+            "files_processed": i,
+        })
+        // ... do work ...
+    }
+}
+```
+
+The runner automatically attaches a `ProgressReporter` to any challenge that embeds `BaseChallenge`. Configure thresholds:
+
+```go
+runner.NewRunner(
+    runner.WithTimeout(72*time.Hour),         // Hard upper bound (generous)
+    runner.WithStaleThreshold(5*time.Minute), // Kill if no progress for 5 min
+)
+```
+
+Per-challenge override via `Config.StaleThreshold`.
+
+## User Flow Automation (`pkg/userflow`)
+
+Multi-platform user flow automation framework with an adapter-per-platform pattern. Generic — no project-specific references in `pkg/userflow/`.
+
+**Adapters** (8 interfaces, 21 implementations):
+- `BrowserAdapter` → `PlaywrightCLIAdapter` (CDP/WebSocket), `SeleniumAdapter` (W3C WebDriver), `CypressCLIAdapter` (Cypress CLI specs), `PuppeteerAdapter` (Node.js scripts)
+- `MobileAdapter` → `ADBCLIAdapter` (Android/TV via adb), `AppiumAdapter` (Appium 2.0 W3C), `MaestroCLIAdapter` (Maestro YAML flows), `EspressoAdapter` (Gradle + ADB hybrid)
+- `RecorderAdapter` → `PanopticRecorderAdapter` (CDP screencast), `ADBRecorderAdapter` (ADB screenrecord)
+- `DesktopAdapter` → `TauriCLIAdapter` (Tauri apps via WebDriver)
+- `APIAdapter` → `HTTPAPIAdapter` (REST API via `pkg/httpclient`)
+- `GRPCAdapter` → `GRPCCLIAdapter` (gRPC via grpcurl CLI, unary + streaming)
+- `WebSocketFlowAdapter` → `GorillaWebSocketAdapter` (gorilla/websocket, thread-safe)
+- `BuildAdapter` → `GradleCLIAdapter`, `CargoCLIAdapter`, `NPMCLIAdapter`, `RobolectricAdapter` (Android JVM tests via Gradle)
+- `ProcessAdapter` → `SystemProcessAdapter`
+
+**Challenge Templates** (19 types): `APIFlowChallenge`, `BrowserFlowChallenge`, `RecordedBrowserFlowChallenge`, `VisionFlowChallenge`, `RecordedVisionFlowChallenge`, `MobileFlowChallenge`, `MobileLaunchChallenge`, `RecordedMobileFlowChallenge`, `RecordedMobileLaunchChallenge`, `AITestGenerationChallenge`, `RecordedAITestGenChallenge`, `DesktopFlowChallenge`, `BuildChallenge`, `TestRunnerChallenge`, `LintChallenge`, `MultiPlatformChallenge`, `SetupTeardownChallenge`, `GRPCFlowChallenge`, `WebSocketFlowChallenge`.
+
+**Recorded Challenge Templates** wrap their non-recorded counterparts with `RecorderAdapter`, adding video recording with integrity verification (non-zero file size, duration, frame count). Use these for all UI challenges.
+
+**Container Integration**: `TestEnvironment` bridges to `digital.vasic.containers` via `PlatformGroup` concept. Manages Podman container lifecycle (setup/teardown) per platform group within the 4 CPU / 8 GB resource budget.
+
+**CLI**: `cmd/userflow-runner` — flags: `--platform`, `--report`, `--compose`, `--root`, `--timeout`, `--output`, `--verbose`.
+
+**Evaluators** (12 userflow-specific): `http_status_ok`, `http_status_created`, `http_status_unauthorized`, `http_status_forbidden`, `http_status_not_found`, `http_json_valid`, `browser_element_visible`, `browser_url_matches`, `mobile_activity_visible`, `mobile_element_exists`, `build_success`, `test_pass_rate`.
 
 ## Agent Coordination Guide
 
@@ -323,6 +405,15 @@ logger.InfoWithFields("Challenge executed", map[string]interface{}{
 // Bad - unstructured logging
 log.Printf("Challenge %s took %v and passed", c.ID(), elapsed)
 ```
+
+## Integration Seams
+
+| Direction | Sibling modules |
+|-----------|-----------------|
+| Upstream (this module imports) | Containers |
+| Downstream (these import this module) | HelixLLM, HelixQA, LLMsVerifier |
+
+*Siblings* means other project-owned modules at the project repo root. The root project app and external systems are not listed here — the list above is intentionally scoped to module-to-module seams, because drift *between* sibling modules is where the "tests pass, product broken" class of bug most often lives. See this repository's root-level agent-instruction carriers for the rules that keep these seams contract-tested.
 
 ---
 
