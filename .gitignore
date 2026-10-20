@@ -40,3 +40,5 @@ challenges/evidence/
 # go-mutesting artifacts
 report.json
 go-mutesting-report.html
+
+tests/stress/qa-results/
