@@ -230,6 +230,6 @@ other outcome is a release blocker per CONST-035 / Article XI §11.9.
 > of tests and Challenges MUST guarantee the quality, the completition
 > and full usability by end users of the product!"
 
-## License
+## Licence
 
-MIT
+Source-available, all rights reserved. See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Gate: `bash scripts/verify_licence.sh` (`--prove-failure` for its paired proof).
