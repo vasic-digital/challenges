@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: CC0-1.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 //
 // HelixQA fixture: Rust file with deliberate type mismatch for LSP diagnostics test.
 // rust-analyzer will emit E0308 (mismatched types) on the return statement.

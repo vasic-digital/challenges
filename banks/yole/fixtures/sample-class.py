@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Milos Vasic
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 #
 # HelixQA fixture: Python file with class + methods for Outline / document-symbol tests.
 # Used by: feature-2-source-code-support.yaml

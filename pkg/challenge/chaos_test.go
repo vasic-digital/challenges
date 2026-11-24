@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 
 // Chaos tests for challenge package — config edge cases, result corruption,
 // progress reporter corner cases, anti-bluff enforcement, and concurrent
