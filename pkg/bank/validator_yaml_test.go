@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 
 // Anti-bluff regression tests for ValidateFile format + root-key
 // parity with LoadFile. Constitution §11.4 / §11.4.1: the validator

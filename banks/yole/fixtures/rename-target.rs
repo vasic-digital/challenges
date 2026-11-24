@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: CC0-1.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 //
 // HelixQA fixture: Rust file with rename target for LSP refactoring test.
 // 'old_name' appears at 2 sites (declaration + call site).

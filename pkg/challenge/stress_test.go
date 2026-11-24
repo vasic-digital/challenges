@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 
 // Stress tests for challenge package — concurrent lifecycle, assertion
 // evaluation, and sustained result creation. Constitution §11.4.85.

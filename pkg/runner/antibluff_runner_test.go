@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 
 // Anti-bluff runner-integration tests — verify that the runner
 // unconditionally downgrades a bluff Status=Passed result to

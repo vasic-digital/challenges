@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Milos Vasic
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved
 
 // Anti-bluff validation for challenge.Result — Go-side parallel of
 // the on-device tests/lib/anti_bluff.sh framework. Constitution §11.4

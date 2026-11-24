@@ -1,7 +1,7 @@
 # Yole HelixQA Feature × Iteration Coverage Matrix
 
 <!-- SPDX-FileCopyrightText: 2026 Milos Vasic -->
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-Source-Available-All-Rights-Reserved -->
 
 ## Rules (CONST-039)
 
