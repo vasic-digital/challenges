@@ -63,6 +63,17 @@ under those licences.
 | `digital.vasic.containers` | `replace => ../containers` in `go.mod` | Sibling repository of the same owner, under its own source-available licence. Not copied here. |
 | `digital.vasic.helixmemory`, `digital.vasic.memory` | `replace` targets in `challenges/fixtures/memprobe/go.mod` | Own-organisation modules outside this repository; their licence was not examined from this repository. UNKNOWN here. |
 
+## Additional licence files shipped inside modules
+
+These modules ship licence files beyond `LICENSE`. Their contents were not classified here;
+read them in the module for the binding terms.
+
+| Module | Extra files |
+|---|---|
+| `modernc.org/libc` | `LICENSE-GO` |
+| `modernc.org/memory` | `LICENSE-GO`, `LICENSE-LOGO`, `LICENSE-MMAP-GO` |
+| `modernc.org/sqlite` | `SQLITE-LICENSE` |
+
 ## Items that could not be verified
 
 No third-party module above is UNKNOWN; the licence of the two own-organisation memprobe replace targets is UNKNOWN from this repository (see above). Licence names were assigned from licence text
