@@ -78,7 +78,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "default_root": "$HOME/claude_toolkit",
           "target": "scripts/providers-verify.sh"
         }
       }
@@ -150,7 +150,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "default_root": "$HOME/claude_toolkit",
           "target": "scripts/model_verify.py"
         }
       }
@@ -210,7 +210,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "default_root": "$HOME/claude_toolkit",
           "target": "scripts/model_verify.py"
         }
       }
@@ -290,7 +290,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "default_root": "$HOME/claude_toolkit",
           "target": "scripts/model_verify.py",
           "status_file": "~/.local/share/claude-multi-account/providers/status.json"
         }
@@ -362,7 +362,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit",
+          "default_root": "$HOME/claude_toolkit",
           "status_file": "~/.local/share/claude-multi-account/providers/status.json",
           "stale_budget_days": 7
         }
@@ -448,7 +448,7 @@
         },
         "toolkit": {
           "root_env": "CLAUDE_TOOLKIT_ROOT",
-          "default_root": "/run/media/milosvasic/DATA4TB/Projects/claude_toolkit"
+          "default_root": "$HOME/claude_toolkit"
         }
       }
     },

@@ -31,7 +31,7 @@
 #
 # Env knobs:
 #   CLAUDE_TOOLKIT_ROOT     toolkit checkout (default
-#                           /run/media/milosvasic/DATA4TB/Projects/claude_toolkit)
+#                           $HOME/claude_toolkit)
 #   CMA_PROVIDER_STATUS_FILE status.json path (default
 #                           ~/.local/share/claude-multi-account/providers/status.json)
 #   CMA_VERIFIED_MAX_AGE_DAYS  staleness budget in days (default 7)
@@ -65,7 +65,7 @@ if [ ! -f "$LIB_AB" ]; then
 fi
 . "$LIB_AB"
 
-TOOLKIT_ROOT="${CLAUDE_TOOLKIT_ROOT:-/run/media/milosvasic/DATA4TB/Projects/claude_toolkit}"
+TOOLKIT_ROOT="${CLAUDE_TOOLKIT_ROOT:-$HOME/claude_toolkit}"
 STATUS_FILE="${CMA_PROVIDER_STATUS_FILE:-$HOME/.local/share/claude-multi-account/providers/status.json}"
 STALE_DAYS="${CMA_VERIFIED_MAX_AGE_DAYS:-7}"
 case "$STALE_DAYS" in ''|*[!0-9]*) STALE_DAYS=7 ;; esac
