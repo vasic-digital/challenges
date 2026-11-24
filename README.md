@@ -233,3 +233,7 @@ other outcome is a release blocker per CONST-035 / Article XI §11.9.
 ## License
 
 MIT
+
+## Licence
+
+Source-available, all rights reserved. See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Gate: `bash scripts/verify_licence.sh` (`--prove-failure` for its paired proof).
