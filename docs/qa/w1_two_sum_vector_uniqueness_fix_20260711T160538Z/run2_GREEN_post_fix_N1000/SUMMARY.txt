@@ -1,6 +1,6 @@
 Two-Sum Vector Uniqueness Verifier — SUMMARY (W1 / R41-F)
 date_utc=2026-07-11T16:05:38Z
-target=/home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/challenges/scripts/helixllm_coder_live_e2e_challenge.sh
+target=<repo>/challenges/scripts/helixllm_coder_live_e2e_challenge.sh
 N=1000
 
 HISTORICAL (pre-fix, commit 125f73b) construction:

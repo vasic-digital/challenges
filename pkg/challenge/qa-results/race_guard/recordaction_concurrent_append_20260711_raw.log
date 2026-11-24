@@ -23,23 +23,23 @@ BASELINE_RC=0
 WARNING: DATA RACE
 Read at 0x00c00012c2e0 by goroutine 25:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x1b6
+      <repo>/pkg/challenge/antibluff.go:56 +0x1b6
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Previous write at 0x00c00012c2e0 by goroutine 10:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+      <repo>/pkg/challenge/antibluff.go:56 +0x279
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Goroutine 25 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -47,7 +47,7 @@ Goroutine 25 (running) created at:
 
 Goroutine 10 (finished) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -59,23 +59,23 @@ Read at 0x00c000002300 by goroutine 25:
   runtime.growslice()
       /usr/lib/golang/src/runtime/slice.go:178 +0x0
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x1f8
+      <repo>/pkg/challenge/antibluff.go:56 +0x1f8
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Previous write at 0x00c000002300 by goroutine 10:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+      <repo>/pkg/challenge/antibluff.go:56 +0x226
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Goroutine 25 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -83,7 +83,7 @@ Goroutine 25 (running) created at:
 
 Goroutine 10 (finished) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -93,23 +93,23 @@ Goroutine 10 (finished) created at:
 WARNING: DATA RACE
 Write at 0x00c000182798 by goroutine 13:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+      <repo>/pkg/challenge/antibluff.go:56 +0x226
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Previous write at 0x00c000182798 by goroutine 108:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x226
+      <repo>/pkg/challenge/antibluff.go:56 +0x226
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Goroutine 13 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -117,7 +117,7 @@ Goroutine 13 (running) created at:
 
 Goroutine 108 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -127,23 +127,23 @@ Goroutine 108 (running) created at:
 WARNING: DATA RACE
 Write at 0x00c00012c2e0 by goroutine 13:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+      <repo>/pkg/challenge/antibluff.go:56 +0x279
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Previous write at 0x00c00012c2e0 by goroutine 108:
   digital.vasic.challenges/pkg/challenge.(*Result).RecordAction()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/antibluff.go:56 +0x279
+      <repo>/pkg/challenge/antibluff.go:56 +0x279
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.func1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:69 +0xd3
+      <repo>/pkg/challenge/recordaction_race_test.go:69 +0xd3
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates.gowrap1()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:71 +0x38
+      <repo>/pkg/challenge/recordaction_race_test.go:71 +0x38
 
 Goroutine 13 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
@@ -151,7 +151,7 @@ Goroutine 13 (running) created at:
 
 Goroutine 108 (running) created at:
   digital.vasic.challenges/pkg/challenge.TestRecordAction_ConcurrentAppend_NoLostUpdates()
-      /home/milos/Factory/projects/tools_and_research/helix_code/submodules/challenges/pkg/challenge/recordaction_race_test.go:66 +0x2ba
+      <repo>/pkg/challenge/recordaction_race_test.go:66 +0x2ba
   testing.tRunner()
       /usr/lib/golang/src/testing/testing.go:2036 +0x21c
   testing.(*T).Run.gowrap1()
